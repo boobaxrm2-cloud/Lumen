@@ -421,3 +421,62 @@ section.secao > h2 .contagem {
 .acoes-painel a:hover {
   text-decoration: underline;
 }
+
+/* ---------- Modulo de leitura de PDF ---------- */
+
+.visor-texto {
+  background: #fffdf7;
+  border: 1px solid var(--cor-kraft-escuro);
+  padding: 1.2rem 1.4rem;
+  max-height: 420px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.visor-texto mark {
+  background: #f0c14b;
+  color: var(--cor-tinta);
+  padding: 0 2px;
+}
+
+.lista-destaques {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.8rem;
+}
+
+.destaque-item {
+  background: var(--cor-papel);
+  border-left: 3px solid var(--cor-tijolo);
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.destaque-item p {
+  margin: 0;
+  flex: 1;
+  font-family: var(--fonte-titulo);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.destaque-item form {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.documento-item .cabecalho-ficha {
+  align-items: center;
+}
+
+.documento-item .cabecalho-ficha form {
+  margin: 0;
+}

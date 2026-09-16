@@ -5,6 +5,7 @@ const session = require('express-session');
 
 const authRoutes = require('./routes/auth');
 const articleRoutes = require('./routes/articles');
+const readingRoutes = require('./routes/reading');
 const { requireAuth } = require('./middleware/auth');
 
 if (!process.env.SESSION_SECRET) {
@@ -52,6 +53,7 @@ app.use((req, res, next) => {
 
 app.use('/', authRoutes);
 app.use('/', articleRoutes);
+app.use('/', readingRoutes);
 
 app.get('/', requireAuth, (req, res) => {
   res.render('home', { userName: req.session.userName });

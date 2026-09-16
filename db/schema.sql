@@ -22,3 +22,28 @@ CREATE TABLE IF NOT EXISTS articles (
 );
 
 CREATE INDEX IF NOT EXISTS idx_articles_user ON articles(user_id);
+
+-- Um "documento" representa um PDF que o usuario carregou para leitura.
+-- O texto do PDF e extraido so no navegador (nao fica salvo aqui), so os
+-- trechos marcados como chave (tabela highlights) ficam guardados.
+CREATE TABLE IF NOT EXISTS documents (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  article_id INTEGER REFERENCES articles(id),
+  title TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_documents_user ON documents(user_id);
+
+-- Trechos-chave marcados pelo usuario dentro de um documento.
+CREATE TABLE IF NOT EXISTS highlights (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  document_id INTEGER NOT NULL REFERENCES documents(id),
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  excerpt TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_highlights_document ON highlights(document_id);
+CREATE INDEX IF NOT EXISTS idx_highlights_user ON highlights(user_id);

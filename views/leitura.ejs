@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Leitura de PDF — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/topo', { userName: userName || '' }) %>
+
+  <main>
+    <h2>Enviar PDF para leitura</h2>
+    <div class="cartao">
+      <form id="form-upload">
+        <div class="campo">
+          <label for="arquivo-pdf">Arquivo PDF</label>
+          <input type="file" id="arquivo-pdf" accept="application/pdf" required />
+        </div>
+        <div class="campo">
+          <label for="titulo-documento">Título do documento</label>
+          <input type="text" id="titulo-documento" placeholder="Ex: nome do artigo" required />
+        </div>
+        <div class="campo">
+          <label for="artigo-vinculado">Vincular a um artigo salvo (opcional)</label>
+          <select id="artigo-vinculado">
+            <option value="">— nenhum —</option>
+            <% meusArtigos.forEach(function (artigo) { %>
+              <option value="<%= artigo.id %>"><%= artigo.title %></option>
+            <% }); %>
+          </select>
+        </div>
+        <button class="botao" type="submit">Carregar PDF</button>
+      </form>
+      <p class="aviso-busca" id="status-upload"></p>
+    </div>
+
+    <section id="area-leitura" style="display: none; margin-top: 2.5rem;">
+      <h2>Texto extraído</h2>
+      <div class="busca-form">
+        <input type="text" id="busca-texto" placeholder="Buscar palavra ou frase no texto..." />
+        <button class="botao secundario" type="button" id="botao-buscar-texto">Buscar</button>
+      </div>
+      <p class="aviso-busca" id="aviso-busca-texto"></p>
+
+      <div class="visor-texto" id="visor-texto"></div>
+
+      <p class="aviso-busca">Selecione um trecho com o mouse dentro do texto acima e clique no botão abaixo.</p>
+      <button class="botao tijolo" type="button" id="botao-marcar">Marcar trecho selecionado como chave</button>
+
+      <h3 style="margin-top: 2rem;">Trechos-chave deste documento</h3>
+      <div id="lista-destaques-atual" class="lista-destaques"></div>
+    </section>
+
+    <section class="secao" style="margin-top: 3rem;">
+      <h2>Meus documentos</h2>
+
+      <% if (meusDocumentos.length === 0) { %>
+        <p class="lista-vazia">Nenhum PDF enviado ainda.</p>
+      <% } %>
+
+      <% meusDocumentos.forEach(function (doc) { %>
+        <div class="cartao documento-item" style="margin-bottom: 1.2rem;">
+          <div class="cabecalho-ficha">
+            <h3><%= doc.title %></h3>
+            <form method="POST" action="/documentos/<%= doc.id %>/remover">
+              <button class="botao secundario" type="submit">Remover documento</button>
+            </form>
+          </div>
+          <% if (doc.article_title) { %><p class="veiculo">Vinculado a: <%= doc.article_title %></p><% } %>
+          <p class="autores"><%= doc.destaques.length %> trecho(s) marcado(s)</p>
+
+          <% if (doc.destaques.length > 0) { %>
+            <div class="lista-destaques">
+              <% doc.destaques.forEach(function (destaque) { %>
+                <div class="destaque-item">
+                  <p>"<%= destaque.excerpt %>"</p>
+                  <form method="POST" action="/destaques/<%= destaque.id %>/remover">
+                    <button class="botao secundario" type="submit">Remover</button>
+                  </form>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      <% }); %>
+    </section>
+  </main>
+
+  <script type="module" src="/js/leitura.js"></script>
+</body>
+</html>

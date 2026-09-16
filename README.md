@@ -38,8 +38,13 @@ db/
   index.js         abre/cria o arquivo do banco (data/pesquisa.db) e aplica o schema
   schema.sql        definição das tabelas
   users.js          funções para ler/criar usuários
+  articles.js       funções para os artigos salvos
+  documents.js      funções para os PDFs enviados (documentos)
+  highlights.js     funções para os trechos-chave marcados
 routes/
   auth.js           rotas de /cadastro, /login, /logout
+  articles.js       rotas de busca/salvar/remover artigos
+  reading.js        rotas de upload de documento e marcação de trechos-chave
 middleware/
   auth.js           protege páginas que exigem login
 views/              páginas HTML (templates EJS)
@@ -59,7 +64,8 @@ sans-serif técnica (IBM Plex Sans). As definições de cor/fonte ficam em
 - [x] 1. Base do projeto: Express + SQLite, cadastro/login, página inicial protegida
 - [x] 2. Busca de artigos científicos (Semantic Scholar), salvar com detecção de
       duplicidade (DOI ou título parecido), remover e exportar CSV
-- [ ] 3. Leitura de PDF com destaque de trechos
+- [x] 3. Leitura de PDF: extração de texto no navegador, busca com destaque no
+      texto, marcação de trechos-chave salvos por documento
 - [ ] 4. Codificação qualitativa de texto
 
 ## Sobre a busca de artigos (módulo 2)
@@ -83,6 +89,18 @@ sans-serif técnica (IBM Plex Sans). As definições de cor/fonte ficam em
   perguntando se quer salvar mesmo assim.
 - O botão "Exportar CSV" baixa todos os seus artigos salvos num arquivo que abre no Excel
   ou Google Planilhas.
+
+## Sobre a leitura de PDF (módulo 3)
+
+- O PDF **não é enviado para o servidor** — o texto é extraído inteiramente no
+  navegador, usando a biblioteca PDF.js (carregada de um CDN). Isso é mais simples
+  do que guardar arquivos de PDF no servidor, mas tem uma consequência: se você
+  recarregar a página, precisa reenviar o mesmo PDF para continuar lendo/marcando
+  trechos nele (os trechos já marcados, esses sim ficam salvos no banco e
+  continuam aparecendo em "Meus documentos").
+- PDFs de páginas escaneadas como imagem (sem texto selecionável) não têm texto
+  para extrair — o app avisa quando isso acontece.
+- Você pode, opcionalmente, vincular o PDF a um artigo já salvo no módulo de busca.
 
 ## Segurança e limites conhecidos (ok para uso local/grupo pequeno)
 
