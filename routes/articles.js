@@ -16,6 +16,43 @@ router.get('/artigos', requireAuth, (req, res) => {
   res.render('artigos', { queryInicial: req.query.q || '' });
 });
 
+// Busca um PDF externo (link de acesso aberto) pelo nosso servidor e devolve
+// pro navegador. Isso resolve dois problemas: 1) o navegador so respeita o
+// atributo "download" em links do mesmo site, entao pra baixar de verdade um
+// PDF de outro site precisamos ser nos a entregar o arquivo; 2) o PDF.js so
+// consegue ler um PDF de outro dominio se o dono do site liberar isso
+// (CORS), o que a maioria nao faz — passando pelo nosso servidor, o
+// navegador ve o arquivo como se fosse nosso.
+router.get('/pdf-externo', requireAuth, async (req, res) => {
+  const urlOriginal = req.query.url;
+  const querBaixar = Boolean(req.query.baixar);
+  if (!urlOriginal || !/^https?:\/\//i.test(urlOriginal)) {
+    return res.status(400).send('Link de PDF invalido.');
+  }
+
+  // Alguns sites bloqueiam pedidos feitos por servidor (proteção antirrobô) mas
+  // funcionam normalmente quando é o navegador da pessoa quem acessa. Nesse
+  // caso, se a intenção era baixar, mandamos direto pro site original em vez
+  // de mostrar um erro — o navegador tenta de novo, agora como uma visita
+  // normal.
+  let respostaExterna;
+  try {
+    respostaExterna = await fetch(urlOriginal);
+  } catch (err) {
+    if (querBaixar) return res.redirect(urlOriginal);
+    return res.status(502).send('Nao foi possivel baixar esse PDF agora.');
+  }
+  if (!respostaExterna.ok) {
+    if (querBaixar) return res.redirect(urlOriginal);
+    return res.status(502).send('O site do PDF nao respondeu corretamente.');
+  }
+
+  const disposicao = querBaixar ? 'attachment' : 'inline';
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `${disposicao}; filename="artigo.pdf"`);
+  res.send(Buffer.from(await respostaExterna.arrayBuffer()));
+});
+
 router.get('/biblioteca', requireAuth, (req, res) => {
   const salvos = articles.listByUser(req.session.userId);
   res.render('biblioteca', { salvos });

@@ -45,7 +45,16 @@ function criarFichaResultado(artigo) {
     ${link ? `<p class="link-artigo"><a href="${escaparHtml(link)}" target="_blank" rel="noopener">Abrir artigo ↗</a></p>` : ''}
     ${
       artigo.pdfAberto
-        ? `<p class="link-artigo"><a href="${escaparHtml(artigo.pdfAberto)}" target="_blank" rel="noopener">Pré-visualizar PDF ↗</a> · <a href="${escaparHtml(artigo.pdfAberto)}" download>Baixar PDF</a></p>`
+        ? `<div class="acoes-pdf">
+            <button class="botao secundario" type="button" data-acao="previa-pdf" data-pdf-url="${escaparHtml(artigo.pdfAberto)}" data-pdf-titulo="${escaparHtml(artigo.title)}">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              Pré-visualizar
+            </button>
+            <a class="botao secundario" href="/pdf-externo?url=${encodeURIComponent(artigo.pdfAberto)}&baixar=1">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg>
+              Baixar PDF
+            </a>
+          </div>`
         : ''
     }
     <div class="acoes">
