@@ -30,6 +30,11 @@ clique em "Cadastre-se" para criar a primeira conta.
 O arquivo `.env` já existe com uma chave de sessão gerada aleatoriamente. Se quiser
 gerar uma nova, veja o exemplo em `.env.example`.
 
+Sua conta e seus dados ficam em `data/pesquisa.db` e não são apagados entre
+atualizações do código — você não precisa recriar a conta a cada mudança. Se algum
+dia quiser mesmo começar do zero, é só apagar esse arquivo (o servidor recria um banco
+vazio na próxima vez que rodar).
+
 ## Estrutura do projeto
 
 ```

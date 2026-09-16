@@ -5,12 +5,15 @@ const path = require('node:path');
 const fs = require('node:fs');
 const { DatabaseSync } = require('node:sqlite');
 
-const dataDir = path.join(__dirname, '..', 'data');
+// DB_PATH permite apontar para outro arquivo (usado para testes automatizados,
+// pra nunca mexer no banco real que voce usa em data/pesquisa.db).
+const dbPath = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'pesquisa.db');
+
+const dataDir = path.dirname(dbPath);
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const dbPath = path.join(dataDir, 'pesquisa.db');
 const db = new DatabaseSync(dbPath);
 
 // Aplica o schema (cria as tabelas que ainda nao existirem) toda vez que o servidor sobe.
