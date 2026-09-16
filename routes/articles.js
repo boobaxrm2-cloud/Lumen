@@ -47,10 +47,22 @@ router.get('/pdf-externo', requireAuth, async (req, res) => {
     return res.status(502).send('O site do PDF nao respondeu corretamente.');
   }
 
+  const conteudo = Buffer.from(await respostaExterna.arrayBuffer());
+
+  // Alguns sites respondem "200 OK" (ou outro status de sucesso) mas mandam
+  // uma pagina de verificacao antirrobo no lugar do arquivo — nao um erro
+  // HTTP, entao o "if (!ok)" acima nao pega esse caso. Um PDF de verdade
+  // sempre comeca com os bytes "%PDF", entao conferimos isso tambem.
+  const pareceComUmPdf = conteudo.length > 4 && conteudo.subarray(0, 4).toString('latin1') === '%PDF';
+  if (!pareceComUmPdf) {
+    if (querBaixar) return res.redirect(urlOriginal);
+    return res.status(502).send('O site do PDF bloqueou o acesso automatico. Tente abrir o link original.');
+  }
+
   const disposicao = querBaixar ? 'attachment' : 'inline';
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `${disposicao}; filename="artigo.pdf"`);
-  res.send(Buffer.from(await respostaExterna.arrayBuffer()));
+  res.send(conteudo);
 });
 
 router.get('/biblioteca', requireAuth, (req, res) => {
