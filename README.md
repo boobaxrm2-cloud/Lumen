@@ -65,9 +65,19 @@ sans-serif técnica (IBM Plex Sans). As definições de cor/fonte ficam em
 ## Sobre a busca de artigos (módulo 2)
 
 - A busca usa a API pública do Semantic Scholar
-  (`https://api.semanticscholar.org/graph/v1/paper/search`), sem necessidade de chave.
-  Essa API tem um limite de requisições por IP; se aparecer a mensagem "Muitas buscas em
-  pouco tempo", é a própria API do Semantic Scholar pedindo para esperar alguns segundos.
+  (`https://api.semanticscholar.org/graph/v1/paper/search`). Sem chave de API, esse
+  limite é **compartilhado com qualquer pessoa no mundo** usando a API sem chave — por
+  isso a mensagem "Muitas buscas em pouco tempo" pode aparecer, mesmo você tendo feito
+  poucas buscas.
+- **Para reduzir isso:** peça uma chave gratuita em
+  https://www.semanticscholar.org/product/api#api-key-form (é um formulário simples,
+  aprovação por email). Depois, adicione a chave recebida no arquivo `.env`:
+  ```
+  SEMANTIC_SCHOLAR_API_KEY=sua-chave-aqui
+  ```
+  Reinicie o servidor (`npm start`) e pronto — o código já está preparado para usar a
+  chave automaticamente quando ela existir, sem chave continua funcionando do mesmo jeito
+  (só com o limite compartilhado).
 - Ao clicar em "Salvar", o backend verifica se você já salvou algo com o mesmo DOI ou com
   título muito parecido (comparando as palavras do título). Se encontrar, mostra um aviso
   perguntando se quer salvar mesmo assim.

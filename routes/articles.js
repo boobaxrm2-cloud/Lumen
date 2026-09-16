@@ -28,9 +28,16 @@ router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
   url.searchParams.set('fields', CAMPOS_BUSCA);
   url.searchParams.set('limit', String(LIMITE_RESULTADOS));
 
+  // Com uma chave gratuita (SEMANTIC_SCHOLAR_API_KEY no .env), a Semantic Scholar
+  // usa uma cota so nossa em vez de nos colocar na fila compartilhada com o resto
+  // da internet. Sem a chave, a busca continua funcionando normalmente.
+  const cabecalhos = process.env.SEMANTIC_SCHOLAR_API_KEY
+    ? { 'x-api-key': process.env.SEMANTIC_SCHOLAR_API_KEY }
+    : undefined;
+
   let resposta;
   try {
-    resposta = await fetch(url);
+    resposta = await fetch(url, { headers: cabecalhos });
   } catch (err) {
     return res.status(502).json({ erro: 'Nao foi possivel conectar ao Semantic Scholar. Tente novamente.' });
   }
