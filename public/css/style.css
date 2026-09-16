@@ -433,22 +433,48 @@ section.secao > h2 .contagem {
   margin-top: 1rem;
   margin-bottom: 1rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
+  justify-content: center;
+  /* Rola por baixo (em vez de encolher a pagina) se a tela for mais estreita
+     que o PDF: encolher so o canvas e nao a camada de texto desalinharia a
+     selecao do texto em relacao ao desenho da pagina. */
+  overflow-x: auto;
 }
 
 .pagina-pdf {
   position: relative;
   background: #fff;
   box-shadow: 0 2px 10px rgba(42, 36, 28, 0.35);
-  max-width: 100%;
+  flex-shrink: 0;
 }
 
 .pagina-pdf canvas {
   display: block;
-  max-width: 100%;
-  height: auto;
+}
+
+.navegacao-paginas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.navegacao-paginas button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.popup-marcar {
+  position: absolute;
+  z-index: 50;
+}
+
+.popup-marcar .botao {
+  box-shadow: 0 3px 10px rgba(42, 36, 28, 0.4);
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+  white-space: nowrap;
 }
 
 /* Camada de texto do PDF.js: spans invisiveis posicionados exatamente sobre

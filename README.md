@@ -106,14 +106,21 @@ sans-serif técnica (IBM Plex Sans). As definições de cor/fonte ficam em
 - Cada página é desenhada exatamente como no PDF original (mesma formatação,
   colunas, negrito etc.) — por baixo, existe uma camada de texto invisível na
   mesma posição, que é o que permite selecionar um trecho com o mouse.
+- **As páginas são mostradas uma de cada vez** (com botões "Anterior"/"Próxima"),
+  não o documento inteiro de uma vez. Isso evita que o navegador role a tela
+  sozinho no meio de uma seleção de texto em documentos longos, o que
+  bagunçava a seleção antes.
+- Ao selecionar um trecho com o mouse, aparece um botão flutuante perto do
+  cursor pra marcar aquele trecho como chave — não precisa procurar um botão
+  em outra parte da tela.
 - A busca destaca a(s) linha(s) inteira(s) onde o termo aparece (em vez de só a
-  palavra) e rola até a primeira ocorrência; clicar de novo em "Buscar" vai para
-  a próxima. Em PDFs vindos de alguns geradores de currículo/design (Canva e
-  similares), a camada de texto às vezes vem malposicionada pelo próprio
-  gerador do PDF — nesses casos o destaque pode cair na linha ao lado. Isso é
-  uma limitação do PDF de origem, não depende de nós; PDFs de artigos
-  acadêmicos (gerados por Word, LaTeX, sistemas de editoras) normalmente não
-  têm esse problema.
+  palavra) e leva automaticamente até a página onde ele está; clicar de novo em
+  "Buscar" vai para a próxima ocorrência (em outra página, se for o caso). Em
+  PDFs vindos de alguns geradores de currículo/design (Canva e similares), a
+  camada de texto às vezes vem malposicionada pelo próprio gerador do PDF —
+  nesses casos o destaque pode cair na linha ao lado. Isso é uma limitação do
+  PDF de origem, não depende de nós; PDFs de artigos acadêmicos (gerados por
+  Word, LaTeX, sistemas de editoras) normalmente não têm esse problema.
 - PDFs de páginas escaneadas como imagem (sem texto selecionável) não têm texto
   para extrair — o app avisa quando isso acontece.
 - Você pode, opcionalmente, vincular o PDF a um artigo já salvo no módulo de busca.

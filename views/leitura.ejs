@@ -41,10 +41,18 @@
       </div>
       <p class="aviso-busca" id="aviso-busca-texto"></p>
 
+      <div class="navegacao-paginas">
+        <button class="botao secundario" type="button" id="botao-pagina-anterior">◀ Anterior</button>
+        <span id="indicador-pagina">Página 1 de 1</span>
+        <button class="botao secundario" type="button" id="botao-pagina-seguinte">Próxima ▶</button>
+      </div>
+
+      <p class="aviso-busca">Selecione um trecho com o mouse — um botão vai aparecer para marcar.</p>
       <div class="visor-texto" id="visor-texto"></div>
 
-      <p class="aviso-busca">Selecione um trecho com o mouse dentro do texto acima e clique no botão abaixo.</p>
-      <button class="botao tijolo" type="button" id="botao-marcar">Marcar trecho selecionado como chave</button>
+      <div id="popup-marcar" class="popup-marcar" style="display: none;">
+        <button class="botao tijolo" type="button" id="botao-marcar">Marcar trecho-chave</button>
+      </div>
 
       <h3 style="margin-top: 2rem;">Trechos-chave deste documento</h3>
       <div id="lista-destaques-atual" class="lista-destaques"></div>
