@@ -424,23 +424,61 @@ section.secao > h2 .contagem {
 
 /* ---------- Modulo de leitura de PDF ---------- */
 
+/* Visor mostra as paginas do PDF renderizadas (canvas), uma embaixo da outra,
+   com uma camada de texto invisivel por cima pra permitir selecionar/buscar. */
 .visor-texto {
-  background: #fffdf7;
+  background: var(--cor-kraft-escuro);
   border: 1px solid var(--cor-kraft-escuro);
-  padding: 1.2rem 1.4rem;
-  max-height: 420px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  line-height: 1.6;
-  font-size: 0.95rem;
+  padding: 1.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
 }
 
-.visor-texto mark {
-  background: #f0c14b;
-  color: var(--cor-tinta);
-  padding: 0 2px;
+.pagina-pdf {
+  position: relative;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(42, 36, 28, 0.35);
+  max-width: 100%;
+}
+
+.pagina-pdf canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Camada de texto do PDF.js: spans invisiveis posicionados exatamente sobre
+   o texto desenhado no canvas, so pra permitir selecionar/buscar com o mouse. */
+.textLayer {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  opacity: 1;
+  line-height: 1;
+  text-align: initial;
+  transform-origin: 0 0;
+}
+
+.textLayer span,
+.textLayer br {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.textLayer ::selection {
+  background: rgba(161, 61, 43, 0.35);
+}
+
+.textLayer span.linha-encontrada {
+  background: rgba(240, 193, 75, 0.55);
+  border-radius: 2px;
 }
 
 .lista-destaques {
