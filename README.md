@@ -1,4 +1,4 @@
-# Fichário — ferramenta de apoio à pesquisa acadêmica
+# Codex — ferramenta de apoio à pesquisa acadêmica
 
 Aplicação web para ajudar pesquisadores a: buscar artigos científicos, ler/analisar PDFs
 e codificar dados qualitativos. Sem IA — tudo funciona com regras, busca de texto e
