@@ -5,12 +5,12 @@
   <%- include('partials/head') %>
 </head>
 <body>
-  <%- include('partials/topo', { userName: userName || '' }) %>
+  <%- include('partials/topo', { userName: userName || '', paginaAtiva: 'artigos' }) %>
 
   <main>
     <h2>Buscar artigos</h2>
     <form class="busca-form" id="form-busca">
-      <input type="text" id="campo-busca" placeholder="Ex: alfabetização, ensino híbrido, avaliação formativa..." autofocus />
+      <input type="text" id="campo-busca" value="<%= queryInicial %>" placeholder="Ex: alfabetização, ensino híbrido, avaliação formativa..." autofocus />
       <button class="botao" type="submit">Buscar</button>
     </form>
     <p class="aviso-busca" id="aviso-busca"></p>

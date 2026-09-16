@@ -5,31 +5,81 @@
   <%- include('partials/head') %>
 </head>
 <body>
-  <%- include('partials/topo', { userName }) %>
+  <%- include('partials/topo', { userName, paginaAtiva: 'inicio' }) %>
 
   <main>
-    <h2>Bem-vindo(a), <%= userName %></h2>
-    <p>Este é o seu catálogo pessoal de pesquisa. Os módulos abaixo vão sendo adicionados aos poucos.</p>
-
-    <div class="cartao" style="margin-top: 1.5rem;">
-      <span class="selo">Módulo disponível</span>
-      <h3 style="margin-top: 0.6rem;">Busca de artigos científicos</h3>
-      <p>Busque no Semantic Scholar, salve os artigos de interesse e exporte sua lista em CSV.</p>
-      <a class="botao" href="/artigos">Ir para Artigos</a>
+    <div class="hero" style="background-image: url('/images/hero-biblioteca.jpg');">
+      <div class="hero-conteudo">
+        <p class="eyebrow">Conhecimento é poder</p>
+        <h1>Bem-vindo(a), <%= userName %></h1>
+        <p>Este é o seu catálogo pessoal de pesquisa. Os módulos abaixo vão sendo adicionados aos poucos.</p>
+      </div>
     </div>
 
-    <div class="cartao" style="margin-top: 1.5rem;">
-      <span class="selo">Módulo disponível</span>
-      <h3 style="margin-top: 0.6rem;">Leitura de PDF</h3>
-      <p>Envie um PDF, busque trechos no texto e marque excertos-chave para revisar depois.</p>
-      <a class="botao" href="/leitura">Ir para Leitura</a>
-    </div>
+    <section class="secao-modulos">
+      <h2>
+        <svg class="icone" viewBox="0 0 24 24"><path d="M4 5c3-1.3 6-1.3 8 0 2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0-2-1.3-5-1.3-8 0z"/><path d="M12 5v14"/></svg>
+        Módulos disponíveis
+      </h2>
+      <p>Acesse os conteúdos e siga com sua pesquisa.</p>
 
-    <div class="cartao" style="margin-top: 1.5rem;">
-      <span class="selo">Em breve</span>
-      <h3 style="margin-top: 0.6rem;">Codificação qualitativa</h3>
-      <p>Próximo módulo a ser adicionado.</p>
-    </div>
+      <div class="linha-modulo">
+        <div class="miniatura" style="background-image: url('/images/modulo-busca.jpg');"></div>
+        <div>
+          <span class="selo">Módulo disponível</span>
+          <h3>Busca de artigos científicos</h3>
+          <p class="descricao">Busque no Semantic Scholar, salve os artigos de interesse e exporte sua lista em CSV.</p>
+          <a class="botao" href="/artigos">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            Ir para Artigos
+          </a>
+        </div>
+        <ul class="lista-recursos">
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Busca por tema</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Salvar artigos</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Aviso de duplicidade</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Exportar CSV</li>
+        </ul>
+      </div>
+
+      <div class="linha-modulo">
+        <div class="miniatura sem-foto">
+          <svg class="icone" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>
+        </div>
+        <div>
+          <span class="selo">Módulo disponível</span>
+          <h3>Leitura de PDF</h3>
+          <p class="descricao">Envie um PDF, busque trechos no texto e marque excertos-chave para revisar depois.</p>
+          <a class="botao" href="/leitura">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M4 5c3-1.3 6-1.3 8 0 2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0-2-1.3-5-1.3-8 0z"/><path d="M12 5v14"/></svg>
+            Ir para Leitura
+          </a>
+        </div>
+        <ul class="lista-recursos">
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Envio de PDF</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Busca no texto</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Marcar trechos-chave</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Navegação por página</li>
+        </ul>
+      </div>
+
+      <div class="linha-modulo em-breve">
+        <div class="miniatura sem-foto">
+          <svg class="icone" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+        </div>
+        <div>
+          <span class="selo em-breve">Em breve</span>
+          <h3>Codificação qualitativa</h3>
+          <p class="descricao">Selecione trechos de texto e organize-os em códigos/categorias criados por você.</p>
+        </div>
+        <ul class="lista-recursos">
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Códigos personalizados</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Frequência por código</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Agrupamento de trechos</li>
+          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Exportar CSV</li>
+        </ul>
+      </div>
+    </section>
   </main>
 </body>
 </html>

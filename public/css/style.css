@@ -1,23 +1,22 @@
 /* ====================================================================
    Lumen - identidade visual
-   Conceito: catalogo de biblioteca / fichario de pesquisa.
-   Paleta terrosa (kraft, verde escuro, marrom, vermelho-tijolo),
-   serifada para titulos (Lora) + sans tecnica para interface (IBM Plex Sans).
+   Tema escuro (navy) com destaque dourado. Titulos em serifada (Lora),
+   interface em sans tecnica (IBM Plex Sans).
    ==================================================================== */
 
 :root {
-  --cor-kraft: #cdb999;
-  --cor-kraft-escuro: #b8a17c;
-  --cor-papel: #f4ecd8;
-  --cor-papel-linha: #e4d7b8;
-  --cor-tinta: #2a241c;
-  --cor-tinta-suave: #5a5140;
-  --cor-verde: #2f3e2e;
-  --cor-verde-escuro: #1e2a1d;
-  --cor-marrom: #6b4226;
-  --cor-tijolo: #a13d2b;
-  --cor-tijolo-escuro: #822f21;
-  --sombra-cartao: 2px 3px 0 rgba(42, 36, 28, 0.18);
+  --cor-fundo: #0b101d;
+  --cor-fundo-alt: #121a2c;
+  --cor-cartao: #161f34;
+  --cor-cartao-borda: #2a3350;
+  --cor-texto: #eef1f7;
+  --cor-texto-suave: #98a2b8;
+  --cor-dourado: #f0c14b;
+  --cor-dourado-escuro: #d9a52f;
+  --cor-vermelho: #e0655a;
+  --cor-vermelho-escuro: #c14f45;
+  --cor-sucesso: #4caf82;
+  --sombra-cartao: 0 6px 20px rgba(0, 0, 0, 0.35);
   --fonte-titulo: 'Lora', 'Georgia', serif;
   --fonte-corpo: 'IBM Plex Sans', 'Segoe UI', sans-serif;
 }
@@ -30,63 +29,88 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: var(--fonte-corpo);
-  color: var(--cor-tinta);
-  background-color: var(--cor-kraft);
-  background-image:
-    radial-gradient(rgba(42, 36, 28, 0.05) 1px, transparent 1px);
-  background-size: 6px 6px;
+  color: var(--cor-texto);
+  background-color: var(--cor-fundo);
 }
 
 h1, h2, h3, h4 {
   font-family: var(--fonte-titulo);
-  color: var(--cor-verde-escuro);
+  color: var(--cor-texto);
   margin: 0 0 0.4em;
 }
 
 a {
-  color: var(--cor-tijolo);
+  color: var(--cor-dourado);
+}
+
+svg.icone {
+  width: 1em;
+  height: 1em;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -0.15em;
 }
 
 /* ---------- Cabecalho do app (paginas logadas) ---------- */
 
 .topo {
-  background: var(--cor-verde-escuro);
-  border-bottom: 4px solid var(--cor-tijolo);
-  color: var(--cor-papel);
+  background: var(--cor-fundo-alt);
+  border-bottom: 1px solid var(--cor-cartao-borda);
+  color: var(--cor-texto);
   padding: 0.9rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .topo .marca {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--fonte-titulo);
   font-size: 1.4rem;
   letter-spacing: 0.02em;
-  color: var(--cor-papel);
+  color: var(--cor-texto);
   text-decoration: none;
+  flex-shrink: 0;
 }
 
-.topo .marca span {
-  color: #d99a7c;
+.topo .marca svg {
+  color: var(--cor-dourado);
+  width: 1.3rem;
+  height: 1.3rem;
 }
 
 .topo nav {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  font-size: 0.95rem;
+  gap: 1.5rem;
+  font-size: 0.92rem;
 }
 
-.topo nav a {
-  color: var(--cor-papel);
+.topo nav a,
+.topo nav span.usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cor-texto-suave);
   text-decoration: none;
-  opacity: 0.85;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid transparent;
 }
 
 .topo nav a:hover {
-  opacity: 1;
-  text-decoration: underline;
+  color: var(--cor-texto);
+}
+
+.topo nav a.ativo {
+  color: var(--cor-dourado);
+  border-bottom-color: var(--cor-dourado);
 }
 
 .topo form {
@@ -94,25 +118,114 @@ a {
 }
 
 .topo button.link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   background: none;
   border: none;
-  color: var(--cor-papel);
+  color: var(--cor-texto-suave);
   font-family: var(--fonte-corpo);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   cursor: pointer;
-  opacity: 0.85;
   padding: 0;
 }
 
 .topo button.link:hover {
-  opacity: 1;
-  text-decoration: underline;
+  color: var(--cor-texto);
+}
+
+.topo .busca-catalogo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  padding: 0.45rem 0.8rem;
+  color: var(--cor-texto-suave);
+  flex: 1;
+  max-width: 320px;
+  min-width: 180px;
+}
+
+.topo .busca-catalogo input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.88rem;
+  width: 100%;
+}
+
+.topo .busca-catalogo input::placeholder {
+  color: var(--cor-texto-suave);
 }
 
 main {
-  max-width: 960px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ---------- Hero da pagina inicial ---------- */
+
+.hero {
+  position: relative;
+  margin: -2.5rem -1.5rem 3rem;
+  padding: 4rem 2rem;
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid var(--cor-cartao-borda);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(11, 16, 29, 0.96) 15%, rgba(11, 16, 29, 0.55) 75%);
+}
+
+.hero-conteudo {
+  position: relative;
+  max-width: 640px;
+}
+
+.hero .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--cor-dourado);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.hero .eyebrow::after {
+  content: "";
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: var(--cor-dourado);
+  opacity: 0.6;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.hero p {
+  color: var(--cor-texto-suave);
+  font-size: 1.02rem;
+  max-width: 480px;
+}
+
+@media (max-width: 720px) {
+  .hero { margin: -2.5rem -1rem 2.5rem; padding: 3rem 1.2rem; }
+  .hero h1 { font-size: 1.9rem; }
 }
 
 /* ---------- Telas de autenticacao ---------- */
@@ -123,32 +236,35 @@ main {
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
+  background: radial-gradient(circle at 50% 0%, #17203a 0%, var(--cor-fundo) 60%);
 }
 
 .ficha-auth {
-  background: var(--cor-papel);
-  border: 1px solid var(--cor-papel-linha);
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
   box-shadow: var(--sombra-cartao);
+  border-radius: 10px;
   width: 100%;
   max-width: 400px;
   padding: 2.2rem 2rem;
   position: relative;
 }
 
-.ficha-auth::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 2rem;
-  width: 40px;
-  height: 14px;
-  background: var(--cor-tijolo);
-  clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+.ficha-auth h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ficha-auth h1 svg {
+  color: var(--cor-dourado);
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .ficha-auth .subtitulo {
   font-family: var(--fonte-corpo);
-  color: var(--cor-tinta-suave);
+  color: var(--cor-texto-suave);
   font-size: 0.9rem;
   margin-bottom: 1.6rem;
 }
@@ -162,30 +278,36 @@ main {
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--cor-verde);
+  color: var(--cor-texto-suave);
   margin-bottom: 0.3rem;
 }
 
-.campo input {
+.campo input,
+.campo select {
   width: 100%;
   padding: 0.55rem 0.6rem;
-  border: 1px solid var(--cor-kraft-escuro);
-  background: #fffdf7;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-fundo);
   font-family: var(--fonte-corpo);
   font-size: 1rem;
-  color: var(--cor-tinta);
+  color: var(--cor-texto);
 }
 
-.campo input:focus {
-  outline: 2px solid var(--cor-verde);
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid var(--cor-dourado);
   outline-offset: 1px;
 }
 
 .botao {
-  display: inline-block;
-  background: var(--cor-verde);
-  color: var(--cor-papel);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--cor-dourado);
+  color: #1a1f2e;
   border: none;
+  border-radius: 6px;
   padding: 0.65rem 1.3rem;
   font-family: var(--fonte-corpo);
   font-weight: 600;
@@ -195,39 +317,46 @@ main {
 }
 
 .botao:hover {
-  background: var(--cor-verde-escuro);
+  background: var(--cor-dourado-escuro);
 }
 
 .botao.tijolo {
-  background: var(--cor-tijolo);
+  background: var(--cor-vermelho);
+  color: #1a1f2e;
 }
 
 .botao.tijolo:hover {
-  background: var(--cor-tijolo-escuro);
+  background: var(--cor-vermelho-escuro);
 }
 
 .botao.secundario {
   background: transparent;
-  color: var(--cor-verde-escuro);
-  border: 1px solid var(--cor-verde-escuro);
+  color: var(--cor-texto);
+  border: 1px solid var(--cor-cartao-borda);
+}
+
+.botao.secundario:hover {
+  border-color: var(--cor-dourado);
+  color: var(--cor-dourado);
 }
 
 .botao:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: default;
 }
 
 .acao-larga {
   width: 100%;
-  text-align: center;
+  justify-content: center;
   margin-top: 0.3rem;
 }
 
 .erro {
-  background: #fbe4de;
-  border: 1px solid var(--cor-tijolo);
-  color: var(--cor-tijolo-escuro);
+  background: rgba(224, 101, 90, 0.12);
+  border: 1px solid var(--cor-vermelho);
+  color: #f5a89f;
   padding: 0.6rem 0.8rem;
+  border-radius: 6px;
   font-size: 0.9rem;
   margin-bottom: 1.2rem;
 }
@@ -235,28 +364,142 @@ main {
 .rodape-ficha {
   margin-top: 1.4rem;
   font-size: 0.9rem;
-  color: var(--cor-tinta-suave);
+  color: var(--cor-texto-suave);
   text-align: center;
 }
 
 /* ---------- Elementos gerais reutilizaveis ---------- */
 
 .cartao {
-  background: var(--cor-papel);
-  border: 1px solid var(--cor-papel-linha);
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
   box-shadow: var(--sombra-cartao);
   padding: 1.5rem 1.6rem;
 }
 
 .selo {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--cor-marrom);
-  border: 1px solid var(--cor-marrom);
-  padding: 0.1rem 0.5rem;
-  border-radius: 2px;
+  font-weight: 600;
+  color: var(--cor-dourado);
+  border: 1px solid var(--cor-dourado);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+}
+
+.selo.em-breve {
+  color: var(--cor-texto-suave);
+  border-color: var(--cor-cartao-borda);
+}
+
+/* ---------- Modulos da pagina inicial (estilo "linha com foto") ---------- */
+
+.secao-modulos > h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.secao-modulos > h2 svg {
+  color: var(--cor-dourado);
+}
+
+.secao-modulos > p {
+  color: var(--cor-texto-suave);
+  margin-top: -0.6rem;
+  margin-bottom: 1.6rem;
+}
+
+.linha-modulo {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.linha-modulo .miniatura {
+  width: 100%;
+  height: 110px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--cor-cartao-borda);
+}
+
+.linha-modulo .miniatura.sem-foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cor-fundo);
+  color: var(--cor-texto-suave);
+}
+
+.linha-modulo .miniatura.sem-foto svg {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.linha-modulo .selo {
+  margin-bottom: 0.5rem;
+}
+
+.linha-modulo h3 {
+  margin-bottom: 0.3rem;
+}
+
+.linha-modulo p.descricao {
+  color: var(--cor-texto-suave);
+  font-size: 0.92rem;
+  margin: 0 0 0.9rem;
+  max-width: 46ch;
+}
+
+.linha-modulo .lista-recursos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.4rem 1.5rem;
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+  border-left: 1px solid var(--cor-cartao-borda);
+  padding-left: 1.5rem;
+}
+
+.linha-modulo .lista-recursos li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.linha-modulo .lista-recursos svg {
+  color: var(--cor-sucesso);
+  flex-shrink: 0;
+}
+
+.linha-modulo.em-breve {
+  opacity: 0.6;
+}
+
+@media (max-width: 820px) {
+  .linha-modulo {
+    grid-template-columns: 1fr;
+  }
+  .linha-modulo .lista-recursos {
+    border-left: none;
+    padding-left: 0;
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 /* ---------- Modulo de busca de artigos ---------- */
@@ -270,25 +513,27 @@ main {
 .busca-form input {
   flex: 1;
   padding: 0.6rem 0.7rem;
-  border: 1px solid var(--cor-kraft-escuro);
-  background: #fffdf7;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
   font-family: var(--fonte-corpo);
   font-size: 1rem;
 }
 
 .busca-form input:focus {
-  outline: 2px solid var(--cor-verde);
+  outline: 2px solid var(--cor-dourado);
   outline-offset: 1px;
 }
 
 .aviso-busca {
   font-size: 0.9rem;
-  color: var(--cor-tinta-suave);
+  color: var(--cor-texto-suave);
   margin: -1rem 0 1.5rem;
 }
 
 .aviso-busca.erro-texto {
-  color: var(--cor-tijolo-escuro);
+  color: #f5a89f;
 }
 
 section.secao {
@@ -300,7 +545,7 @@ section.secao > h2 {
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 2px solid var(--cor-verde-escuro);
+  border-bottom: 1px solid var(--cor-cartao-borda);
   padding-bottom: 0.4rem;
   margin-bottom: 1.2rem;
 }
@@ -308,7 +553,7 @@ section.secao > h2 {
 section.secao > h2 .contagem {
   font-family: var(--fonte-corpo);
   font-size: 0.85rem;
-  color: var(--cor-tinta-suave);
+  color: var(--cor-texto-suave);
   font-weight: 500;
 }
 
@@ -320,9 +565,10 @@ section.secao > h2 .contagem {
 
 .ficha-artigo {
   position: relative;
-  background: var(--cor-papel);
-  border: 1px solid var(--cor-papel-linha);
-  border-top: 3px solid var(--cor-marrom);
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-top: 3px solid var(--cor-dourado);
+  border-radius: 8px;
   box-shadow: var(--sombra-cartao);
   padding: 1.1rem 1.2rem 1rem;
   display: flex;
@@ -331,7 +577,7 @@ section.secao > h2 .contagem {
 }
 
 .ficha-artigo.ja-salva {
-  border-top-color: var(--cor-verde);
+  border-top-color: var(--cor-sucesso);
 }
 
 .ficha-artigo .cabecalho-ficha {
@@ -351,27 +597,28 @@ section.secao > h2 .contagem {
   flex-shrink: 0;
   font-family: var(--fonte-corpo);
   font-size: 0.78rem;
-  color: var(--cor-marrom);
-  border: 1px solid var(--cor-marrom);
+  color: var(--cor-dourado);
+  border: 1px solid var(--cor-dourado);
+  border-radius: 4px;
   padding: 0.05rem 0.4rem;
 }
 
 .ficha-artigo .autores {
   font-size: 0.87rem;
-  color: var(--cor-tinta-suave);
+  color: var(--cor-texto-suave);
   font-style: italic;
 }
 
 .ficha-artigo .veiculo {
   font-size: 0.82rem;
-  color: var(--cor-verde);
+  color: var(--cor-dourado);
 }
 
 .ficha-artigo .resumo {
   font-size: 0.9rem;
   line-height: 1.45;
-  color: var(--cor-tinta);
-  border-top: 1px dashed var(--cor-kraft-escuro);
+  color: var(--cor-texto);
+  border-top: 1px dashed var(--cor-cartao-borda);
   padding-top: 0.5rem;
   margin-top: 0.2rem;
 }
@@ -394,7 +641,7 @@ section.secao > h2 .contagem {
 
 .ficha-artigo .marca-salvo {
   font-size: 0.82rem;
-  color: var(--cor-verde);
+  color: var(--cor-sucesso);
   font-weight: 600;
 }
 
@@ -403,7 +650,7 @@ section.secao > h2 .contagem {
 }
 
 .lista-vazia {
-  color: var(--cor-tinta-suave);
+  color: var(--cor-texto-suave);
   font-style: italic;
 }
 
@@ -424,26 +671,24 @@ section.secao > h2 .contagem {
 
 /* ---------- Modulo de leitura de PDF ---------- */
 
-/* Visor mostra as paginas do PDF renderizadas (canvas), uma embaixo da outra,
-   com uma camada de texto invisivel por cima pra permitir selecionar/buscar. */
+/* Visor mostra a pagina atual do PDF renderizada (canvas), com uma camada de
+   texto invisivel por cima pra permitir selecionar/buscar. */
 .visor-texto {
-  background: var(--cor-kraft-escuro);
-  border: 1px solid var(--cor-kraft-escuro);
+  background: var(--cor-fundo-alt);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 8px;
   padding: 1.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
   display: flex;
   justify-content: center;
-  /* Rola por baixo (em vez de encolher a pagina) se a tela for mais estreita
-     que o PDF: encolher so o canvas e nao a camada de texto desalinharia a
-     selecao do texto em relacao ao desenho da pagina. */
   overflow-x: auto;
 }
 
 .pagina-pdf {
   position: relative;
   background: #fff;
-  box-shadow: 0 2px 10px rgba(42, 36, 28, 0.35);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
   flex-shrink: 0;
 }
 
@@ -458,6 +703,7 @@ section.secao > h2 .contagem {
   gap: 1rem;
   margin-top: 1rem;
   font-size: 0.9rem;
+  color: var(--cor-texto-suave);
 }
 
 .navegacao-paginas button:disabled {
@@ -471,14 +717,16 @@ section.secao > h2 .contagem {
 }
 
 .popup-marcar .botao {
-  box-shadow: 0 3px 10px rgba(42, 36, 28, 0.4);
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
   font-size: 0.85rem;
   padding: 0.5rem 0.9rem;
   white-space: nowrap;
 }
 
 /* Camada de texto do PDF.js: spans invisiveis posicionados exatamente sobre
-   o texto desenhado no canvas, so pra permitir selecionar/buscar com o mouse. */
+   o texto desenhado no canvas, so pra permitir selecionar/buscar com o mouse.
+   Fica sobre a pagina branca do PDF, entao as cores aqui nao seguem o tema
+   escuro do resto do site. */
 .textLayer {
   position: absolute;
   inset: 0;
@@ -499,7 +747,7 @@ section.secao > h2 .contagem {
 }
 
 .textLayer ::selection {
-  background: rgba(161, 61, 43, 0.35);
+  background: rgba(240, 193, 75, 0.45);
 }
 
 .textLayer span.linha-encontrada {
@@ -515,8 +763,10 @@ section.secao > h2 .contagem {
 }
 
 .destaque-item {
-  background: var(--cor-papel);
-  border-left: 3px solid var(--cor-tijolo);
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-left: 3px solid var(--cor-dourado);
+  border-radius: 6px;
   padding: 0.7rem 0.9rem;
   display: flex;
   justify-content: space-between;
@@ -530,6 +780,7 @@ section.secao > h2 .contagem {
   font-family: var(--fonte-titulo);
   font-style: italic;
   font-size: 0.95rem;
+  color: var(--cor-texto);
 }
 
 .destaque-item form {

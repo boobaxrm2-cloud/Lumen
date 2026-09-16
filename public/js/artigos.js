@@ -169,3 +169,9 @@ formBusca.addEventListener('submit', (evento) => {
   const termo = campoBusca.value.trim();
   if (termo) buscarArtigos(termo);
 });
+
+// Se a pagina chegou com um termo (ex: busca feita pela caixa do cabecalho),
+// dispara a busca automaticamente.
+if (campoBusca.value.trim()) {
+  buscarArtigos(campoBusca.value.trim());
+}

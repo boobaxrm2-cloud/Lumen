@@ -14,7 +14,7 @@ const LIMIAR_SIMILARIDADE = 0.6;
 
 router.get('/artigos', requireAuth, (req, res) => {
   const salvos = articles.listByUser(req.session.userId);
-  res.render('artigos', { salvos });
+  res.render('artigos', { salvos, queryInicial: req.query.q || '' });
 });
 
 router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
