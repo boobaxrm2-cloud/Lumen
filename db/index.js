@@ -20,4 +20,16 @@ const db = new DatabaseSync(dbPath);
 const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
 db.exec(schema);
 
+// Pequenas migracoes: adiciona colunas novas em bancos que ja existiam antes
+// delas, sem apagar os dados que ja estao la.
+function adicionarColunaSeNaoExistir(tabela, coluna, definicao) {
+  const colunas = db.prepare(`PRAGMA table_info(${tabela})`).all();
+  const jaExiste = colunas.some((c) => c.name === coluna);
+  if (!jaExiste) {
+    db.exec(`ALTER TABLE ${tabela} ADD COLUMN ${coluna} ${definicao}`);
+  }
+}
+
+adicionarColunaSeNaoExistir('articles', 'pdf_url', 'TEXT');
+
 module.exports = db;

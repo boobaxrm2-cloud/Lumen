@@ -12,6 +12,12 @@
   <% if (artigo.venue) { %><p class="veiculo"><%= artigo.venue %></p><% } %>
   <% if (resumo) { %><p class="resumo"><%= resumo %></p><% } %>
   <% if (link) { %><p class="link-artigo"><a href="<%= link %>" target="_blank" rel="noopener">Abrir artigo ↗</a></p><% } %>
+  <% if (artigo.pdf_url) { %>
+    <p class="link-artigo">
+      <a href="<%= artigo.pdf_url %>" target="_blank" rel="noopener">Pré-visualizar PDF ↗</a>
+      · <a href="<%= artigo.pdf_url %>" download>Baixar PDF</a>
+    </p>
+  <% } %>
   <div class="acoes">
     <form class="remover" method="POST" action="/artigos/<%= artigo.id %>/remover">
       <button class="botao secundario" type="submit">Remover</button>

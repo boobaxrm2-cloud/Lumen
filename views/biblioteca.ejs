@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Biblioteca — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/topo', { userName: userName || '', paginaAtiva: 'biblioteca' }) %>
+
+  <main>
+    <section class="secao">
+      <h2>
+        Biblioteca
+        <span class="contagem"><%= salvos.length %> item(ns)</span>
+      </h2>
+      <div class="acoes-painel" style="margin-bottom: 1.5rem;">
+        <a class="botao secundario" href="/artigos/exportar.csv">Exportar CSV</a>
+        <a class="botao secundario" href="/artigos">Buscar mais artigos</a>
+      </div>
+
+      <% if (salvos.length === 0) { %>
+        <p class="lista-vazia">
+          Nenhum artigo salvo ainda. Vá em <a href="/artigos">Artigos</a> pra buscar e salvar.
+        </p>
+      <% } %>
+
+      <div class="grade-fichas">
+        <% salvos.forEach(function (artigo) { %>
+          <%- include('partials/ficha-artigo', { artigo, salvo: true }) %>
+        <% }); %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS articles (
   authors TEXT,
   doi TEXT,
   url TEXT,
+  pdf_url TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

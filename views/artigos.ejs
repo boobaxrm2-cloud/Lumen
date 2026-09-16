@@ -18,25 +18,8 @@
     <section class="secao">
       <h2>Resultados</h2>
       <div class="grade-fichas" id="resultados"></div>
-    </section>
-
-    <section class="secao">
-      <h2>
-        Artigos salvos
-        <span class="contagem"><%= salvos.length %> item(ns)</span>
-      </h2>
-      <div class="acoes-painel" style="margin-bottom: 1rem;">
-        <a class="botao secundario" href="/artigos/exportar.csv">Exportar CSV</a>
-      </div>
-
-      <p class="lista-vazia" id="mensagem-vazia" <% if (salvos.length > 0) { %>style="display: none;"<% } %>>
-        Nenhum artigo salvo ainda. Busque acima e clique em "Salvar".
-      </p>
-
-      <div class="grade-fichas" id="lista-salvos">
-        <% salvos.forEach(function (artigo) { %>
-          <%- include('partials/ficha-artigo', { artigo, salvo: true }) %>
-        <% }); %>
+      <div class="acoes-painel" id="area-carregar-mais" style="display: none; margin-top: 1.5rem; justify-content: center;">
+        <button class="botao secundario" type="button" id="botao-carregar-mais">Carregar mais resultados</button>
       </div>
     </section>
   </main>

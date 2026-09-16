@@ -6,19 +6,24 @@ const { similaridadeTitulos } = require('../utils/similaridade');
 const router = express.Router();
 
 const SEMANTIC_SCHOLAR_URL = 'https://api.semanticscholar.org/graph/v1/paper/search';
-const CAMPOS_BUSCA = 'title,abstract,year,authors,venue,externalIds,url';
+const CAMPOS_BUSCA = 'title,abstract,year,authors,venue,externalIds,url,openAccessPdf';
 const LIMITE_RESULTADOS = 20;
 
 // A partir desse grau de sobreposicao de palavras no titulo, avisamos que pode ser duplicata.
 const LIMIAR_SIMILARIDADE = 0.6;
 
 router.get('/artigos', requireAuth, (req, res) => {
+  res.render('artigos', { queryInicial: req.query.q || '' });
+});
+
+router.get('/biblioteca', requireAuth, (req, res) => {
   const salvos = articles.listByUser(req.session.userId);
-  res.render('artigos', { salvos, queryInicial: req.query.q || '' });
+  res.render('biblioteca', { salvos });
 });
 
 router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
   const query = (req.query.q || '').trim();
+  const offset = Number.parseInt(req.query.offset, 10) || 0;
   if (!query) {
     return res.status(400).json({ erro: 'Informe um termo de busca.' });
   }
@@ -27,6 +32,7 @@ router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
   url.searchParams.set('query', query);
   url.searchParams.set('fields', CAMPOS_BUSCA);
   url.searchParams.set('limit', String(LIMITE_RESULTADOS));
+  url.searchParams.set('offset', String(offset));
 
   // Com uma chave gratuita (SEMANTIC_SCHOLAR_API_KEY no .env), a Semantic Scholar
   // usa uma cota so nossa em vez de nos colocar na fila compartilhada com o resto
@@ -58,14 +64,19 @@ router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
     authors: (artigo.authors || []).map((autor) => autor.name).join(', '),
     doi: artigo.externalIds && artigo.externalIds.DOI ? artigo.externalIds.DOI : null,
     url: artigo.url || null,
+    pdfAberto: artigo.openAccessPdf ? artigo.openAccessPdf.url : null,
   }));
 
-  res.json({ resultados });
+  res.json({
+    resultados,
+    total: dados.total || 0,
+    proximoOffset: typeof dados.next === 'number' ? dados.next : null,
+  });
 });
 
 router.post('/api/artigos/salvar', requireAuth, (req, res) => {
   const userId = req.session.userId;
-  const { title, abstract, year, venue, authors, doi, url, forcar } = req.body;
+  const { title, abstract, year, venue, authors, doi, url, pdfAberto, forcar } = req.body;
 
   const tituloLimpo = (title || '').trim();
   if (!tituloLimpo) {
@@ -100,6 +111,7 @@ router.post('/api/artigos/salvar', requireAuth, (req, res) => {
     authors,
     doi,
     url,
+    pdfUrl: pdfAberto,
   });
 
   res.status(201).json({ artigo: criado });
@@ -107,7 +119,7 @@ router.post('/api/artigos/salvar', requireAuth, (req, res) => {
 
 router.post('/artigos/:id/remover', requireAuth, (req, res) => {
   articles.remove(req.params.id, req.session.userId);
-  res.redirect('/artigos');
+  res.redirect('/biblioteca');
 });
 
 router.get('/artigos/exportar.csv', requireAuth, (req, res) => {
@@ -127,7 +139,7 @@ function campoCsv(valor) {
 }
 
 function gerarCsv(listaArtigos) {
-  const cabecalho = ['Titulo', 'Autores', 'Ano', 'Veiculo', 'DOI', 'Link', 'Resumo'];
+  const cabecalho = ['Titulo', 'Autores', 'Ano', 'Veiculo', 'DOI', 'Link', 'PDF de acesso aberto', 'Resumo'];
   const linhas = [cabecalho.join(',')];
   for (const artigo of listaArtigos) {
     linhas.push(
@@ -138,6 +150,7 @@ function gerarCsv(listaArtigos) {
         campoCsv(artigo.venue),
         campoCsv(artigo.doi),
         campoCsv(artigo.url),
+        campoCsv(artigo.pdf_url),
         campoCsv(artigo.abstract),
       ].join(',')
     );

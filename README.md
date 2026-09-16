@@ -95,8 +95,14 @@ de lupa sobre livro por Coppertist Wu.
 - Ao clicar em "Salvar", o backend verifica se você já salvou algo com o mesmo DOI ou com
   título muito parecido (comparando as palavras do título). Se encontrar, mostra um aviso
   perguntando se quer salvar mesmo assim.
-- O botão "Exportar CSV" baixa todos os seus artigos salvos num arquivo que abre no Excel
-  ou Google Planilhas.
+- Cada busca traz 20 resultados; o botão "Carregar mais resultados" busca a próxima
+  leva (a Semantic Scholar informa quantos resultados existem no total).
+- Quando a Semantic Scholar sabe de uma cópia em acesso aberto (legal e gratuita) do
+  artigo, aparecem os links "Pré-visualizar PDF" e "Baixar PDF". Isso só existe pra
+  artigos de acesso aberto — não tentamos contornar paywall de artigos pagos.
+- Os artigos salvos ficam na página **Biblioteca** (`/biblioteca`), separada da busca.
+  De lá dá pra exportar CSV (agora incluindo a coluna do PDF de acesso aberto) ou
+  remover itens.
 
 ## Sobre a leitura de PDF (módulo 3)
 
