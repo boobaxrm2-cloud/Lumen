@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Fichário</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/topo', { userName }) %>
+
+  <main>
+    <h2>Bem-vindo(a), <%= userName %></h2>
+    <p>Este é o seu catálogo pessoal de pesquisa. Os módulos abaixo vão sendo adicionados aos poucos.</p>
+
+    <div class="cartao" style="margin-top: 1.5rem;">
+      <span class="selo">Base do projeto</span>
+      <h3 style="margin-top: 0.6rem;">Login e cadastro funcionando</h3>
+      <p>Próximos módulos: busca de artigos científicos, leitura de PDF e codificação qualitativa.</p>
+    </div>
+  </main>
+</body>
+</html>

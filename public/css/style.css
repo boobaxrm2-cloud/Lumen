@@ -1,0 +1,260 @@
+/* ====================================================================
+   Ficharios de Pesquisa - identidade visual
+   Conceito: catalogo de biblioteca / fichario de pesquisa.
+   Paleta terrosa (kraft, verde escuro, marrom, vermelho-tijolo),
+   serifada para titulos (Lora) + sans tecnica para interface (IBM Plex Sans).
+   ==================================================================== */
+
+:root {
+  --cor-kraft: #cdb999;
+  --cor-kraft-escuro: #b8a17c;
+  --cor-papel: #f4ecd8;
+  --cor-papel-linha: #e4d7b8;
+  --cor-tinta: #2a241c;
+  --cor-tinta-suave: #5a5140;
+  --cor-verde: #2f3e2e;
+  --cor-verde-escuro: #1e2a1d;
+  --cor-marrom: #6b4226;
+  --cor-tijolo: #a13d2b;
+  --cor-tijolo-escuro: #822f21;
+  --sombra-cartao: 2px 3px 0 rgba(42, 36, 28, 0.18);
+  --fonte-titulo: 'Lora', 'Georgia', serif;
+  --fonte-corpo: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--fonte-corpo);
+  color: var(--cor-tinta);
+  background-color: var(--cor-kraft);
+  background-image:
+    radial-gradient(rgba(42, 36, 28, 0.05) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--fonte-titulo);
+  color: var(--cor-verde-escuro);
+  margin: 0 0 0.4em;
+}
+
+a {
+  color: var(--cor-tijolo);
+}
+
+/* ---------- Cabecalho do app (paginas logadas) ---------- */
+
+.topo {
+  background: var(--cor-verde-escuro);
+  border-bottom: 4px solid var(--cor-tijolo);
+  color: var(--cor-papel);
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topo .marca {
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+  color: var(--cor-papel);
+  text-decoration: none;
+}
+
+.topo .marca span {
+  color: #d99a7c;
+}
+
+.topo nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  font-size: 0.95rem;
+}
+
+.topo nav a {
+  color: var(--cor-papel);
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.topo nav a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.topo form {
+  margin: 0;
+}
+
+.topo button.link {
+  background: none;
+  border: none;
+  color: var(--cor-papel);
+  font-family: var(--fonte-corpo);
+  font-size: 0.95rem;
+  cursor: pointer;
+  opacity: 0.85;
+  padding: 0;
+}
+
+.topo button.link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ---------- Telas de autenticacao ---------- */
+
+.auth-tela {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.ficha-auth {
+  background: var(--cor-papel);
+  border: 1px solid var(--cor-papel-linha);
+  box-shadow: var(--sombra-cartao);
+  width: 100%;
+  max-width: 400px;
+  padding: 2.2rem 2rem;
+  position: relative;
+}
+
+.ficha-auth::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 2rem;
+  width: 40px;
+  height: 14px;
+  background: var(--cor-tijolo);
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+}
+
+.ficha-auth .subtitulo {
+  font-family: var(--fonte-corpo);
+  color: var(--cor-tinta-suave);
+  font-size: 0.9rem;
+  margin-bottom: 1.6rem;
+}
+
+.campo {
+  margin-bottom: 1.1rem;
+}
+
+.campo label {
+  display: block;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cor-verde);
+  margin-bottom: 0.3rem;
+}
+
+.campo input {
+  width: 100%;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--cor-kraft-escuro);
+  background: #fffdf7;
+  font-family: var(--fonte-corpo);
+  font-size: 1rem;
+  color: var(--cor-tinta);
+}
+
+.campo input:focus {
+  outline: 2px solid var(--cor-verde);
+  outline-offset: 1px;
+}
+
+.botao {
+  display: inline-block;
+  background: var(--cor-verde);
+  color: var(--cor-papel);
+  border: none;
+  padding: 0.65rem 1.3rem;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.botao:hover {
+  background: var(--cor-verde-escuro);
+}
+
+.botao.tijolo {
+  background: var(--cor-tijolo);
+}
+
+.botao.tijolo:hover {
+  background: var(--cor-tijolo-escuro);
+}
+
+.botao.secundario {
+  background: transparent;
+  color: var(--cor-verde-escuro);
+  border: 1px solid var(--cor-verde-escuro);
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.acao-larga {
+  width: 100%;
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+.erro {
+  background: #fbe4de;
+  border: 1px solid var(--cor-tijolo);
+  color: var(--cor-tijolo-escuro);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+
+.rodape-ficha {
+  margin-top: 1.4rem;
+  font-size: 0.9rem;
+  color: var(--cor-tinta-suave);
+  text-align: center;
+}
+
+/* ---------- Elementos gerais reutilizaveis ---------- */
+
+.cartao {
+  background: var(--cor-papel);
+  border: 1px solid var(--cor-papel-linha);
+  box-shadow: var(--sombra-cartao);
+  padding: 1.5rem 1.6rem;
+}
+
+.selo {
+  display: inline-block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cor-marrom);
+  border: 1px solid var(--cor-marrom);
+  padding: 0.1rem 0.5rem;
+  border-radius: 2px;
+}

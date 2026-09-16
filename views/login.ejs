@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Entrar — Fichário</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="auth-tela">
+    <div class="ficha-auth">
+      <h1>Fichário</h1>
+      <p class="subtitulo">Catálogo pessoal de pesquisa: artigos, leituras e codificação.</p>
+
+      <% if (erro) { %>
+        <div class="erro"><%= erro %></div>
+      <% } %>
+
+      <form method="POST" action="/login">
+        <div class="campo">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="<%= valores.email %>" required autofocus />
+        </div>
+        <div class="campo">
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button class="botao acao-larga" type="submit">Entrar</button>
+      </form>
+
+      <p class="rodape-ficha">Ainda não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+    </div>
+  </div>
+</body>
+</html>

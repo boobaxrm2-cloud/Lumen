@@ -1,0 +1,20 @@
+{
+  "name": "pesquisa-app",
+  "version": "1.0.0",
+  "description": "Ferramenta web para apoiar pesquisa academica: busca de artigos, leitura de PDF e codificacao qualitativa",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0"
+  }
+}
