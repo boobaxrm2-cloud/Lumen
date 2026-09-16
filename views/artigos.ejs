@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Artigos — Fichário</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/topo', { userName: userName || '' }) %>
+
+  <main>
+    <h2>Buscar artigos</h2>
+    <form class="busca-form" id="form-busca">
+      <input type="text" id="campo-busca" placeholder="Ex: alfabetização, ensino híbrido, avaliação formativa..." autofocus />
+      <button class="botao" type="submit">Buscar</button>
+    </form>
+    <p class="aviso-busca" id="aviso-busca"></p>
+
+    <section class="secao">
+      <h2>Resultados</h2>
+      <div class="grade-fichas" id="resultados"></div>
+    </section>
+
+    <section class="secao">
+      <h2>
+        Artigos salvos
+        <span class="contagem"><%= salvos.length %> item(ns)</span>
+      </h2>
+      <div class="acoes-painel" style="margin-bottom: 1rem;">
+        <a class="botao secundario" href="/artigos/exportar.csv">Exportar CSV</a>
+      </div>
+
+      <p class="lista-vazia" id="mensagem-vazia" <% if (salvos.length > 0) { %>style="display: none;"<% } %>>
+        Nenhum artigo salvo ainda. Busque acima e clique em "Salvar".
+      </p>
+
+      <div class="grade-fichas" id="lista-salvos">
+        <% salvos.forEach(function (artigo) { %>
+          <%- include('partials/ficha-artigo', { artigo, salvo: true }) %>
+        <% }); %>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/artigos.js"></script>
+</body>
+</html>

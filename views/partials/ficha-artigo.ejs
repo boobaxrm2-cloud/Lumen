@@ -1,0 +1,20 @@
+<%
+  const link = artigo.doi ? ('https://doi.org/' + artigo.doi) : artigo.url;
+  const resumoCompleto = artigo.abstract || '';
+  const resumo = resumoCompleto.length > 280 ? resumoCompleto.slice(0, 280) + '…' : resumoCompleto;
+%>
+<article class="ficha-artigo ja-salva" data-id="<%= artigo.id %>">
+  <div class="cabecalho-ficha">
+    <h3><%= artigo.title %></h3>
+    <% if (artigo.year) { %><span class="ano"><%= artigo.year %></span><% } %>
+  </div>
+  <% if (artigo.authors) { %><p class="autores"><%= artigo.authors %></p><% } %>
+  <% if (artigo.venue) { %><p class="veiculo"><%= artigo.venue %></p><% } %>
+  <% if (resumo) { %><p class="resumo"><%= resumo %></p><% } %>
+  <% if (link) { %><p class="link-artigo"><a href="<%= link %>" target="_blank" rel="noopener">Abrir artigo ↗</a></p><% } %>
+  <div class="acoes">
+    <form class="remover" method="POST" action="/artigos/<%= artigo.id %>/remover">
+      <button class="botao secundario" type="submit">Remover</button>
+    </form>
+  </div>
+</article>

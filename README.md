@@ -57,9 +57,22 @@ sans-serif técnica (IBM Plex Sans). As definições de cor/fonte ficam em
 ## Status atual
 
 - [x] 1. Base do projeto: Express + SQLite, cadastro/login, página inicial protegida
-- [ ] 2. Busca de artigos científicos (Semantic Scholar)
+- [x] 2. Busca de artigos científicos (Semantic Scholar), salvar com detecção de
+      duplicidade (DOI ou título parecido), remover e exportar CSV
 - [ ] 3. Leitura de PDF com destaque de trechos
 - [ ] 4. Codificação qualitativa de texto
+
+## Sobre a busca de artigos (módulo 2)
+
+- A busca usa a API pública do Semantic Scholar
+  (`https://api.semanticscholar.org/graph/v1/paper/search`), sem necessidade de chave.
+  Essa API tem um limite de requisições por IP; se aparecer a mensagem "Muitas buscas em
+  pouco tempo", é a própria API do Semantic Scholar pedindo para esperar alguns segundos.
+- Ao clicar em "Salvar", o backend verifica se você já salvou algo com o mesmo DOI ou com
+  título muito parecido (comparando as palavras do título). Se encontrar, mostra um aviso
+  perguntando se quer salvar mesmo assim.
+- O botão "Exportar CSV" baixa todos os seus artigos salvos num arquivo que abre no Excel
+  ou Google Planilhas.
 
 ## Segurança e limites conhecidos (ok para uso local/grupo pequeno)
 

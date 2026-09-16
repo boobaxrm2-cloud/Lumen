@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 
 const authRoutes = require('./routes/auth');
+const articleRoutes = require('./routes/articles');
 const { requireAuth } = require('./middleware/auth');
 
 const app = express();
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', authRoutes);
+app.use('/', articleRoutes);
 
 app.get('/', requireAuth, (req, res) => {
   res.render('home', { userName: req.session.userName });
