@@ -7,7 +7,7 @@ const router = express.Router();
 
 const SEMANTIC_SCHOLAR_URL = 'https://api.semanticscholar.org/graph/v1/paper/search';
 const CAMPOS_BUSCA = 'title,abstract,year,authors,venue,externalIds,url,openAccessPdf';
-const LIMITE_RESULTADOS = 20;
+const LIMITE_RESULTADOS = 100; // maximo permitido pela API por chamada
 
 // Tipos de publicacao que a Semantic Scholar realmente reconhece e permite
 // filtrar (campo publicationTypes). So aceitamos esses valores no filtro pra

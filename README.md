@@ -95,8 +95,9 @@ de lupa sobre livro por Coppertist Wu.
 - Ao clicar em "Salvar", o backend verifica se você já salvou algo com o mesmo DOI ou com
   título muito parecido (comparando as palavras do título). Se encontrar, mostra um aviso
   perguntando se quer salvar mesmo assim.
-- Cada busca traz 20 resultados; o botão "Carregar mais resultados" busca a próxima
-  leva (a Semantic Scholar informa quantos resultados existem no total).
+- Cada busca traz 100 resultados (o máximo que a API permite por chamada); o botão
+  "Carregar mais resultados" busca a próxima leva (a Semantic Scholar informa quantos
+  resultados existem no total).
 - Quando a Semantic Scholar sabe de uma cópia em acesso aberto (legal e gratuita) do
   artigo, aparecem os links "Pré-visualizar PDF" e "Baixar PDF". Isso só existe pra
   artigos de acesso aberto — não tentamos contornar paywall de artigos pagos.
