@@ -60,39 +60,73 @@
     </section>
 
     <section class="secao" style="margin-top: 3rem;">
-      <h2>Meus documentos</h2>
+      <h2>
+        <svg class="icone" viewBox="0 0 24 24"><path d="M4 4v16M9 4v16M9 4c2 0 3 1 5 1s3-1 5-1v14c-2 0-3 1-5 1s-3-1-5-1"/></svg>
+        Meus documentos
+      </h2>
 
       <% if (meusDocumentos.length === 0) { %>
         <p class="lista-vazia">Nenhum PDF enviado ainda.</p>
       <% } %>
 
-      <% meusDocumentos.forEach(function (doc) { %>
-        <div class="cartao documento-item" style="margin-bottom: 1.2rem;">
-          <div class="cabecalho-ficha">
-            <h3><%= doc.title %></h3>
-            <form method="POST" action="/documentos/<%= doc.id %>/remover">
-              <button class="botao secundario" type="submit">Remover documento</button>
-            </form>
-          </div>
-          <% if (doc.article_title) { %><p class="veiculo">Vinculado a: <%= doc.article_title %></p><% } %>
-          <p class="autores"><%= doc.destaques.length %> trecho(s) marcado(s)</p>
-
-          <% if (doc.destaques.length > 0) { %>
-            <div class="lista-destaques">
-              <% doc.destaques.forEach(function (destaque) { %>
-                <div class="destaque-item">
-                  <p>"<%= destaque.excerpt %>"</p>
-                  <form method="POST" action="/destaques/<%= destaque.id %>/remover">
-                    <button class="botao secundario" type="submit">Remover</button>
-                  </form>
-                </div>
-              <% }); %>
+      <div class="grade-documentos">
+        <% meusDocumentos.forEach(function (doc) { %>
+          <article class="ficha-documento">
+            <div class="ficha-documento-icone">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>
             </div>
-          <% } %>
-        </div>
-      <% }); %>
+            <h3><%= doc.title %></h3>
+            <% if (doc.article_title) { %><p class="veiculo">Vinculado a: <%= doc.article_title %></p><% } %>
+            <p class="autores"><%= doc.destaques.length %> trecho(s) marcado(s)</p>
+
+            <div class="acoes">
+              <button
+                class="botao"
+                type="button"
+                data-acao="ver-trechos"
+                data-modal-alvo="trechos-doc-<%= doc.id %>"
+                data-documento-titulo="<%= doc.title %>"
+              >
+                <svg class="icone" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                Ler trechos-chave
+              </button>
+              <form method="POST" action="/documentos/<%= doc.id %>/remover">
+                <button class="botao secundario" type="submit">Remover</button>
+              </form>
+            </div>
+          </article>
+
+          <template id="trechos-doc-<%= doc.id %>">
+            <% if (doc.destaques.length === 0) { %>
+              <p class="lista-vazia">Nenhum trecho marcado ainda neste documento.</p>
+            <% } else { %>
+              <div class="lista-destaques">
+                <% doc.destaques.forEach(function (destaque) { %>
+                  <div class="destaque-item">
+                    <p>"<%= destaque.excerpt %>"</p>
+                    <form method="POST" action="/destaques/<%= destaque.id %>/remover">
+                      <button class="botao secundario" type="submit">Remover</button>
+                    </form>
+                  </div>
+                <% }); %>
+              </div>
+            <% } %>
+          </template>
+        <% }); %>
+      </div>
     </section>
   </main>
+
+  <div id="modal-trechos" class="modal-pdf" style="display: none;">
+    <div class="modal-pdf-fundo" id="modal-trechos-fundo"></div>
+    <div class="modal-pdf-caixa" style="height: auto; max-height: 80vh;">
+      <div class="modal-pdf-topo">
+        <strong id="modal-trechos-titulo">Trechos-chave</strong>
+        <button class="botao secundario" type="button" id="modal-trechos-fechar">Fechar ✕</button>
+      </div>
+      <div class="modal-pdf-corpo modal-trechos-corpo" id="modal-trechos-corpo"></div>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="/js/leitura.js"></script>

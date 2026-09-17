@@ -64,8 +64,8 @@ sans-serif técnica (IBM Plex Sans). As definições de cor/fonte ficam no `:roo
 `public/css/style.css` — trocar a paleta é so mudar essas variáveis ali.
 
 As fotos em `public/images/` são do banco gratuito Unsplash (Unsplash License,
-uso livre sem exigir atribuição): foto de mesa/escritório por Zoshua Colah e foto
-de lupa sobre livro por Coppertist Wu.
+uso livre sem exigir atribuição): foto de mesa/escritório por Zoshua Colah, foto
+de lupa sobre livro por Coppertist Wu, e foto de página aberta por Simran Sood.
 
 ## Status atual
 

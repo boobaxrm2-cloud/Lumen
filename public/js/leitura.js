@@ -42,9 +42,21 @@ let excertoSelecionadoAtual = '';
 
 campoArquivo.addEventListener('change', () => {
   if (campoArquivo.files[0] && !campoTitulo.value.trim()) {
-    campoTitulo.value = campoArquivo.files[0].name.replace(/\.pdf$/i, '');
+    campoTitulo.value = nomeParaTitulo(campoArquivo.files[0].name);
   }
 });
+
+// Deixa o nome do arquivo mais parecido com um titulo de verdade (nomes
+// baixados de sites costumam vir com "+" ou "%20" no lugar de espaco).
+function nomeParaTitulo(nomeArquivo) {
+  let nome = nomeArquivo.replace(/\.pdf$/i, '');
+  try {
+    nome = decodeURIComponent(nome);
+  } catch (erro) {
+    // nome nao estava codificado (ou veio invalido) - usa como esta
+  }
+  return nome.replace(/[+_]/g, ' ').trim();
+}
 
 function escaparHtml(texto) {
   const div = document.createElement('div');
@@ -303,3 +315,42 @@ botaoMarcar.addEventListener('click', async () => {
     window.alert('Erro de conexão ao marcar o trecho.');
   }
 });
+
+// Modal "Ler trechos-chave": em vez de mostrar os trechos de todos os
+// documentos ja abertos na tela (o que ficava bagunçado), cada card tem um
+// botao que abre so os trechos daquele documento, guardados escondidos num
+// <template> ao lado do card.
+const modalTrechos = document.getElementById('modal-trechos');
+const modalTrechosFundo = document.getElementById('modal-trechos-fundo');
+const modalTrechosTitulo = document.getElementById('modal-trechos-titulo');
+const modalTrechosCorpo = document.getElementById('modal-trechos-corpo');
+const modalTrechosFechar = document.getElementById('modal-trechos-fechar');
+
+function abrirModalTrechos(idTemplate, titulo) {
+  const template = document.getElementById(idTemplate);
+  modalTrechosTitulo.textContent = titulo || 'Trechos-chave';
+  modalTrechosCorpo.innerHTML = '';
+  if (template) {
+    modalTrechosCorpo.appendChild(template.content.cloneNode(true));
+  }
+  modalTrechos.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharModalTrechos() {
+  modalTrechos.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+if (modalTrechos) {
+  document.addEventListener('click', (evento) => {
+    const botao = evento.target.closest('[data-acao="ver-trechos"]');
+    if (botao) abrirModalTrechos(botao.dataset.modalAlvo, botao.dataset.documentoTitulo);
+  });
+
+  modalTrechosFechar.addEventListener('click', fecharModalTrechos);
+  modalTrechosFundo.addEventListener('click', fecharModalTrechos);
+  document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && modalTrechos.style.display !== 'none') fecharModalTrechos();
+  });
+}

@@ -1229,12 +1229,72 @@ section.secao > h2 .contagem {
   flex-shrink: 0;
 }
 
-.documento-item .cabecalho-ficha {
-  align-items: center;
+/* ---------- Cards de "Meus documentos" (estilo biblioteca) ---------- */
+
+.grade-documentos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
 }
 
-.documento-item .cabecalho-ficha form {
+.ficha-documento {
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-top: 3px solid var(--cor-dourado);
+  border-radius: 8px;
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ficha-documento-icone {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 8px;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-cartao-borda);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-dourado);
+  margin-bottom: 0.3rem;
+}
+
+.ficha-documento-icone svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.ficha-documento h3 {
+  font-size: 1.02rem;
   margin: 0;
+  line-height: 1.3;
+}
+
+.ficha-documento .acoes {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 0.7rem;
+}
+
+.ficha-documento .acoes .botao {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.ficha-documento .acoes form {
+  margin: 0;
+}
+
+/* Corpo do modal de trechos-chave: lista rolavel, alinhada a esquerda
+   (diferente do modal de previa de PDF, que centraliza uma pagina). */
+.modal-trechos-corpo {
+  display: block;
+  text-align: left;
+  align-items: stretch;
 }
 
 /* ---------- Modal de pre-visualizacao de PDF (Artigos/Biblioteca) ---------- */
