@@ -31,5 +31,7 @@ function adicionarColunaSeNaoExistir(tabela, coluna, definicao) {
 }
 
 adicionarColunaSeNaoExistir('articles', 'pdf_url', 'TEXT');
+adicionarColunaSeNaoExistir('documents', 'file_path', 'TEXT');
+adicionarColunaSeNaoExistir('documents', 'file_size', 'INTEGER');
 
 module.exports = db;

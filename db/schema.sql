@@ -25,13 +25,15 @@ CREATE TABLE IF NOT EXISTS articles (
 CREATE INDEX IF NOT EXISTS idx_articles_user ON articles(user_id);
 
 -- Um "documento" representa um PDF que o usuario carregou para leitura.
--- O texto do PDF e extraido so no navegador (nao fica salvo aqui), so os
--- trechos marcados como chave (tabela highlights) ficam guardados.
+-- O arquivo fica guardado em disco (pasta uploads/), file_path aponta pra
+-- ele; o texto e extraido no navegador toda vez que o PDF e aberto.
 CREATE TABLE IF NOT EXISTS documents (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL REFERENCES users(id),
   article_id INTEGER REFERENCES articles(id),
   title TEXT NOT NULL,
+  file_path TEXT,
+  file_size INTEGER,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

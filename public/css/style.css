@@ -146,7 +146,7 @@ svg.icone {
   color: var(--cor-texto);
 }
 
-.topo .busca-catalogo {
+.busca-catalogo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -160,7 +160,7 @@ svg.icone {
   min-width: 180px;
 }
 
-.topo .busca-catalogo:focus-within {
+.busca-catalogo:focus-within {
   border-color: var(--cor-dourado);
 }
 
@@ -223,7 +223,7 @@ svg.icone {
   margin: 0;
 }
 
-.topo .busca-catalogo input {
+.busca-catalogo input {
   background: none;
   border: none;
   outline: none;
@@ -233,7 +233,7 @@ svg.icone {
   width: 100%;
 }
 
-.topo .busca-catalogo input::placeholder {
+.busca-catalogo input::placeholder {
   color: var(--cor-texto-suave);
 }
 
@@ -1231,6 +1231,48 @@ section.secao > h2 .contagem {
 
 /* ---------- Cards de "Meus documentos" (estilo biblioteca) ---------- */
 
+.documentos-cabecalho {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.3rem;
+}
+
+.documentos-cabecalho h2 {
+  border-bottom: none;
+  margin-bottom: 0.2rem;
+  padding-bottom: 0;
+}
+
+.subtitulo-documentos {
+  color: var(--cor-texto-suave);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.documentos-controles {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.busca-documentos-caixa {
+  max-width: 220px;
+  min-width: 160px;
+}
+
+.controle-ordenar-select {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+}
+
 .grade-documentos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -1246,6 +1288,12 @@ section.secao > h2 .contagem {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  /* Sem isso, um titulo comprido sem espacos (comum em nomes de arquivo
+     baixados) nao quebra a linha e vaza pra cima dos cards vizinhos, ja
+     que itens de grid tem largura minima automatica por padrao. */
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .ficha-documento-icone {
@@ -1287,14 +1335,6 @@ section.secao > h2 .contagem {
 
 .ficha-documento .acoes form {
   margin: 0;
-}
-
-/* Corpo do modal de trechos-chave: lista rolavel, alinhada a esquerda
-   (diferente do modal de previa de PDF, que centraliza uma pagina). */
-.modal-trechos-corpo {
-  display: block;
-  text-align: left;
-  align-items: stretch;
 }
 
 /* ---------- Modal de pre-visualizacao de PDF (Artigos/Biblioteca) ---------- */

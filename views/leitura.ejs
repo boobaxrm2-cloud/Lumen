@@ -60,36 +60,65 @@
     </section>
 
     <section class="secao" style="margin-top: 3rem;">
-      <h2>
-        <svg class="icone" viewBox="0 0 24 24"><path d="M4 4v16M9 4v16M9 4c2 0 3 1 5 1s3-1 5-1v14c-2 0-3 1-5 1s-3-1-5-1"/></svg>
-        Meus documentos
-      </h2>
+      <div class="documentos-cabecalho">
+        <div>
+          <h2>
+            <svg class="icone" viewBox="0 0 24 24"><path d="M4 4v16M9 4v16M9 4c2 0 3 1 5 1s3-1 5-1v14c-2 0-3 1-5 1s-3-1-5-1"/></svg>
+            Meus documentos
+          </h2>
+          <p class="subtitulo-documentos">Acesse os documentos que você já enviou.</p>
+        </div>
+        <% if (meusDocumentos.length > 0) { %>
+          <div class="documentos-controles">
+            <div class="busca-catalogo busca-documentos-caixa">
+              <svg class="icone" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input type="search" id="busca-documentos" placeholder="Buscar documento..." />
+            </div>
+            <select id="ordenar-documentos" class="controle-ordenar-select">
+              <option value="recentes">Mais recentes</option>
+              <option value="antigos">Mais antigos</option>
+              <option value="nome">Nome (A-Z)</option>
+            </select>
+          </div>
+        <% } %>
+      </div>
 
       <% if (meusDocumentos.length === 0) { %>
         <p class="lista-vazia">Nenhum PDF enviado ainda.</p>
       <% } %>
 
-      <div class="grade-documentos">
+      <div class="grade-documentos" id="grade-documentos">
         <% meusDocumentos.forEach(function (doc) { %>
-          <article class="ficha-documento">
+          <article
+            class="ficha-documento"
+            data-titulo="<%= doc.title.toLowerCase() %>"
+            data-timestamp="<%= new Date(doc.created_at.replace(' ', 'T') + 'Z').getTime() %>"
+          >
             <div class="ficha-documento-icone">
               <svg class="icone" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/></svg>
             </div>
             <h3><%= doc.title %></h3>
             <% if (doc.article_title) { %><p class="veiculo">Vinculado a: <%= doc.article_title %></p><% } %>
-            <p class="autores"><%= doc.destaques.length %> trecho(s) marcado(s)</p>
+            <p class="autores">
+              Enviado em <%= doc.dataFormatada %><% if (doc.tamanhoFormatado) { %> · <%= doc.tamanhoFormatado %><% } %>
+              · <%= doc.destaques.length %> trecho(s)
+            </p>
 
             <div class="acoes">
               <button
                 class="botao"
                 type="button"
-                data-acao="ver-trechos"
-                data-modal-alvo="trechos-doc-<%= doc.id %>"
+                data-acao="visualizar-documento"
+                data-documento-id="<%= doc.id %>"
                 data-documento-titulo="<%= doc.title %>"
               >
-                <svg class="icone" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-                Ler trechos-chave
+                <svg class="icone" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                Visualizar
               </button>
+              <a class="botao secundario" href="/documentos/<%= doc.id %>/baixar">
+                <svg class="icone" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg>
+                Baixar
+              </a>
               <form method="POST" action="/documentos/<%= doc.id %>/remover">
                 <button class="botao secundario" type="submit">Remover</button>
               </form>
@@ -97,36 +126,21 @@
           </article>
 
           <template id="trechos-doc-<%= doc.id %>">
-            <% if (doc.destaques.length === 0) { %>
-              <p class="lista-vazia">Nenhum trecho marcado ainda neste documento.</p>
-            <% } else { %>
-              <div class="lista-destaques">
-                <% doc.destaques.forEach(function (destaque) { %>
-                  <div class="destaque-item">
-                    <p>"<%= destaque.excerpt %>"</p>
-                    <form method="POST" action="/destaques/<%= destaque.id %>/remover">
-                      <button class="botao secundario" type="submit">Remover</button>
-                    </form>
-                  </div>
-                <% }); %>
-              </div>
-            <% } %>
+            <div class="lista-destaques">
+              <% doc.destaques.forEach(function (destaque) { %>
+                <div class="destaque-item">
+                  <p>"<%= destaque.excerpt %>"</p>
+                  <form method="POST" action="/destaques/<%= destaque.id %>/remover">
+                    <button class="botao secundario" type="submit">Remover</button>
+                  </form>
+                </div>
+              <% }); %>
+            </div>
           </template>
         <% }); %>
       </div>
     </section>
   </main>
-
-  <div id="modal-trechos" class="modal-pdf" style="display: none;">
-    <div class="modal-pdf-fundo" id="modal-trechos-fundo"></div>
-    <div class="modal-pdf-caixa" style="height: auto; max-height: 80vh;">
-      <div class="modal-pdf-topo">
-        <strong id="modal-trechos-titulo">Trechos-chave</strong>
-        <button class="botao secundario" type="button" id="modal-trechos-fechar">Fechar ✕</button>
-      </div>
-      <div class="modal-pdf-corpo modal-trechos-corpo" id="modal-trechos-corpo"></div>
-    </div>
-  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="/js/leitura.js"></script>

@@ -109,12 +109,14 @@ de lupa sobre livro por Coppertist Wu, e foto de página aberta por Simran Sood.
 
 ## Sobre a leitura de PDF (módulo 3)
 
-- O PDF **não é enviado para o servidor** — tudo acontece no navegador, usando a
-  biblioteca PDF.js (carregada de um CDN). Isso é mais simples do que guardar
-  arquivos de PDF no servidor, mas tem uma consequência: se você recarregar a
-  página, precisa reenviar o mesmo PDF para continuar lendo/marcando trechos
-  nele (os trechos já marcados, esses sim ficam salvos no banco e continuam
-  aparecendo em "Meus documentos").
+- O PDF é enviado e **guardado no servidor** (pasta `uploads/<id-do-usuário>/`,
+  fora do controle de versão — veja `.gitignore`). Isso permite reabrir
+  ("Visualizar") ou baixar o arquivo depois, sem precisar reenviar. O texto
+  ainda é extraído no navegador (PDF.js) toda vez que o PDF é aberto — o
+  servidor só guarda os bytes do arquivo, não faz nada com o conteúdo.
+- Documentos enviados **antes** dessa funcionalidade existir não têm arquivo
+  guardado (`file_path` vazio no banco); "Visualizar"/"Baixar" avisam pra
+  reenviar o PDF nesse caso.
 - Cada página é desenhada exatamente como no PDF original (mesma formatação,
   colunas, negrito etc.) — por baixo, existe uma camada de texto invisível na
   mesma posição, que é o que permite selecionar um trecho com o mouse.
@@ -143,3 +145,10 @@ de lupa sobre livro por Coppertist Wu, e foto de página aberta por Simran Sood.
   novo. Perfeitamente aceitável para uso local; se um dia isso for hospedado para
   acesso externo, vale trocar por um "session store" persistente.
 - Não existe "esqueci minha senha" — combinado no pedido original, fica para depois.
+- PDFs enviados ficam guardados em `uploads/` (limite de 30 MB por arquivo). Isso
+  cresce com o tempo — se um dia isso for hospedado, vale de vez em quando checar o
+  tamanho da pasta e conversar com quem usa sobre limpar documentos antigos.
+  Lembrando também (já falamos disso antes): o jeito que o Bebrave18 é hospedado na
+  Hostinger hoje (deploy via Git) apaga arquivos locais a cada deploy — se o Lumen for
+  hospedado do mesmo jeito, a pasta `uploads/` seria apagada a cada atualização de
+  código. Antes de hospedar, vale revisitar essa conversa.

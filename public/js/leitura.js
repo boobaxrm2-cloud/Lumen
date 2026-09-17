@@ -1,7 +1,8 @@
-// Le o PDF inteiramente no navegador com o PDF.js (o arquivo nao e enviado ao
-// servidor) e desenha uma pagina por vez, exatamente como no PDF original
-// (canvas), com uma camada de texto invisivel por cima (text layer) na mesma
-// posicao do texto desenhado — isso permite selecionar texto com o mouse.
+// Le o PDF no navegador com o PDF.js e desenha uma pagina por vez, exatamente
+// como no PDF original (canvas), com uma camada de texto invisivel por cima
+// (text layer) na mesma posicao do texto desenhado — isso permite selecionar
+// texto com o mouse. O arquivo tambem e enviado e guardado no servidor
+// (pasta uploads/), pra dar pra reabrir e baixar depois sem reenviar.
 //
 // Mostrar so uma pagina por vez (em vez do documento inteiro de uma vez) evita
 // que o navegador role a tela sozinho no meio de uma selecao de texto — o que
@@ -130,39 +131,40 @@ function destacarTermoNaPaginaAtual(termo) {
   }
 }
 
+// Reinicia o estado de busca/paginas e abre a area de leitura, com o PDF ja
+// carregado no pdf.js (pdfAtual). Compartilhado entre "enviar PDF novo" e
+// "reabrir PDF ja guardado".
+async function iniciarLeitura() {
+  paginasComOcorrencia = [];
+  ultimoTermoBuscado = '';
+  indiceBuscaAtual = -1;
+  buscaTexto.value = '';
+  avisoBuscaTexto.textContent = '';
+
+  const totalItensDeTexto = await renderizarPagina(1);
+  areaLeitura.style.display = 'block';
+  areaLeitura.scrollIntoView({ behavior: 'smooth' });
+  return totalItensDeTexto;
+}
+
 formUpload.addEventListener('submit', async (evento) => {
   evento.preventDefault();
   const arquivo = campoArquivo.files[0];
   if (!arquivo) return;
 
-  statusUpload.textContent = 'Lendo o PDF...';
+  statusUpload.textContent = 'Enviando e lendo o PDF...';
   statusUpload.classList.remove('erro-texto');
 
   try {
     const arrayBuffer = await arquivo.arrayBuffer();
     pdfAtual = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    paginasComOcorrencia = [];
-    ultimoTermoBuscado = '';
-    indiceBuscaAtual = -1;
-    buscaTexto.value = '';
-    avisoBuscaTexto.textContent = '';
 
-    const totalItensDeTexto = await renderizarPagina(1);
+    const formData = new FormData();
+    formData.append('pdf', arquivo);
+    formData.append('title', campoTitulo.value.trim());
+    if (selectArtigo.value) formData.append('articleId', selectArtigo.value);
 
-    if (totalItensDeTexto === 0) {
-      statusUpload.textContent =
-        'O PDF foi exibido, mas não encontrei texto selecionável nele (pode ser uma imagem escaneada) — a busca e a marcação de trechos podem não funcionar.';
-      statusUpload.classList.add('erro-texto');
-    }
-
-    const resposta = await fetch('/api/documentos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: campoTitulo.value.trim(),
-        articleId: selectArtigo.value || null,
-      }),
-    });
+    const resposta = await fetch('/api/documentos', { method: 'POST', body: formData });
     const dados = await resposta.json();
 
     if (!resposta.ok) {
@@ -172,15 +174,58 @@ formUpload.addEventListener('submit', async (evento) => {
     }
 
     documentoAtualId = dados.documento.id;
-    if (totalItensDeTexto > 0) {
-      statusUpload.textContent = `PDF carregado: ${pdfAtual.numPages} página(s).`;
-    }
-
     listaDestaquesAtual.innerHTML = '';
-    areaLeitura.style.display = 'block';
-    areaLeitura.scrollIntoView({ behavior: 'smooth' });
+    const totalItensDeTexto = await iniciarLeitura();
+
+    statusUpload.textContent =
+      totalItensDeTexto > 0
+        ? `PDF carregado: ${pdfAtual.numPages} página(s).`
+        : 'O PDF foi salvo, mas não encontrei texto selecionável nele (pode ser uma imagem escaneada) — a busca e a marcação de trechos podem não funcionar.';
+    statusUpload.classList.toggle('erro-texto', totalItensDeTexto === 0);
   } catch (erro) {
     statusUpload.textContent = 'Não foi possível ler esse PDF. Verifique se o arquivo não está corrompido.';
+    statusUpload.classList.add('erro-texto');
+  }
+});
+
+// "Visualizar" num card de "Meus documentos": busca o arquivo ja guardado no
+// servidor e retoma a leitura (com os trechos-chave que ja existiam).
+document.addEventListener('click', async (evento) => {
+  const botao = evento.target.closest('[data-acao="visualizar-documento"]');
+  if (!botao) return;
+
+  const id = botao.dataset.documentoId;
+  const titulo = botao.dataset.documentoTitulo || '';
+
+  statusUpload.textContent = 'Carregando PDF salvo...';
+  statusUpload.classList.remove('erro-texto');
+
+  try {
+    const resposta = await fetch(`/documentos/${id}/arquivo`);
+    if (!resposta.ok) {
+      const texto = await resposta.text();
+      throw new Error(texto || 'Não foi possível carregar o arquivo.');
+    }
+
+    const arrayBuffer = await resposta.arrayBuffer();
+    documentoAtualId = Number(id);
+    pdfAtual = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    listaDestaquesAtual.innerHTML = '';
+    const template = document.getElementById('trechos-doc-' + id);
+    if (template) {
+      template.content.querySelectorAll('.destaque-item').forEach((item) => {
+        listaDestaquesAtual.appendChild(item.cloneNode(true));
+      });
+    }
+
+    const totalItensDeTexto = await iniciarLeitura();
+    statusUpload.textContent =
+      totalItensDeTexto > 0
+        ? `"${titulo}" — ${pdfAtual.numPages} página(s).`
+        : 'Esse PDF não tem texto selecionável (pode ser uma imagem escaneada).';
+  } catch (erro) {
+    statusUpload.textContent = erro.message || 'Não foi possível carregar esse PDF salvo.';
     statusUpload.classList.add('erro-texto');
   }
 });
@@ -316,41 +361,33 @@ botaoMarcar.addEventListener('click', async () => {
   }
 });
 
-// Modal "Ler trechos-chave": em vez de mostrar os trechos de todos os
-// documentos ja abertos na tela (o que ficava bagunçado), cada card tem um
-// botao que abre so os trechos daquele documento, guardados escondidos num
-// <template> ao lado do card.
-const modalTrechos = document.getElementById('modal-trechos');
-const modalTrechosFundo = document.getElementById('modal-trechos-fundo');
-const modalTrechosTitulo = document.getElementById('modal-trechos-titulo');
-const modalTrechosCorpo = document.getElementById('modal-trechos-corpo');
-const modalTrechosFechar = document.getElementById('modal-trechos-fechar');
+// Busca/ordena os cards de "Meus documentos" (so no que ja esta na tela,
+// sem precisar recarregar a pagina).
+const campoBuscaDocumentos = document.getElementById('busca-documentos');
+const selectOrdenarDocumentos = document.getElementById('ordenar-documentos');
+const gradeDocumentos = document.getElementById('grade-documentos');
 
-function abrirModalTrechos(idTemplate, titulo) {
-  const template = document.getElementById(idTemplate);
-  modalTrechosTitulo.textContent = titulo || 'Trechos-chave';
-  modalTrechosCorpo.innerHTML = '';
-  if (template) {
-    modalTrechosCorpo.appendChild(template.content.cloneNode(true));
+if (gradeDocumentos) {
+  const cardsDocumentos = Array.from(gradeDocumentos.querySelectorAll('.ficha-documento'));
+
+  function aplicarFiltroDocumentos() {
+    const termo = (campoBuscaDocumentos.value || '').toLowerCase().trim();
+    cardsDocumentos.forEach((card) => {
+      const titulo = card.dataset.titulo || '';
+      card.style.display = titulo.includes(termo) ? '' : 'none';
+    });
   }
-  modalTrechos.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
 
-function fecharModalTrechos() {
-  modalTrechos.style.display = 'none';
-  document.body.style.overflow = '';
-}
+  function aplicarOrdenacaoDocumentos() {
+    const modo = selectOrdenarDocumentos.value;
+    const ordenados = cardsDocumentos.slice().sort((a, b) => {
+      if (modo === 'nome') return a.dataset.titulo.localeCompare(b.dataset.titulo);
+      if (modo === 'antigos') return Number(a.dataset.timestamp) - Number(b.dataset.timestamp);
+      return Number(b.dataset.timestamp) - Number(a.dataset.timestamp); // recentes (padrao)
+    });
+    ordenados.forEach((card) => gradeDocumentos.appendChild(card));
+  }
 
-if (modalTrechos) {
-  document.addEventListener('click', (evento) => {
-    const botao = evento.target.closest('[data-acao="ver-trechos"]');
-    if (botao) abrirModalTrechos(botao.dataset.modalAlvo, botao.dataset.documentoTitulo);
-  });
-
-  modalTrechosFechar.addEventListener('click', fecharModalTrechos);
-  modalTrechosFundo.addEventListener('click', fecharModalTrechos);
-  document.addEventListener('keydown', (evento) => {
-    if (evento.key === 'Escape' && modalTrechos.style.display !== 'none') fecharModalTrechos();
-  });
+  if (campoBuscaDocumentos) campoBuscaDocumentos.addEventListener('input', aplicarFiltroDocumentos);
+  if (selectOrdenarDocumentos) selectOrdenarDocumentos.addEventListener('change', aplicarOrdenacaoDocumentos);
 }
