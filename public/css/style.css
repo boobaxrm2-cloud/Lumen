@@ -1470,7 +1470,9 @@ section.secao > h2 .contagem {
 .modal-pdf-fundo {
   position: absolute;
   inset: 0;
-  background: rgba(4, 6, 12, 0.8);
+  background: rgba(4, 6, 12, 0.55);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .modal-pdf-caixa {
@@ -1512,4 +1514,40 @@ section.secao > h2 .contagem {
 
 canvas.pagina-pdf {
   display: block;
+}
+
+/* ---------- Modal de confirmacao (remover documento/trecho) ---------- */
+
+.modal-confirmar-caixa {
+  position: relative;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  box-shadow: var(--sombra-cartao);
+  width: min(420px, 100%);
+  padding: 2rem 1.8rem 1.8rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-confirmar-icone {
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--cor-vermelho);
+}
+
+#modal-confirmar-mensagem {
+  color: var(--cor-texto);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modal-confirmar-acoes {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 0.4rem;
 }

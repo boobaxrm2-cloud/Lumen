@@ -429,11 +429,55 @@ if (gradeDocumentos) {
   if (selectOrdenarDocumentos) selectOrdenarDocumentos.addEventListener('change', aplicarOrdenacaoDocumentos);
 }
 
-// Pede confirmacao antes de qualquer form marcado com data-confirm ser
-// enviado (usado nos botoes "Remover" de documento e de trecho-chave).
-document.addEventListener('submit', (evento) => {
-  const mensagem = evento.target.dataset && evento.target.dataset.confirm;
-  if (mensagem && !window.confirm(mensagem)) {
+// Pede confirmacao (com um modal no estilo do site, em vez do popup feio
+// padrao do navegador) antes de qualquer form marcado com data-confirm ser
+// enviado — usado nos botoes "Remover" de documento e de trecho-chave.
+const modalConfirmar = document.getElementById('modal-confirmar');
+const modalConfirmarFundo = document.getElementById('modal-confirmar-fundo');
+const modalConfirmarMensagem = document.getElementById('modal-confirmar-mensagem');
+const modalConfirmarCancelar = document.getElementById('modal-confirmar-cancelar');
+const modalConfirmarRemover = document.getElementById('modal-confirmar-remover');
+
+function pedirConfirmacao(mensagem) {
+  return new Promise((resolve) => {
+    modalConfirmarMensagem.textContent = mensagem;
+    modalConfirmar.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    function encerrar(resultado) {
+      modalConfirmar.style.display = 'none';
+      document.body.style.overflow = '';
+      modalConfirmarRemover.removeEventListener('click', aoRemover);
+      modalConfirmarCancelar.removeEventListener('click', aoCancelar);
+      modalConfirmarFundo.removeEventListener('click', aoCancelar);
+      resolve(resultado);
+    }
+    function aoRemover() {
+      encerrar(true);
+    }
+    function aoCancelar() {
+      encerrar(false);
+    }
+
+    modalConfirmarRemover.addEventListener('click', aoRemover);
+    modalConfirmarCancelar.addEventListener('click', aoCancelar);
+    modalConfirmarFundo.addEventListener('click', aoCancelar);
+  });
+}
+
+if (modalConfirmar) {
+  document.addEventListener('submit', async (evento) => {
+    const mensagem = evento.target.dataset && evento.target.dataset.confirm;
+    if (!mensagem) return;
+
     evento.preventDefault();
-  }
-});
+    const confirmou = await pedirConfirmacao(mensagem);
+    if (confirmou) evento.target.submit();
+  });
+
+  document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && modalConfirmar.style.display !== 'none') {
+      modalConfirmarCancelar.click();
+    }
+  });
+}

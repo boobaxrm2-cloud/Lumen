@@ -162,6 +162,18 @@
     </section>
   </main>
 
+  <div id="modal-confirmar" class="modal-pdf" style="display: none;">
+    <div class="modal-pdf-fundo" id="modal-confirmar-fundo"></div>
+    <div class="modal-confirmar-caixa">
+      <svg class="icone modal-confirmar-icone" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.72 0z"/></svg>
+      <p id="modal-confirmar-mensagem"></p>
+      <div class="modal-confirmar-acoes">
+        <button class="botao secundario" type="button" id="modal-confirmar-cancelar">Cancelar</button>
+        <button class="botao tijolo" type="button" id="modal-confirmar-remover">Remover</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="/js/leitura.js"></script>
 </body>
