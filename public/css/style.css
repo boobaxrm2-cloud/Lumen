@@ -1314,6 +1314,18 @@ section.secao > h2 .contagem {
   height: 1.3rem;
 }
 
+/* Emblema "PDF" vermelho, mais facil de reconhecer de relance que um icone
+   generico de arquivo. */
+.ficha-documento-icone-pdf {
+  background: var(--cor-vermelho);
+  border-color: var(--cor-vermelho);
+  color: #fff;
+  font-family: var(--fonte-corpo);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+}
+
 .ficha-documento h3 {
   font-size: 1.02rem;
   margin: 0;
@@ -1322,7 +1334,8 @@ section.secao > h2 .contagem {
 
 .ficha-documento .acoes {
   display: flex;
-  gap: 0.6rem;
+  align-items: center;
+  gap: 0.5rem;
   flex-wrap: wrap;
   margin-top: auto;
   padding-top: 0.7rem;
@@ -1335,6 +1348,112 @@ section.secao > h2 .contagem {
 
 .ficha-documento .acoes form {
   margin: 0;
+}
+
+/* Documentos: Visualizar (com texto) + Baixar/Remover (so icone), tudo na
+   mesma linha, sem depender de o card ser muito largo. */
+.acoes-documento {
+  flex-wrap: nowrap;
+}
+
+.acoes-documento [data-acao="visualizar-documento"] {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.botao-icone {
+  padding: 0.5rem !important;
+  flex-shrink: 0;
+}
+
+.botao-icone .icone {
+  margin: 0;
+}
+
+.botao-perigo:hover {
+  border-color: var(--cor-vermelho) !important;
+  color: var(--cor-vermelho) !important;
+}
+
+/* ---------- Zona de arrastar/escolher arquivo (envio de PDF) ---------- */
+
+.form-upload-grade {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.campo-arquivo {
+  grid-row: span 1;
+}
+
+.campo-botao-upload {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+@media (max-width: 820px) {
+  .form-upload-grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dropzone-arquivo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  border: 2px dashed var(--cor-cartao-borda);
+  border-radius: 8px;
+  padding: 1.3rem 1rem;
+  cursor: pointer;
+  color: var(--cor-texto-suave);
+  background: var(--cor-fundo);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  min-height: 96px;
+  box-sizing: border-box;
+}
+
+.dropzone-arquivo:hover,
+.dropzone-arquivo.arrastando {
+  border-color: var(--cor-dourado);
+  background: rgba(240, 193, 75, 0.06);
+}
+
+.dropzone-arquivo svg {
+  color: var(--cor-dourado);
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.dropzone-arquivo span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.dropzone-arquivo strong {
+  color: var(--cor-texto);
+  font-size: 0.9rem;
+}
+
+.dropzone-arquivo small {
+  font-size: 0.78rem;
+}
+
+.dropzone-arquivo input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- Modal de pre-visualizacao de PDF (Artigos/Biblioteca) ---------- */

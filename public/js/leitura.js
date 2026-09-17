@@ -33,6 +33,9 @@ const indicadorPagina = document.getElementById('indicador-pagina');
 const popupMarcar = document.getElementById('popup-marcar');
 const botaoMarcar = document.getElementById('botao-marcar');
 
+const dropzoneArquivo = document.getElementById('dropzone-arquivo');
+const dropzoneTexto = document.getElementById('dropzone-texto');
+
 let documentoAtualId = null;
 let pdfAtual = null;
 let paginaAtualNumero = 1;
@@ -42,9 +45,43 @@ let ultimoTermoBuscado = '';
 let excertoSelecionadoAtual = '';
 
 campoArquivo.addEventListener('change', () => {
-  if (campoArquivo.files[0] && !campoTitulo.value.trim()) {
-    campoTitulo.value = nomeParaTitulo(campoArquivo.files[0].name);
+  const arquivo = campoArquivo.files[0];
+  if (!arquivo) return;
+
+  if (!campoTitulo.value.trim()) {
+    campoTitulo.value = nomeParaTitulo(arquivo.name);
   }
+  dropzoneTexto.innerHTML = `<strong>${escaparHtml(arquivo.name)}</strong><small>Clique ou arraste outro arquivo para trocar</small>`;
+});
+
+// Arrastar e soltar um PDF na zona de envio (alem de clicar e escolher).
+['dragover', 'dragenter'].forEach((evento) => {
+  dropzoneArquivo.addEventListener(evento, (e) => {
+    e.preventDefault();
+    dropzoneArquivo.classList.add('arrastando');
+  });
+});
+
+['dragleave', 'dragend'].forEach((evento) => {
+  dropzoneArquivo.addEventListener(evento, () => {
+    dropzoneArquivo.classList.remove('arrastando');
+  });
+});
+
+dropzoneArquivo.addEventListener('drop', (evento) => {
+  evento.preventDefault();
+  dropzoneArquivo.classList.remove('arrastando');
+
+  const arquivo = evento.dataTransfer.files[0];
+  if (!arquivo) return;
+  if (arquivo.type !== 'application/pdf') {
+    statusUpload.textContent = 'Envie apenas arquivos PDF.';
+    statusUpload.classList.add('erro-texto');
+    return;
+  }
+
+  campoArquivo.files = evento.dataTransfer.files;
+  campoArquivo.dispatchEvent(new Event('change'));
 });
 
 // Deixa o nome do arquivo mais parecido com um titulo de verdade (nomes
@@ -391,3 +428,12 @@ if (gradeDocumentos) {
   if (campoBuscaDocumentos) campoBuscaDocumentos.addEventListener('input', aplicarFiltroDocumentos);
   if (selectOrdenarDocumentos) selectOrdenarDocumentos.addEventListener('change', aplicarOrdenacaoDocumentos);
 }
+
+// Pede confirmacao antes de qualquer form marcado com data-confirm ser
+// enviado (usado nos botoes "Remover" de documento e de trecho-chave).
+document.addEventListener('submit', (evento) => {
+  const mensagem = evento.target.dataset && evento.target.dataset.confirm;
+  if (mensagem && !window.confirm(mensagem)) {
+    evento.preventDefault();
+  }
+});
