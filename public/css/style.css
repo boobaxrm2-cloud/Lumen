@@ -99,7 +99,7 @@ svg.icone {
 }
 
 .topo nav a,
-.topo nav span.usuario {
+.topo nav button.usuario {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -107,6 +107,13 @@ svg.icone {
   text-decoration: none;
   padding-bottom: 0.3rem;
   border-bottom: 2px solid transparent;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: var(--fonte-corpo);
+  font-size: 0.92rem;
+  cursor: pointer;
 }
 
 .topo nav a:hover {
@@ -145,12 +152,75 @@ svg.icone {
   gap: 0.5rem;
   background: var(--cor-fundo);
   border: 1px solid var(--cor-cartao-borda);
-  border-radius: 6px;
-  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
   color: var(--cor-texto-suave);
   flex: 1;
-  max-width: 320px;
+  max-width: 340px;
   min-width: 180px;
+}
+
+.topo .busca-catalogo:focus-within {
+  border-color: var(--cor-dourado);
+}
+
+/* ---------- Menu suspenso do usuario ---------- */
+
+.menu-usuario {
+  position: relative;
+}
+
+.topo nav button.usuario .seta {
+  width: 0.75em;
+  height: 0.75em;
+  transition: transform 0.15s ease;
+}
+
+.menu-usuario:has(.dropdown-usuario.aberto) button.usuario .seta {
+  transform: rotate(180deg);
+}
+
+.dropdown-usuario {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  right: 0;
+  min-width: 190px;
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 8px;
+  box-shadow: var(--sombra-cartao);
+  padding: 0.4rem;
+  z-index: 30;
+}
+
+.dropdown-usuario.aberto {
+  display: block;
+}
+
+.dropdown-usuario a,
+.dropdown-usuario button.link {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 6px;
+  color: var(--cor-texto);
+  text-decoration: none;
+  font-size: 0.88rem;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.dropdown-usuario a:hover,
+.dropdown-usuario button.link:hover {
+  background: var(--cor-fundo);
+  color: var(--cor-dourado);
+}
+
+.dropdown-usuario form {
+  margin: 0;
 }
 
 .topo .busca-catalogo input {

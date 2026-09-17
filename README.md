@@ -70,6 +70,8 @@ de lupa sobre livro por Coppertist Wu.
 ## Status atual
 
 - [x] 1. Base do projeto: Express + SQLite, cadastro/login, página inicial protegida
+- [x] 1.1. Página "Minha conta" (`/conta`, acessada pelo menu no nome do usuário no
+      cabeçalho) para editar nome e trocar senha
 - [x] 2. Busca de artigos científicos (Semantic Scholar), salvar com detecção de
       duplicidade (DOI ou título parecido), remover e exportar CSV
 - [x] 3. Leitura de PDF: extração de texto no navegador, busca com destaque no

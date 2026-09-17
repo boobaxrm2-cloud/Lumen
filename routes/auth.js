@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const users = require('../db/users');
-const { redirectIfLoggedIn } = require('../middleware/auth');
+const { redirectIfLoggedIn, requireAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -59,6 +59,54 @@ router.post('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login');
   });
+});
+
+function renderConta(res, status, { user, erroNome, sucessoNome, erroSenha, sucessoSenha }) {
+  res.status(status).render('conta', {
+    user,
+    erroNome: erroNome || null,
+    sucessoNome: sucessoNome || null,
+    erroSenha: erroSenha || null,
+    sucessoSenha: sucessoSenha || null,
+  });
+}
+
+router.get('/conta', requireAuth, (req, res) => {
+  renderConta(res, 200, { user: users.findById(req.session.userId) });
+});
+
+router.post('/conta/nome', requireAuth, (req, res) => {
+  const user = users.findById(req.session.userId);
+  const nome = (req.body.name || '').trim();
+
+  if (!nome) {
+    return renderConta(res, 400, { user, erroNome: 'Informe um nome.' });
+  }
+
+  const atualizado = users.updateName(req.session.userId, nome);
+  req.session.userName = atualizado.name;
+  res.locals.userName = atualizado.name; // o topo ja foi montado com o nome antigo nesse mesmo ciclo
+  renderConta(res, 200, { user: atualizado, sucessoNome: 'Nome atualizado com sucesso.' });
+});
+
+router.post('/conta/senha', requireAuth, (req, res) => {
+  const user = users.findById(req.session.userId);
+  const { senhaAtual, novaSenha, confirmarSenha } = req.body;
+
+  const senhaValida = senhaAtual && bcrypt.compareSync(senhaAtual, user.password_hash);
+  if (!senhaValida) {
+    return renderConta(res, 400, { user, erroSenha: 'Senha atual incorreta.' });
+  }
+  if (!novaSenha || novaSenha.length < 6) {
+    return renderConta(res, 400, { user, erroSenha: 'A nova senha precisa ter pelo menos 6 caracteres.' });
+  }
+  if (novaSenha !== confirmarSenha) {
+    return renderConta(res, 400, { user, erroSenha: 'A confirmação não confere com a nova senha.' });
+  }
+
+  const novoHash = bcrypt.hashSync(novaSenha, SALT_ROUNDS);
+  users.updatePasswordHash(req.session.userId, novoHash);
+  renderConta(res, 200, { user, sucessoSenha: 'Senha alterada com sucesso.' });
 });
 
 module.exports = router;

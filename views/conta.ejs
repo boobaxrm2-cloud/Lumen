@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Minha conta — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/topo', { userName: userName || '', paginaAtiva: 'conta' }) %>
+
+  <main>
+    <%- include('partials/voltar-modulos') %>
+    <h2>Minha conta</h2>
+
+    <div class="cartao" style="max-width: 480px; margin-bottom: 1.5rem;">
+      <h3 style="margin-top: 0;">Perfil</h3>
+      <% if (sucessoNome) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoNome %></div><% } %>
+      <% if (erroNome) { %><div class="erro"><%= erroNome %></div><% } %>
+
+      <form method="POST" action="/conta/nome">
+        <div class="campo">
+          <label for="name">Nome</label>
+          <input type="text" id="name" name="name" value="<%= user.name %>" required />
+        </div>
+        <div class="campo">
+          <label>Email</label>
+          <input type="email" value="<%= user.email %>" disabled />
+        </div>
+        <button class="botao" type="submit">Salvar nome</button>
+      </form>
+    </div>
+
+    <div class="cartao" style="max-width: 480px;">
+      <h3 style="margin-top: 0;">Alterar senha</h3>
+      <% if (sucessoSenha) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoSenha %></div><% } %>
+      <% if (erroSenha) { %><div class="erro"><%= erroSenha %></div><% } %>
+
+      <form method="POST" action="/conta/senha">
+        <div class="campo">
+          <label for="senhaAtual">Senha atual</label>
+          <input type="password" id="senhaAtual" name="senhaAtual" required />
+        </div>
+        <div class="campo">
+          <label for="novaSenha">Nova senha</label>
+          <input type="password" id="novaSenha" name="novaSenha" minlength="6" required />
+        </div>
+        <div class="campo">
+          <label for="confirmarSenha">Confirmar nova senha</label>
+          <input type="password" id="confirmarSenha" name="confirmarSenha" minlength="6" required />
+        </div>
+        <button class="botao" type="submit">Alterar senha</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
