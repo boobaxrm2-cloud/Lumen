@@ -9,6 +9,18 @@ const SEMANTIC_SCHOLAR_URL = 'https://api.semanticscholar.org/graph/v1/paper/sea
 const CAMPOS_BUSCA = 'title,abstract,year,authors,venue,externalIds,url,openAccessPdf';
 const LIMITE_RESULTADOS = 20;
 
+// Tipos de publicacao que a Semantic Scholar realmente reconhece e permite
+// filtrar (campo publicationTypes). So aceitamos esses valores no filtro pra
+// nao mandar lixo pra frente pra API.
+const TIPOS_PUBLICACAO_VALIDOS = new Set([
+  'JournalArticle',
+  'Conference',
+  'Review',
+  'Book',
+  'BookSection',
+  'CaseReport',
+]);
+
 // A partir desse grau de sobreposicao de palavras no titulo, avisamos que pode ser duplicata.
 const LIMIAR_SIMILARIDADE = 0.6;
 
@@ -82,6 +94,21 @@ router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
   url.searchParams.set('fields', CAMPOS_BUSCA);
   url.searchParams.set('limit', String(LIMITE_RESULTADOS));
   url.searchParams.set('offset', String(offset));
+
+  // Filtro por ano (intervalo). A Semantic Scholar aceita "2020-2023",
+  // "2020-" (a partir de) ou "-2023" (ate).
+  const anoDe = (req.query.anoDe || '').trim();
+  const anoAte = (req.query.anoAte || '').trim();
+  if (anoDe || anoAte) {
+    url.searchParams.set('year', `${anoDe}-${anoAte}`);
+  }
+
+  // Filtro por tipo de publicacao (varios valores, separados por virgula).
+  const tiposPedidos = (req.query.tipos || '').split(',').map((t) => t.trim());
+  const tiposValidos = tiposPedidos.filter((t) => TIPOS_PUBLICACAO_VALIDOS.has(t));
+  if (tiposValidos.length > 0) {
+    url.searchParams.set('publicationTypes', tiposValidos.join(','));
+  }
 
   // Com uma chave gratuita (SEMANTIC_SCHOLAR_API_KEY no .env), a Semantic Scholar
   // usa uma cota so nossa em vez de nos colocar na fila compartilhada com o resto

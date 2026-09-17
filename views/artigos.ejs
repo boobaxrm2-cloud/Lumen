@@ -16,13 +16,59 @@
     </form>
     <p class="aviso-busca" id="aviso-busca"></p>
 
-    <section class="secao">
-      <h2>Resultados</h2>
-      <div class="grade-fichas" id="resultados"></div>
-      <div class="acoes-painel" id="area-carregar-mais" style="display: none; margin-top: 1.5rem; justify-content: center;">
-        <button class="botao secundario" type="button" id="botao-carregar-mais">Carregar mais resultados</button>
-      </div>
-    </section>
+    <div class="busca-layout">
+      <aside class="filtros-busca">
+        <div class="filtros-cabecalho">
+          <h3>Filtros</h3>
+          <button type="button" id="botao-limpar-filtros" class="link-limpar">Limpar tudo</button>
+        </div>
+
+        <div class="filtro-grupo">
+          <h4>Ano de publicação</h4>
+          <div class="filtro-ano-intervalo">
+            <input type="number" id="filtro-ano-de" placeholder="De" min="1900" max="2100" />
+            <span>–</span>
+            <input type="number" id="filtro-ano-ate" placeholder="Até" min="1900" max="2100" />
+          </div>
+        </div>
+
+        <div class="filtro-grupo">
+          <h4>Tipo de publicação</h4>
+          <label><input type="checkbox" class="filtro-tipo" value="JournalArticle" /> Artigo científico</label>
+          <label><input type="checkbox" class="filtro-tipo" value="Conference" /> Conferência</label>
+          <label><input type="checkbox" class="filtro-tipo" value="Review" /> Revisão</label>
+          <label><input type="checkbox" class="filtro-tipo" value="Book" /> Livro</label>
+          <label><input type="checkbox" class="filtro-tipo" value="BookSection" /> Capítulo de livro</label>
+          <label><input type="checkbox" class="filtro-tipo" value="CaseReport" /> Estudo de caso</label>
+        </div>
+
+        <button type="button" class="botao acao-larga" id="botao-aplicar-filtros">Aplicar filtros</button>
+      </aside>
+
+      <section class="resultados-area">
+        <div class="resultados-cabecalho">
+          <span id="contagem-resultados" class="contagem"></span>
+          <div class="resultados-controles">
+            <label class="controle-ordenar">
+              Ordenar por
+              <select id="select-ordenar">
+                <option value="relevancia">Mais relevantes</option>
+                <option value="recente">Mais recentes (dos carregados)</option>
+              </select>
+            </label>
+            <div class="alternar-visual">
+              <button type="button" class="botao-visual ativo" data-visual="grade" id="botao-visual-grade">▦ Grade</button>
+              <button type="button" class="botao-visual" data-visual="lista" id="botao-visual-lista">☰ Lista</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grade-fichas" id="resultados"></div>
+        <div class="acoes-painel" id="area-carregar-mais" style="display: none; margin-top: 1.5rem; justify-content: center;">
+          <button class="botao secundario" type="button" id="botao-carregar-mais">Carregar mais resultados</button>
+        </div>
+      </section>
+    </div>
   </main>
 
   <%- include('partials/modal-pdf') %>

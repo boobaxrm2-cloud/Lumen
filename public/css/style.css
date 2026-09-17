@@ -550,6 +550,224 @@ main {
   color: #f5a89f;
 }
 
+/* ---------- Filtros da busca (barra lateral) ---------- */
+
+.busca-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .busca-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filtros-busca {
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  padding: 1.2rem;
+  position: sticky;
+  top: 1.5rem;
+}
+
+.filtros-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.filtros-cabecalho h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.link-limpar {
+  background: none;
+  border: none;
+  color: var(--cor-dourado);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.link-limpar:hover {
+  text-decoration: underline;
+}
+
+.filtro-grupo {
+  margin-bottom: 1.3rem;
+}
+
+.filtro-grupo h4 {
+  font-family: var(--fonte-corpo);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cor-texto-suave);
+  margin: 0 0 0.6rem;
+}
+
+.filtro-grupo label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.filtro-ano-intervalo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--cor-texto-suave);
+}
+
+.filtro-ano-intervalo input {
+  width: 0;
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+}
+
+.resultados-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.resultados-cabecalho .contagem {
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+}
+
+.resultados-controles {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.controle-ordenar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+}
+
+.controle-ordenar select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.85rem;
+}
+
+.alternar-visual {
+  display: flex;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.botao-visual {
+  background: transparent;
+  color: var(--cor-texto-suave);
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-family: var(--fonte-corpo);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.botao-visual.ativo {
+  background: var(--cor-dourado);
+  color: #1a1f2e;
+  font-weight: 600;
+}
+
+/* Modo lista: cada resultado vira uma linha horizontal em vez de um cartao. */
+.grade-fichas.visual-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.grade-fichas.visual-lista .ficha-artigo {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr auto;
+  grid-template-areas:
+    "cabecalho resumo   acoespdf"
+    "autores   resumo   acoespdf"
+    "veiculo   resumo   acoes"
+    "link      resumo   acoes";
+  gap: 0.3rem 1.5rem;
+  border-top: none;
+  border-left: 3px solid var(--cor-dourado);
+  padding: 1rem 1.2rem;
+}
+
+.grade-fichas.visual-lista .ficha-artigo.ja-salva {
+  border-left-color: var(--cor-sucesso);
+}
+
+.grade-fichas.visual-lista .ficha-artigo .cabecalho-ficha {
+  grid-area: cabecalho;
+}
+.grade-fichas.visual-lista .ficha-artigo .autores {
+  grid-area: autores;
+}
+.grade-fichas.visual-lista .ficha-artigo .veiculo {
+  grid-area: veiculo;
+}
+.grade-fichas.visual-lista .ficha-artigo .resumo {
+  grid-area: resumo;
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+.grade-fichas.visual-lista .ficha-artigo .link-artigo {
+  grid-area: link;
+}
+.grade-fichas.visual-lista .ficha-artigo .acoes-pdf {
+  grid-area: acoespdf;
+  flex-direction: column;
+}
+.grade-fichas.visual-lista .ficha-artigo .acoes {
+  grid-area: acoes;
+  flex-direction: column;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+@media (max-width: 720px) {
+  .grade-fichas.visual-lista .ficha-artigo {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "cabecalho"
+      "autores"
+      "veiculo"
+      "resumo"
+      "link"
+      "acoespdf"
+      "acoes";
+  }
+}
+
 section.secao {
   margin-bottom: 3rem;
 }

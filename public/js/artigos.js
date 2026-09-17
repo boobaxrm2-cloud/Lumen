@@ -5,11 +5,23 @@ const formBusca = document.getElementById('form-busca');
 const campoBusca = document.getElementById('campo-busca');
 const containerResultados = document.getElementById('resultados');
 const avisoBusca = document.getElementById('aviso-busca');
+const contagemResultados = document.getElementById('contagem-resultados');
 const areaCarregarMais = document.getElementById('area-carregar-mais');
 const botaoCarregarMais = document.getElementById('botao-carregar-mais');
 
+const filtroAnoDe = document.getElementById('filtro-ano-de');
+const filtroAnoAte = document.getElementById('filtro-ano-ate');
+const botaoAplicarFiltros = document.getElementById('botao-aplicar-filtros');
+const botaoLimparFiltros = document.getElementById('botao-limpar-filtros');
+const selectOrdenar = document.getElementById('select-ordenar');
+const botaoVisualGrade = document.getElementById('botao-visual-grade');
+const botaoVisualLista = document.getElementById('botao-visual-lista');
+
 let termoAtual = '';
 let proximoOffset = null;
+// Guarda os artigos e seus elementos na ordem original (relevancia) da API,
+// pra dar pra "desfazer" a ordenacao por mais recente sem buscar de novo.
+let resultadosCarregados = [];
 
 function escaparHtml(texto) {
   const div = document.createElement('div');
@@ -65,6 +77,7 @@ function criarFichaResultado(artigo) {
 
   ficha.querySelector('[data-acao="descartar"]').addEventListener('click', () => {
     ficha.remove();
+    resultadosCarregados = resultadosCarregados.filter((item) => item.elemento !== ficha);
   });
 
   ficha.querySelector('[data-acao="salvar"]').addEventListener('click', (evento) => {
@@ -74,19 +87,34 @@ function criarFichaResultado(artigo) {
   return ficha;
 }
 
+function obterFiltrosAtuais() {
+  return {
+    anoDe: filtroAnoDe.value.trim(),
+    anoAte: filtroAnoAte.value.trim(),
+    tipos: Array.from(document.querySelectorAll('.filtro-tipo:checked')).map((cb) => cb.value),
+  };
+}
+
 async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
   if (comecarDoZero) {
     termoAtual = termo;
     proximoOffset = 0;
     containerResultados.innerHTML = '';
+    resultadosCarregados = [];
+    contagemResultados.textContent = '';
   }
 
   avisoBusca.textContent = 'Buscando...';
   avisoBusca.classList.remove('erro-texto');
 
   try {
-    const url = '/api/artigos/buscar?q=' + encodeURIComponent(termo) + '&offset=' + (proximoOffset || 0);
-    const resposta = await fetch(url);
+    const filtros = obterFiltrosAtuais();
+    const params = new URLSearchParams({ q: termo, offset: String(proximoOffset || 0) });
+    if (filtros.anoDe) params.set('anoDe', filtros.anoDe);
+    if (filtros.anoAte) params.set('anoAte', filtros.anoAte);
+    if (filtros.tipos.length > 0) params.set('tipos', filtros.tipos.join(','));
+
+    const resposta = await fetch('/api/artigos/buscar?' + params.toString());
     const dados = await resposta.json();
 
     if (!resposta.ok) {
@@ -97,17 +125,21 @@ async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
     }
 
     if (dados.resultados.length === 0 && comecarDoZero) {
-      avisoBusca.textContent = 'Nenhum resultado encontrado para "' + termo + '".';
+      avisoBusca.textContent = 'Nenhum resultado encontrado com esses termos/filtros.';
       areaCarregarMais.style.display = 'none';
       return;
     }
 
+    avisoBusca.textContent = '';
     dados.resultados.forEach((artigo) => {
-      containerResultados.appendChild(criarFichaResultado(artigo));
+      const elemento = criarFichaResultado(artigo);
+      resultadosCarregados.push({ artigo, elemento });
+      containerResultados.appendChild(elemento);
     });
 
-    const totalMostrado = containerResultados.children.length;
-    avisoBusca.textContent = `Mostrando ${totalMostrado} de ${dados.total} resultado(s).`;
+    aplicarOrdenacao();
+
+    contagemResultados.textContent = `Mostrando ${resultadosCarregados.length} de ${dados.total} resultado(s).`;
 
     proximoOffset = dados.proximoOffset;
     areaCarregarMais.style.display = proximoOffset ? 'flex' : 'none';
@@ -115,6 +147,20 @@ async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
     avisoBusca.textContent = 'Erro de conexão. Verifique sua internet e tente novamente.';
     avisoBusca.classList.add('erro-texto');
   }
+}
+
+// Reordena os cartoes ja carregados na tela. "Mais recentes" so afeta o que
+// ja foi buscado (a Semantic Scholar nao deixa ordenar isso no servidor);
+// "Mais relevantes" volta pra ordem original que a API devolveu.
+function aplicarOrdenacao() {
+  const modo = selectOrdenar.value;
+  const lista = resultadosCarregados.slice();
+
+  if (modo === 'recente') {
+    lista.sort((a, b) => (b.artigo.year || 0) - (a.artigo.year || 0));
+  }
+
+  lista.forEach((item) => containerResultados.appendChild(item.elemento));
 }
 
 async function salvarArtigo(artigo, ficha, botao, forcar) {
@@ -167,6 +213,30 @@ botaoCarregarMais.addEventListener('click', () => {
     buscarArtigos(termoAtual, { comecarDoZero: false });
   }
 });
+
+botaoAplicarFiltros.addEventListener('click', () => {
+  const termo = campoBusca.value.trim();
+  if (termo) buscarArtigos(termo);
+});
+
+botaoLimparFiltros.addEventListener('click', () => {
+  filtroAnoDe.value = '';
+  filtroAnoAte.value = '';
+  document.querySelectorAll('.filtro-tipo:checked').forEach((cb) => (cb.checked = false));
+  const termo = campoBusca.value.trim();
+  if (termo) buscarArtigos(termo);
+});
+
+selectOrdenar.addEventListener('change', aplicarOrdenacao);
+
+function alternarVisual(visual) {
+  containerResultados.classList.toggle('visual-lista', visual === 'lista');
+  botaoVisualGrade.classList.toggle('ativo', visual === 'grade');
+  botaoVisualLista.classList.toggle('ativo', visual === 'lista');
+}
+
+botaoVisualGrade.addEventListener('click', () => alternarVisual('grade'));
+botaoVisualLista.addEventListener('click', () => alternarVisual('lista'));
 
 // Se a pagina chegou com um termo (ex: busca feita pela caixa do cabecalho),
 // dispara a busca automaticamente.
