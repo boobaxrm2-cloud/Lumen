@@ -1,7 +1,7 @@
 /* ====================================================================
    Lumen - identidade visual
-   Tema escuro (navy) com destaque dourado. Titulos em serifada (Lora),
-   interface em sans tecnica (IBM Plex Sans).
+   Tema escuro (navy) com destaque dourado. Titulos e interface usam a
+   mesma familia (IBM Plex Sans), titulos em negrito (700).
    ==================================================================== */
 
 :root {
@@ -17,7 +17,7 @@
   --cor-vermelho-escuro: #c14f45;
   --cor-sucesso: #4caf82;
   --sombra-cartao: 0 6px 20px rgba(0, 0, 0, 0.35);
-  --fonte-titulo: 'Lora', 'Georgia', serif;
+  --fonte-titulo: 'IBM Plex Sans', 'Segoe UI', sans-serif;
   --fonte-corpo: 'IBM Plex Sans', 'Segoe UI', sans-serif;
 }
 
@@ -40,6 +40,8 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--fonte-titulo);
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--cor-texto);
   margin: 0 0 0.4em;
 }
