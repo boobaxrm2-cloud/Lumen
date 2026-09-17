@@ -8,6 +8,7 @@
   <%- include('partials/topo', { userName: userName || '', paginaAtiva: 'artigos' }) %>
 
   <main>
+    <%- include('partials/voltar-modulos') %>
     <h2>Buscar artigos</h2>
     <form class="busca-form" id="form-busca">
       <input type="text" id="campo-busca" value="<%= queryInicial %>" placeholder="Ex: alfabetização, ensino híbrido, avaliação formativa..." autofocus />

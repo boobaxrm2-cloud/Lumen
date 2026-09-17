@@ -168,6 +168,20 @@ main {
   padding: 2.5rem 1.5rem 4rem;
 }
 
+.link-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cor-texto-suave);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.link-voltar:hover {
+  color: var(--cor-dourado);
+}
+
 /* ---------- Hero da pagina inicial ---------- */
 
 .hero {
