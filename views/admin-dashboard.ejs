@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Painel administrativo — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/cabecalho') %>
+
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'admin' }) %>
+
+    <main>
+    <%- include('partials/voltar-modulos') %>
+    <h2>Painel administrativo</h2>
+
+    <div class="cartao cartao-estatistica">
+      <span class="cartao-estatistica-numero"><%= visitasHoje %></span>
+      <span class="cartao-estatistica-legenda">Visitantes únicos hoje</span>
+    </div>
+
+    <h3 style="margin-top: 2.2rem;">Usuários cadastrados <span class="contagem"><%= usuarios.length %></span></h3>
+
+    <div class="tabela-wrapper">
+      <table class="tabela-admin">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Cadastrado em</th>
+            <th>Último login</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% usuarios.forEach(function (usuario) { %>
+            <tr>
+              <td><%= usuario.name %></td>
+              <td><%= usuario.email %></td>
+              <td><%= usuario.cadastradoEm %></td>
+              <td><%= usuario.ultimoLogin || 'Nunca' %></td>
+              <td>
+                <div class="tabela-admin-acoes">
+                  <details class="seletor-codigos">
+                    <summary class="botao secundario" title="Alterar senha">Alterar senha</summary>
+                    <div class="menu-codigos menu-senha-admin">
+                      <form method="POST" action="/admin/usuarios/<%= usuario.id %>/senha">
+                        <input type="password" name="novaSenha" placeholder="Nova senha (mín. 6 caracteres)" minlength="6" required />
+                        <button class="botao" type="submit">Salvar</button>
+                      </form>
+                    </div>
+                  </details>
+                  <form method="POST" action="/admin/usuarios/<%= usuario.id %>/remover" onsubmit="return confirm('Remover o usuário &quot;<%= usuario.name %>&quot; e todos os dados dele (artigos, documentos, trechos, códigos)? Essa ação não pode ser desfeita.');">
+                    <button class="botao secundario botao-perigo botao-icone" type="submit" title="Remover usuário">
+                      <svg class="icone" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13a2 2 0 002 2h6a2 2 0 002-2l1-13"/><path d="M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/></svg>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    </main>
+  </div>
+</body>
+</html>

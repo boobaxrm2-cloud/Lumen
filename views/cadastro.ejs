@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="<%= locale %>">
 <head>
-  <title>Criar conta — Lumen</title>
+  <title><%= t('signup.tabTitle') %></title>
   <%- include('partials/head') %>
 </head>
 <body>
   <div class="auth-tela">
     <div class="ficha-auth">
-      <h1><svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2 12h2.4M19.6 12H22M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg> Nova ficha</h1>
-      <p class="subtitulo">Crie sua conta de pesquisador para começar.</p>
+      <div class="seletor-idioma-auth">
+        <%- include('partials/seletor-idioma') %>
+      </div>
+      <h1 class="auth-logo-titulo"><img class="auth-logo" src="/images/logo-lumen.png" alt="Lumen" /></h1>
+      <p class="subtitulo"><%= t('signup.subtitle') %></p>
 
       <% if (erro) { %>
         <div class="erro"><%= erro %></div>
@@ -16,21 +19,40 @@
 
       <form method="POST" action="/cadastro">
         <div class="campo">
-          <label for="name">Nome</label>
+          <label for="name"><%= t('signup.nameLabel') %></label>
           <input type="text" id="name" name="name" value="<%= valores.name %>" required autofocus />
         </div>
         <div class="campo">
-          <label for="email">Email</label>
+          <label for="email"><%= t('signup.emailLabel') %></label>
           <input type="email" id="email" name="email" value="<%= valores.email %>" required />
         </div>
         <div class="campo">
-          <label for="password">Senha</label>
+          <label for="password"><%= t('signup.passwordLabel') %></label>
           <input type="password" id="password" name="password" minlength="6" required />
         </div>
-        <button class="botao acao-larga" type="submit">Criar conta</button>
+        <div class="campo">
+          <label for="confirmarSenha"><%= t('signup.confirmPasswordLabel') %></label>
+          <input type="password" id="confirmarSenha" name="confirmarSenha" minlength="6" required />
+        </div>
+        <div class="campo">
+          <label for="secretQuestion"><%= t('signup.secretQuestionLabel') %></label>
+          <select id="secretQuestion" name="secretQuestion" required>
+            <option value="" disabled selected><%= t('signup.secretQuestionPlaceholder') %></option>
+            <option value="motherMaidenName"><%= t('secretQuestion.motherMaidenName') %></option>
+            <option value="firstPet"><%= t('secretQuestion.firstPet') %></option>
+            <option value="birthCity"><%= t('secretQuestion.birthCity') %></option>
+            <option value="firstSchool"><%= t('secretQuestion.firstSchool') %></option>
+            <option value="favoriteFood"><%= t('secretQuestion.favoriteFood') %></option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="secretAnswer"><%= t('signup.secretAnswerLabel') %></label>
+          <input type="text" id="secretAnswer" name="secretAnswer" required />
+        </div>
+        <button class="botao acao-larga" type="submit"><%= t('signup.submitButton') %></button>
       </form>
 
-      <p class="rodape-ficha">Já tem conta? <a href="/login">Entrar</a></p>
+      <p class="rodape-ficha"><%= t('signup.hasAccount') %> <a href="/login"><%= t('signup.loginLink') %></a></p>
     </div>
   </div>
 </body>

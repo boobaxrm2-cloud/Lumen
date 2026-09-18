@@ -1,55 +1,66 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="<%= locale %>">
 <head>
-  <title>Minha conta — Lumen</title>
+  <title><%= t('account.tabTitle') %></title>
   <%- include('partials/head') %>
 </head>
 <body>
-  <%- include('partials/topo', { userName: userName || '', paginaAtiva: 'conta' }) %>
+  <%- include('partials/cabecalho') %>
 
-  <main>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'conta' }) %>
+
+    <main>
     <%- include('partials/voltar-modulos') %>
-    <h2>Minha conta</h2>
+    <h2><%= t('account.heading') %></h2>
 
     <div class="cartao" style="max-width: 480px; margin-bottom: 1.5rem;">
-      <h3 style="margin-top: 0;">Perfil</h3>
+      <h3 style="margin-top: 0;"><%= t('account.profileHeading') %></h3>
       <% if (sucessoNome) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoNome %></div><% } %>
       <% if (erroNome) { %><div class="erro"><%= erroNome %></div><% } %>
 
       <form method="POST" action="/conta/nome">
         <div class="campo">
-          <label for="name">Nome</label>
+          <label for="name"><%= t('account.nameLabel') %></label>
           <input type="text" id="name" name="name" value="<%= user.name %>" required />
         </div>
         <div class="campo">
-          <label>Email</label>
+          <label><%= t('account.emailLabel') %></label>
           <input type="email" value="<%= user.email %>" disabled />
         </div>
-        <button class="botao" type="submit">Salvar nome</button>
+        <button class="botao" type="submit"><%= t('account.saveNameButton') %></button>
       </form>
     </div>
 
     <div class="cartao" style="max-width: 480px;">
-      <h3 style="margin-top: 0;">Alterar senha</h3>
+      <h3 style="margin-top: 0;"><%= t('account.passwordHeading') %></h3>
       <% if (sucessoSenha) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoSenha %></div><% } %>
       <% if (erroSenha) { %><div class="erro"><%= erroSenha %></div><% } %>
 
       <form method="POST" action="/conta/senha">
         <div class="campo">
-          <label for="senhaAtual">Senha atual</label>
+          <label for="senhaAtual"><%= t('account.currentPasswordLabel') %></label>
           <input type="password" id="senhaAtual" name="senhaAtual" required />
         </div>
         <div class="campo">
-          <label for="novaSenha">Nova senha</label>
+          <label for="novaSenha"><%= t('account.newPasswordLabel') %></label>
           <input type="password" id="novaSenha" name="novaSenha" minlength="6" required />
         </div>
         <div class="campo">
-          <label for="confirmarSenha">Confirmar nova senha</label>
+          <label for="confirmarSenha"><%= t('account.confirmPasswordLabel') %></label>
           <input type="password" id="confirmarSenha" name="confirmarSenha" minlength="6" required />
         </div>
-        <button class="botao" type="submit">Alterar senha</button>
+        <button class="botao" type="submit"><%= t('account.changePasswordButton') %></button>
       </form>
     </div>
-  </main>
+
+    <form method="POST" action="/logout">
+      <button class="botao secundario botao-perigo" type="submit">
+        <svg class="icone" viewBox="0 0 24 24"><path d="M15 4H6v16h9"/><path d="M10 12h10m0 0l-3-3m3 3l-3 3"/></svg>
+        <%= t('account.logoutButton') %>
+      </button>
+    </form>
+    </main>
+  </div>
 </body>
 </html>

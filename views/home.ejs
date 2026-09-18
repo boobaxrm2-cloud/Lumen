@@ -1,97 +1,188 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="<%= locale %>">
 <head>
   <title>Lumen</title>
   <%- include('partials/head') %>
 </head>
 <body>
-  <%- include('partials/topo', { userName, paginaAtiva: 'inicio' }) %>
+  <%- include('partials/cabecalho') %>
 
-  <main>
-    <div class="hero" style="background-image: url('/images/hero-biblioteca.jpg');">
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'inicio' }) %>
+
+    <main>
+    <div class="hero">
+      <div class="hero-imagem-fundo" style="background-image: url('/images/hero-lumen.png');"></div>
       <div class="hero-conteudo">
-        <p class="eyebrow">Conhecimento é poder</p>
-        <h1>Bem-vindo(a), <%= userName %></h1>
-        <p>Este é o seu catálogo pessoal de pesquisa. Os módulos abaixo vão sendo adicionados aos poucos.</p>
+        <p class="eyebrow"><%= t('home.hero.eyebrow') %></p>
+        <h1><%= t('home.hero.welcomePrefix') %><span class="destaque-dourado"><%= userName %></span></h1>
+        <p><%= t('home.hero.subtitle') %></p>
         <ul class="hero-destaques">
           <li>
-            <svg class="icone" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-            Estudos de qualidade
+            <span class="icone-circulo">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            </span>
+            <%= t('home.hero.highlight1') %>
           </li>
           <li>
-            <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-            Conteúdo especializado
+            <span class="icone-circulo">
+              <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <%= t('home.hero.highlight2') %>
           </li>
           <li>
-            <svg class="icone" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
-            Aprendizado contínuo
+            <span class="icone-circulo">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>
+            </span>
+            <%= t('home.hero.highlight3') %>
           </li>
         </ul>
       </div>
     </div>
 
     <section class="secao-modulos">
-      <h2>
-        <svg class="icone" viewBox="0 0 24 24"><path d="M4 5c3-1.3 6-1.3 8 0 2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0-2-1.3-5-1.3-8 0z"/><path d="M12 5v14"/></svg>
-        Módulos disponíveis
-      </h2>
-      <p>Acesse os conteúdos e siga com sua pesquisa.</p>
+      <div class="secao-modulos-cabecalho">
+        <div class="titulo-com-icone">
+          <span class="icone-caixa">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M4 5c3-1.3 6-1.3 8 0 2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0-2-1.3-5-1.3-8 0z"/><path d="M12 5v14"/></svg>
+          </span>
+          <div>
+            <h2><%= t('home.modules.heading') %></h2>
+            <p><%= t('home.modules.subtitle') %></p>
+          </div>
+        </div>
+        <div class="controles-modulos">
+          <label class="busca-catalogo busca-modulos">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="search" id="busca-modulos" placeholder="<%= t('home.modules.searchPlaceholder') %>" />
+          </label>
+          <select class="controle-ordenar-select" id="ordenar-modulos">
+            <option><%= t('home.modules.sortMostRecent') %></option>
+          </select>
+        </div>
+      </div>
 
-      <div class="linha-modulo">
-        <div class="miniatura" style="background-image: url('/images/modulo-busca.jpg');"></div>
+      <div class="linha-modulo" data-titulo-modulo="<%= t('home.moduleArticles.title') %>">
+        <div class="miniatura-caixa">
+          <div class="miniatura" style="background-image: url('/images/modulo-busca.jpg');"></div>
+          <span class="selo-flutuante"><%= t('home.badge.available') %></span>
+        </div>
         <div>
-          <span class="selo">Módulo disponível</span>
-          <h3>Busca de artigos científicos</h3>
-          <p class="descricao">Busque no Semantic Scholar, salve os artigos de interesse e exporte sua lista em CSV.</p>
+          <p class="eyebrow-modulo">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            <%= t('home.moduleArticles.eyebrow') %>
+          </p>
+          <h3><%= t('home.moduleArticles.title') %></h3>
+          <p class="descricao"><%= t('home.moduleArticles.description') %></p>
           <a class="botao" href="/artigos">
             <svg class="icone" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-            Ir para Artigos
+            <%= t('home.moduleArticles.cta') %>
+            <svg class="icone" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
           </a>
         </div>
         <ul class="lista-recursos">
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Busca por tema</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Salvar artigos</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Aviso de duplicidade</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Exportar CSV</li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleArticles.feature1') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleArticles.feature2') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleArticles.feature3') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleArticles.feature4') %></li>
         </ul>
+        <svg class="icone seta-linha" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
       </div>
 
-      <div class="linha-modulo">
-        <div class="miniatura" style="background-image: url('/images/modulo-leitura.jpg');"></div>
+      <div class="linha-modulo" data-titulo-modulo="<%= t('home.moduleReading.title') %>">
+        <div class="miniatura-caixa">
+          <div class="miniatura" style="background-image: url('/images/modulo-leitura.jpg');"></div>
+          <span class="selo-flutuante"><%= t('home.badge.available') %></span>
+        </div>
         <div>
-          <span class="selo">Módulo disponível</span>
-          <h3>Leitura de PDF</h3>
-          <p class="descricao">Envie um PDF, busque trechos no texto e marque excertos-chave para revisar depois.</p>
+          <p class="eyebrow-modulo">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            <%= t('home.moduleReading.eyebrow') %>
+          </p>
+          <h3><%= t('home.moduleReading.title') %></h3>
+          <p class="descricao"><%= t('home.moduleReading.description') %></p>
           <a class="botao" href="/leitura">
             <svg class="icone" viewBox="0 0 24 24"><path d="M4 5c3-1.3 6-1.3 8 0 2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0-2-1.3-5-1.3-8 0z"/><path d="M12 5v14"/></svg>
-            Ir para Leitura
+            <%= t('home.moduleReading.cta') %>
+            <svg class="icone" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
           </a>
         </div>
         <ul class="lista-recursos">
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Envio de PDF</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Busca no texto</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Marcar trechos-chave</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Navegação por página</li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleReading.feature1') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleReading.feature2') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleReading.feature3') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleReading.feature4') %></li>
         </ul>
+        <svg class="icone seta-linha" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
       </div>
 
-      <div class="linha-modulo em-breve">
-        <div class="miniatura sem-foto">
-          <svg class="icone" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+      <div class="linha-modulo" data-titulo-modulo="<%= t('home.moduleCoding.title') %>">
+        <div class="miniatura-caixa">
+          <div class="miniatura" style="background-image: url('/images/modulo-codificacao.jpg');"></div>
+          <span class="selo-flutuante"><%= t('home.badge.available') %></span>
         </div>
         <div>
-          <span class="selo em-breve">Em breve</span>
-          <h3>Codificação qualitativa</h3>
-          <p class="descricao">Selecione trechos de texto e organize-os em códigos/categorias criados por você.</p>
+          <p class="eyebrow-modulo">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            <%= t('home.moduleCoding.eyebrow') %>
+          </p>
+          <h3><%= t('home.moduleCoding.title') %></h3>
+          <p class="descricao"><%= t('home.moduleCoding.description') %></p>
+          <a class="botao" href="/codificacao">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M20.59 13.41L11 3.83A2 2 0 009.59 3H4a1 1 0 00-1 1v5.59a2 2 0 00.59 1.41l9.58 9.58a2 2 0 002.83 0l4.59-4.59a2 2 0 000-2.83z"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+            <%= t('home.moduleCoding.cta') %>
+            <svg class="icone" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </a>
         </div>
         <ul class="lista-recursos">
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Códigos personalizados</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Frequência por código</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Agrupamento de trechos</li>
-          <li><svg class="icone" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg> Exportar CSV</li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleCoding.feature1') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleCoding.feature2') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleCoding.feature3') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleCoding.feature4') %></li>
         </ul>
+        <svg class="icone seta-linha" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+
+      <div class="linha-modulo em-breve" data-titulo-modulo="<%= t('home.moduleQuantitative.title') %>">
+        <div class="miniatura-caixa">
+          <div class="miniatura" style="background-image: url('/images/modulo-quantitativa.jpg');"></div>
+          <div class="miniatura-bloqueio">
+            <svg class="icone" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+          </div>
+          <span class="selo-flutuante em-breve"><%= t('home.badge.comingSoon') %></span>
+        </div>
+        <div>
+          <p class="eyebrow-modulo">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            <%= t('home.moduleQuantitative.eyebrow') %>
+          </p>
+          <h3><%= t('home.moduleQuantitative.title') %></h3>
+          <p class="descricao"><%= t('home.moduleQuantitative.description') %></p>
+        </div>
+        <ul class="lista-recursos">
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleQuantitative.feature1') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleQuantitative.feature2') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleQuantitative.feature3') %></li>
+          <li><span class="icone-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> <%= t('home.moduleQuantitative.feature4') %></li>
+        </ul>
+        <svg class="icone seta-linha" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
       </div>
     </section>
-  </main>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var busca = document.getElementById('busca-modulos');
+      if (!busca) return;
+      busca.addEventListener('input', function () {
+        var termo = busca.value.trim().toLowerCase();
+        document.querySelectorAll('.linha-modulo').forEach(function (linha) {
+          var titulo = (linha.getAttribute('data-titulo-modulo') || '').toLowerCase();
+          linha.style.display = titulo.includes(termo) ? '' : 'none';
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

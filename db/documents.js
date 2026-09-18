@@ -40,7 +40,18 @@ function remove(id, userId) {
     fs.rm(caminhoAbsoluto, { force: true }, () => {}); // limpeza best-effort, nao trava se falhar
   }
 
+  // Recortes de imagem dos trechos-chave desse documento tambem sao arquivos
+  // em disco - precisam ser apagados junto, senao ficam orfaos na pasta uploads/.
+  const recortes = db
+    .prepare('SELECT image_path FROM highlights WHERE document_id = ? AND image_path IS NOT NULL')
+    .all(id);
+  recortes.forEach((r) => fs.rm(path.join(PASTA_UPLOADS, r.image_path), { force: true }, () => {}));
+
+  db.prepare(
+    'DELETE FROM highlight_codes WHERE highlight_id IN (SELECT id FROM highlights WHERE document_id = ?)'
+  ).run(id);
   db.prepare('DELETE FROM highlights WHERE document_id = ? AND user_id = ?').run(id, userId);
+  db.prepare('DELETE FROM codes WHERE document_id = ?').run(id);
   db.prepare('DELETE FROM documents WHERE id = ? AND user_id = ?').run(id, userId);
 }
 

@@ -11,7 +11,7 @@
   <% if (artigo.authors) { %><p class="autores"><%= artigo.authors %></p><% } %>
   <% if (artigo.venue) { %><p class="veiculo"><%= artigo.venue %></p><% } %>
   <% if (resumo) { %><p class="resumo"><%= resumo %></p><% } %>
-  <% if (link) { %><p class="link-artigo"><a href="<%= link %>" target="_blank" rel="noopener">Abrir artigo ↗</a></p><% } %>
+  <% if (link) { %><p class="link-artigo"><a href="<%= link %>" target="_blank" rel="noopener"><%= t('articles.openArticleLink') %></a></p><% } %>
   <% if (artigo.pdf_url) { %>
     <div class="acoes-pdf">
       <button
@@ -22,17 +22,17 @@
         data-pdf-titulo="<%= artigo.title %>"
       >
         <svg class="icone" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-        Pré-visualizar
+        <%= t('articles.previewButton') %>
       </button>
       <a class="botao secundario" href="/pdf-externo?url=<%= encodeURIComponent(artigo.pdf_url) %>&baixar=1" target="_blank" rel="noopener">
         <svg class="icone" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg>
-        Baixar PDF
+        <%= t('articles.downloadPdfButton') %>
       </a>
     </div>
   <% } %>
   <div class="acoes">
     <form class="remover" method="POST" action="/artigos/<%= artigo.id %>/remover">
-      <button class="botao secundario" type="submit">Remover</button>
+      <button class="botao secundario" type="submit"><%= t('articles.removeButton') %></button>
     </form>
   </div>
 </article>

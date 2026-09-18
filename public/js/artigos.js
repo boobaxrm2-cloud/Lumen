@@ -1,6 +1,8 @@
 // Busca artigos no Semantic Scholar (via nosso backend) e permite salvar/descartar
 // cada resultado. Os artigos salvos ficam na pagina "Biblioteca" (/biblioteca).
 
+const I18N_ARTIGOS_TXT = window.I18N_ARTIGOS;
+
 const formBusca = document.getElementById('form-busca');
 const campoBusca = document.getElementById('campo-busca');
 const containerResultados = document.getElementById('resultados');
@@ -23,6 +25,10 @@ let proximoOffset = null;
 // pra dar pra "desfazer" a ordenacao por mais recente sem buscar de novo.
 let resultadosCarregados = [];
 
+function preencher(modelo, valores) {
+  return modelo.replace(/\{(\w+)\}/g, (_, nome) => valores[nome]);
+}
+
 function escaparHtml(texto) {
   const div = document.createElement('div');
   div.textContent = texto || '';
@@ -41,10 +47,22 @@ function linkDoArtigo(artigo) {
 
 function criarFichaResultado(artigo) {
   const ficha = document.createElement('article');
-  ficha.className = 'ficha-artigo';
+  ficha.className = 'ficha-artigo' + (artigo.jaSalvo ? ' ja-salva' : '');
 
   const link = linkDoArtigo(artigo);
   const resumo = truncar(artigo.abstract, 280);
+
+  // Se a busca ja identificou (pelo DOI ou titulo parecido) que isso bate com
+  // algo que a pessoa ja salvou, mostra direto - sem precisar clicar em
+  // "Salvar" pra so entao descobrir que era duplicado.
+  const acoesHtml = artigo.jaSalvo
+    ? `<div class="acoes">
+        <button class="botao" type="button" data-acao="salvar" disabled title="${escaparHtml(I18N_ARTIGOS_TXT.alreadySavedTitle)}">${escaparHtml(I18N_ARTIGOS_TXT.alreadySavedButton)}</button>
+      </div>`
+    : `<div class="acoes">
+        <button class="botao" type="button" data-acao="salvar">${escaparHtml(I18N_ARTIGOS_TXT.saveButton)}</button>
+        <button class="botao secundario" type="button" data-acao="descartar">${escaparHtml(I18N_ARTIGOS_TXT.discardButton)}</button>
+      </div>`;
 
   ficha.innerHTML = `
     <div class="cabecalho-ficha">
@@ -54,35 +72,37 @@ function criarFichaResultado(artigo) {
     ${artigo.authors ? `<p class="autores">${escaparHtml(artigo.authors)}</p>` : ''}
     ${artigo.venue ? `<p class="veiculo">${escaparHtml(artigo.venue)}</p>` : ''}
     ${resumo ? `<p class="resumo">${escaparHtml(resumo)}</p>` : ''}
-    ${link ? `<p class="link-artigo"><a href="${escaparHtml(link)}" target="_blank" rel="noopener">Abrir artigo ↗</a></p>` : ''}
+    ${link ? `<p class="link-artigo"><a href="${escaparHtml(link)}" target="_blank" rel="noopener">${escaparHtml(I18N_ARTIGOS_TXT.openArticleLink)}</a></p>` : ''}
     ${
       artigo.pdfAberto
         ? `<div class="acoes-pdf">
             <button class="botao secundario" type="button" data-acao="previa-pdf" data-pdf-url="${escaparHtml(artigo.pdfAberto)}" data-pdf-titulo="${escaparHtml(artigo.title)}">
               <svg class="icone" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-              Pré-visualizar
+              ${escaparHtml(I18N_ARTIGOS_TXT.previewButton)}
             </button>
             <a class="botao secundario" href="/pdf-externo?url=${encodeURIComponent(artigo.pdfAberto)}&baixar=1" target="_blank" rel="noopener">
               <svg class="icone" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 19h16"/></svg>
-              Baixar PDF
+              ${escaparHtml(I18N_ARTIGOS_TXT.downloadPdfButton)}
             </a>
           </div>`
         : ''
     }
-    <div class="acoes">
-      <button class="botao" type="button" data-acao="salvar">Salvar</button>
-      <button class="botao secundario" type="button" data-acao="descartar">Descartar</button>
-    </div>
+    ${acoesHtml}
   `;
 
-  ficha.querySelector('[data-acao="descartar"]').addEventListener('click', () => {
-    ficha.remove();
-    resultadosCarregados = resultadosCarregados.filter((item) => item.elemento !== ficha);
-  });
+  const botaoDescartar = ficha.querySelector('[data-acao="descartar"]');
+  if (botaoDescartar) {
+    botaoDescartar.addEventListener('click', () => {
+      ficha.remove();
+      resultadosCarregados = resultadosCarregados.filter((item) => item.elemento !== ficha);
+    });
+  }
 
-  ficha.querySelector('[data-acao="salvar"]').addEventListener('click', (evento) => {
-    salvarArtigo(artigo, ficha, evento.target);
-  });
+  if (!artigo.jaSalvo) {
+    ficha.querySelector('[data-acao="salvar"]').addEventListener('click', (evento) => {
+      salvarArtigo(artigo, ficha, evento.target);
+    });
+  }
 
   return ficha;
 }
@@ -104,7 +124,7 @@ async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
     contagemResultados.textContent = '';
   }
 
-  avisoBusca.textContent = 'Buscando...';
+  avisoBusca.textContent = I18N_ARTIGOS_TXT.searching;
   avisoBusca.classList.remove('erro-texto');
 
   try {
@@ -118,14 +138,14 @@ async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-      avisoBusca.textContent = dados.erro || 'Não foi possível buscar agora.';
+      avisoBusca.textContent = dados.erro || I18N_ARTIGOS_TXT.errorGeneric;
       avisoBusca.classList.add('erro-texto');
       areaCarregarMais.style.display = 'none';
       return;
     }
 
     if (dados.resultados.length === 0 && comecarDoZero) {
-      avisoBusca.textContent = 'Nenhum resultado encontrado com esses termos/filtros.';
+      avisoBusca.textContent = I18N_ARTIGOS_TXT.noResults;
       areaCarregarMais.style.display = 'none';
       return;
     }
@@ -139,12 +159,15 @@ async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
 
     aplicarOrdenacao();
 
-    contagemResultados.textContent = `Mostrando ${resultadosCarregados.length} de ${dados.total} resultado(s).`;
+    contagemResultados.textContent = preencher(I18N_ARTIGOS_TXT.resultCount, {
+      n: resultadosCarregados.length,
+      total: dados.total,
+    });
 
     proximoOffset = dados.proximoOffset;
     areaCarregarMais.style.display = proximoOffset ? 'flex' : 'none';
   } catch (erro) {
-    avisoBusca.textContent = 'Erro de conexão. Verifique sua internet e tente novamente.';
+    avisoBusca.textContent = I18N_ARTIGOS_TXT.connectionError;
     avisoBusca.classList.add('erro-texto');
   }
 }
@@ -163,42 +186,42 @@ function aplicarOrdenacao() {
   lista.forEach((item) => containerResultados.appendChild(item.elemento));
 }
 
-async function salvarArtigo(artigo, ficha, botao, forcar) {
+async function salvarArtigo(artigo, ficha, botao) {
   botao.disabled = true;
-  botao.textContent = 'Salvando...';
+  botao.textContent = I18N_ARTIGOS_TXT.savingButton;
 
   try {
     const resposta = await fetch('/api/artigos/salvar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.assign({}, artigo, { forcar: !!forcar })),
+      body: JSON.stringify(artigo),
     });
     const dados = await resposta.json();
 
     if (resposta.status === 409 && dados.duplicado) {
-      const confirmar = window.confirm(dados.mensagem + '\n\nSalvar mesmo assim?');
-      botao.disabled = false;
-      botao.textContent = 'Salvar';
-      if (confirmar) {
-        salvarArtigo(artigo, ficha, botao, true);
-      }
+      botao.disabled = true;
+      botao.textContent = I18N_ARTIGOS_TXT.alreadySavedButton;
+      botao.title = dados.mensagem;
+      ficha.classList.add('ja-salva');
+      const descartar = ficha.querySelector('[data-acao="descartar"]');
+      if (descartar) descartar.remove();
       return;
     }
 
     if (!resposta.ok) {
-      window.alert(dados.erro || 'Não foi possível salvar este artigo.');
+      window.alert(dados.erro || I18N_ARTIGOS_TXT.saveErrorGeneric);
       botao.disabled = false;
-      botao.textContent = 'Salvar';
+      botao.textContent = I18N_ARTIGOS_TXT.saveButton;
       return;
     }
 
-    botao.textContent = 'Salvo ✓ — ver na Biblioteca';
+    botao.textContent = I18N_ARTIGOS_TXT.savedButton;
     ficha.classList.add('ja-salva');
     ficha.querySelector('[data-acao="descartar"]').remove();
   } catch (erro) {
-    window.alert('Erro de conexão ao salvar o artigo.');
+    window.alert(I18N_ARTIGOS_TXT.saveConnectionError);
     botao.disabled = false;
-    botao.textContent = 'Salvar';
+    botao.textContent = I18N_ARTIGOS_TXT.saveButton;
   }
 }
 

@@ -2,6 +2,7 @@ const express = require('express');
 const { requireAuth } = require('../middleware/auth');
 const articles = require('../db/articles');
 const { similaridadeTitulos } = require('../utils/similaridade');
+const { t, CSV_DELIMITADOR_POR_IDIOMA } = require('../utils/i18n');
 
 const router = express.Router();
 
@@ -24,6 +25,18 @@ const TIPOS_PUBLICACAO_VALIDOS = new Set([
 // A partir desse grau de sobreposicao de palavras no titulo, avisamos que pode ser duplicata.
 const LIMIAR_SIMILARIDADE = 0.6;
 
+// Acha, entre os artigos ja salvos do usuario, um que pareca ser o mesmo
+// artigo (mesmo DOI, ou titulo muito parecido). Usado tanto pra avisar antes
+// mesmo de tentar salvar (na busca) quanto pra bloquear o salvamento mesmo.
+function encontrarSalvoParecido(salvos, { title, doi }) {
+  const doiLimpo = doi ? String(doi).trim().toLowerCase() : null;
+  if (doiLimpo) {
+    const porDoi = salvos.find((artigo) => artigo.doi && artigo.doi.toLowerCase() === doiLimpo);
+    if (porDoi) return porDoi;
+  }
+  return salvos.find((artigo) => similaridadeTitulos(artigo.title, title) >= LIMIAR_SIMILARIDADE) || null;
+}
+
 router.get('/artigos', requireAuth, (req, res) => {
   res.render('artigos', { queryInicial: req.query.q || '' });
 });
@@ -39,7 +52,7 @@ router.get('/pdf-externo', requireAuth, async (req, res) => {
   const urlOriginal = req.query.url;
   const querBaixar = Boolean(req.query.baixar);
   if (!urlOriginal || !/^https?:\/\//i.test(urlOriginal)) {
-    return res.status(400).send('Link de PDF invalido.');
+    return res.status(400).send(res.locals.t('articles.erroLinkInvalido'));
   }
 
   // Alguns sites bloqueiam pedidos feitos por servidor (proteção antirrobô) mas
@@ -52,11 +65,11 @@ router.get('/pdf-externo', requireAuth, async (req, res) => {
     respostaExterna = await fetch(urlOriginal);
   } catch (err) {
     if (querBaixar) return res.redirect(urlOriginal);
-    return res.status(502).send('Nao foi possivel baixar esse PDF agora.');
+    return res.status(502).send(res.locals.t('articles.erroFalhaDownload'));
   }
   if (!respostaExterna.ok) {
     if (querBaixar) return res.redirect(urlOriginal);
-    return res.status(502).send('O site do PDF nao respondeu corretamente.');
+    return res.status(502).send(res.locals.t('articles.erroSiteNaoRespondeu'));
   }
 
   const conteudo = Buffer.from(await respostaExterna.arrayBuffer());
@@ -68,7 +81,7 @@ router.get('/pdf-externo', requireAuth, async (req, res) => {
   const pareceComUmPdf = conteudo.length > 4 && conteudo.subarray(0, 4).toString('latin1') === '%PDF';
   if (!pareceComUmPdf) {
     if (querBaixar) return res.redirect(urlOriginal);
-    return res.status(502).send('O site do PDF bloqueou o acesso automatico. Tente abrir o link original.');
+    return res.status(502).send(res.locals.t('articles.erroBloqueadoRobo'));
   }
 
   const disposicao = querBaixar ? 'attachment' : 'inline';
@@ -86,7 +99,7 @@ router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
   const query = (req.query.q || '').trim();
   const offset = Number.parseInt(req.query.offset, 10) || 0;
   if (!query) {
-    return res.status(400).json({ erro: 'Informe um termo de busca.' });
+    return res.status(400).json({ erro: res.locals.t('articles.erroTermoBusca') });
   }
 
   const url = new URL(SEMANTIC_SCHOLAR_URL);
@@ -121,27 +134,34 @@ router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
   try {
     resposta = await fetch(url, { headers: cabecalhos });
   } catch (err) {
-    return res.status(502).json({ erro: 'Nao foi possivel conectar ao Semantic Scholar. Tente novamente.' });
+    return res.status(502).json({ erro: res.locals.t('articles.erroConexaoSemanticScholar') });
   }
 
   if (resposta.status === 429) {
-    return res.status(429).json({ erro: 'Muitas buscas em pouco tempo. Aguarde alguns segundos e tente de novo.' });
+    return res.status(429).json({ erro: res.locals.t('articles.erroMuitasBuscas') });
   }
   if (!resposta.ok) {
-    return res.status(502).json({ erro: 'O Semantic Scholar nao respondeu corretamente. Tente novamente.' });
+    return res.status(502).json({ erro: res.locals.t('articles.erroSemanticScholarInvalido') });
   }
 
   const dados = await resposta.json();
-  const resultados = (dados.data || []).map((artigo) => ({
-    title: artigo.title || '(sem titulo)',
-    abstract: artigo.abstract || '',
-    year: artigo.year || null,
-    venue: artigo.venue || '',
-    authors: (artigo.authors || []).map((autor) => autor.name).join(', '),
-    doi: artigo.externalIds && artigo.externalIds.DOI ? artigo.externalIds.DOI : null,
-    url: artigo.url || null,
-    pdfAberto: artigo.openAccessPdf ? artigo.openAccessPdf.url : null,
-  }));
+  const salvos = articles.listByUser(req.session.userId);
+  const resultados = (dados.data || []).map((artigo) => {
+    const titulo = artigo.title || res.locals.t('articles.semTitulo');
+    const doi = artigo.externalIds && artigo.externalIds.DOI ? artigo.externalIds.DOI : null;
+    const parecido = encontrarSalvoParecido(salvos, { title: titulo, doi });
+    return {
+      title: titulo,
+      abstract: artigo.abstract || '',
+      year: artigo.year || null,
+      venue: artigo.venue || '',
+      authors: (artigo.authors || []).map((autor) => autor.name).join(', '),
+      doi,
+      url: artigo.url || null,
+      pdfAberto: artigo.openAccessPdf ? artigo.openAccessPdf.url : null,
+      jaSalvo: !!parecido,
+    };
+  });
 
   res.json({
     resultados,
@@ -156,24 +176,16 @@ router.post('/api/artigos/salvar', requireAuth, (req, res) => {
 
   const tituloLimpo = (title || '').trim();
   if (!tituloLimpo) {
-    return res.status(400).json({ erro: 'Este resultado nao tem titulo, nao e possivel salvar.' });
+    return res.status(400).json({ erro: res.locals.t('articles.erroSemTitulo') });
   }
 
-  const doiLimpo = doi ? String(doi).trim().toLowerCase() : null;
   const salvos = articles.listByUser(userId);
-
-  let parecido = null;
-  if (doiLimpo) {
-    parecido = salvos.find((artigo) => artigo.doi && artigo.doi.toLowerCase() === doiLimpo);
-  }
-  if (!parecido) {
-    parecido = salvos.find((artigo) => similaridadeTitulos(artigo.title, tituloLimpo) >= LIMIAR_SIMILARIDADE);
-  }
+  const parecido = encontrarSalvoParecido(salvos, { title: tituloLimpo, doi });
 
   if (parecido && !forcar) {
     return res.status(409).json({
       duplicado: true,
-      mensagem: `Ja existe um artigo parecido salvo: "${parecido.title}".`,
+      mensagem: res.locals.t('articles.mensagemDuplicado', { titulo: parecido.title }),
     });
   }
 
@@ -200,35 +212,49 @@ router.post('/artigos/:id/remover', requireAuth, (req, res) => {
 
 router.get('/artigos/exportar.csv', requireAuth, (req, res) => {
   const salvos = articles.listByUser(req.session.userId);
-  const csv = gerarCsv(salvos);
+  const csv = gerarCsv(salvos, res.locals.lang);
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.setHeader('Content-Disposition', 'attachment; filename="artigos-salvos.csv"');
   res.send(csv);
 });
 
-function campoCsv(valor) {
+function campoCsv(valor, delimitador) {
   const texto = valor === null || valor === undefined ? '' : String(valor);
-  if (/[",\n]/.test(texto)) {
+  const precisaAspas = new RegExp(`["${delimitador}\r\n]`).test(texto);
+  if (precisaAspas) {
     return '"' + texto.replace(/"/g, '""') + '"';
   }
   return texto;
 }
 
-function gerarCsv(listaArtigos) {
-  const cabecalho = ['Titulo', 'Autores', 'Ano', 'Veiculo', 'DOI', 'Link', 'PDF de acesso aberto', 'Resumo'];
-  const linhas = [cabecalho.join(',')];
+// O separador varia por idioma porque o Excel em portugues/espanhol trata ","
+// como separador decimal e espera ";" pra separar colunas - com virgula, ele
+// abria tudo numa coluna so. Em ingles, "," e o padrao normal.
+function gerarCsv(listaArtigos, lang) {
+  const delimitador = CSV_DELIMITADOR_POR_IDIOMA[lang];
+  const cabecalho = [
+    t(lang, 'csv.articles.title'),
+    t(lang, 'csv.articles.authors'),
+    t(lang, 'csv.articles.year'),
+    t(lang, 'csv.articles.venue'),
+    t(lang, 'csv.articles.doi'),
+    t(lang, 'csv.articles.link'),
+    t(lang, 'csv.articles.openAccessPdf'),
+    t(lang, 'csv.articles.abstract'),
+  ];
+  const linhas = [cabecalho.join(delimitador)];
   for (const artigo of listaArtigos) {
     linhas.push(
       [
-        campoCsv(artigo.title),
-        campoCsv(artigo.authors),
-        campoCsv(artigo.year),
-        campoCsv(artigo.venue),
-        campoCsv(artigo.doi),
-        campoCsv(artigo.url),
-        campoCsv(artigo.pdf_url),
-        campoCsv(artigo.abstract),
-      ].join(',')
+        campoCsv(artigo.title, delimitador),
+        campoCsv(artigo.authors, delimitador),
+        campoCsv(artigo.year, delimitador),
+        campoCsv(artigo.venue, delimitador),
+        campoCsv(artigo.doi, delimitador),
+        campoCsv(artigo.url, delimitador),
+        campoCsv(artigo.pdf_url, delimitador),
+        campoCsv(artigo.abstract, delimitador),
+      ].join(delimitador)
     );
   }
   // ﻿ (BOM) garante que o Excel abra os acentos corretamente.

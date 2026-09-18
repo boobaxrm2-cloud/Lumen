@@ -33,5 +33,41 @@ function adicionarColunaSeNaoExistir(tabela, coluna, definicao) {
 adicionarColunaSeNaoExistir('articles', 'pdf_url', 'TEXT');
 adicionarColunaSeNaoExistir('documents', 'file_path', 'TEXT');
 adicionarColunaSeNaoExistir('documents', 'file_size', 'INTEGER');
+adicionarColunaSeNaoExistir('codes', 'document_id', 'INTEGER REFERENCES documents(id)');
+adicionarColunaSeNaoExistir('highlights', 'type', "TEXT NOT NULL DEFAULT 'texto'");
+adicionarColunaSeNaoExistir('highlights', 'image_path', 'TEXT');
+adicionarColunaSeNaoExistir('highlights', 'page_number', 'INTEGER');
+adicionarColunaSeNaoExistir('users', 'last_login_at', 'TEXT');
+adicionarColunaSeNaoExistir('users', 'secret_question', 'TEXT');
+adicionarColunaSeNaoExistir('users', 'secret_answer_hash', 'TEXT');
+
+// Codigos criados antes de existir a coluna document_id ficam sem documento -
+// associa cada um ao documento do primeiro trecho em que ele foi usado (ou
+// remove, se nunca foi usado em nenhum trecho, ja que nao da pra saber de
+// qual documento ele era).
+function preencherDocumentoDosCodigosAntigos() {
+  const orfaos = db.prepare('SELECT id FROM codes WHERE document_id IS NULL').all();
+  orfaos.forEach((codigo) => {
+    const uso = db
+      .prepare(
+        `SELECT h.document_id AS documentId
+         FROM highlight_codes hc
+         JOIN highlights h ON h.id = hc.highlight_id
+         WHERE hc.code_id = ?
+         LIMIT 1`
+      )
+      .get(codigo.id);
+    if (uso) {
+      db.prepare('UPDATE codes SET document_id = ? WHERE id = ?').run(uso.documentId, codigo.id);
+    } else {
+      db.prepare('DELETE FROM codes WHERE id = ?').run(codigo.id);
+    }
+  });
+}
+preencherDocumentoDosCodigosAntigos();
+
+// So cria esse indice depois de garantir que a coluna existe (em bancos
+// antigos ela e adicionada pela migracao acima, nao pelo schema.sql).
+db.exec('CREATE INDEX IF NOT EXISTS idx_codes_document ON codes(document_id)');
 
 module.exports = db;

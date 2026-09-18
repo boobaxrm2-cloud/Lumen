@@ -7,6 +7,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 const ESCALA_PREVIA = 1.3;
+const I18N_PDF_TXT = window.I18N_PDF_PREVIEW;
+
+function preencher(modelo, valores) {
+  return modelo.replace(/\{(\w+)\}/g, (_, nome) => valores[nome]);
+}
 
 const modal = document.getElementById('modal-pdf');
 const modalFundo = document.getElementById('modal-pdf-fundo');
@@ -47,17 +52,17 @@ async function renderizarPaginaPrevia(numero) {
   await pagina.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
 
   paginaAtual = numero;
-  indicadorPagina.textContent = `Página ${numero} de ${pdfAtual.numPages}`;
+  indicadorPagina.textContent = preencher(I18N_PDF_TXT.pageIndicator, { atual: numero, total: pdfAtual.numPages });
   botaoAnterior.disabled = numero <= 1;
   botaoSeguinte.disabled = numero >= pdfAtual.numPages;
 }
 
 async function abrirPreviaPdf(url, titulo) {
-  modalTitulo.textContent = titulo || 'Pré-visualização';
+  modalTitulo.textContent = titulo || I18N_PDF_TXT.title;
   modalCorpo.innerHTML = '';
-  modalStatus.textContent = 'Carregando PDF...';
+  modalStatus.textContent = I18N_PDF_TXT.loading;
   modalCorpo.appendChild(modalStatus);
-  indicadorPagina.textContent = 'Página 1 de 1';
+  indicadorPagina.textContent = preencher(I18N_PDF_TXT.pageIndicator, { atual: 1, total: 1 });
   botaoAnterior.disabled = true;
   botaoSeguinte.disabled = true;
   abrirModal();
@@ -70,8 +75,7 @@ async function abrirPreviaPdf(url, titulo) {
     await renderizarPaginaPrevia(1);
   } catch (erro) {
     modalCorpo.innerHTML = '';
-    modalStatus.textContent =
-      'Esse site não deixa o Lumen abrir o PDF por aqui (proteção contra robôs). Você pode abri-lo direto:';
+    modalStatus.textContent = I18N_PDF_TXT.blockedFallback;
     modalCorpo.appendChild(modalStatus);
     const linkAlternativo = document.createElement('a');
     linkAlternativo.href = url;
@@ -79,7 +83,7 @@ async function abrirPreviaPdf(url, titulo) {
     linkAlternativo.rel = 'noopener';
     linkAlternativo.className = 'botao';
     linkAlternativo.style.marginTop = '1rem';
-    linkAlternativo.textContent = 'Abrir PDF em nova aba ↗';
+    linkAlternativo.textContent = I18N_PDF_TXT.openInNewTab;
     modalCorpo.appendChild(linkAlternativo);
   }
 }

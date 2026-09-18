@@ -16,4 +16,17 @@ function redirectIfLoggedIn(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, redirectIfLoggedIn };
+// Protege as paginas do painel de admin. O admin loga pela mesma tela de
+// login de todo mundo - so quem tem o email configurado em ADMIN_EMAIL
+// recebe a flag isAdmin na sessao (ver routes/auth.js).
+function requireAdmin(req, res, next) {
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+  if (!req.session.isAdmin) {
+    return res.redirect('/');
+  }
+  next();
+}
+
+module.exports = { requireAuth, redirectIfLoggedIn, requireAdmin };

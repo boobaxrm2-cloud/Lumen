@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= t('coding.tabTitle') %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <%- include('partials/cabecalho') %>
+
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'codificacao' }) %>
+
+    <main>
+    <%- include('partials/voltar-modulos') %>
+
+    <% if (modoEscolha) { %>
+
+      <section class="secao">
+        <div class="documentos-cabecalho">
+          <div class="titulo-com-icone">
+            <span class="icone-caixa">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M20.59 13.41L11 3.83A2 2 0 009.59 3H4a1 1 0 00-1 1v5.59a2 2 0 00.59 1.41l9.58 9.58a2 2 0 002.83 0l4.59-4.59a2 2 0 000-2.83z"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <div>
+              <h2><%= t('coding.chooseResearchHeading') %></h2>
+              <p class="subtitulo-documentos"><%= t('coding.chooseResearchSubtitle') %></p>
+            </div>
+          </div>
+        </div>
+
+        <% if (documentos.length === 0) { %>
+          <p class="lista-vazia">
+            <%- t('coding.noDocumentsEmpty') %>
+          </p>
+        <% } else { %>
+          <div class="lista-documentos-codificar">
+            <% documentos.forEach(function (doc) { %>
+              <a class="documento-codificar-card" href="/codificacao?documento=<%= doc.id %>">
+                <span class="documento-codificar-icone">
+                  <svg class="icone" viewBox="0 0 24 24"><path d="M4 5c3-1.3 6-1.3 8 0 2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0-2-1.3-5-1.3-8 0z"/><path d="M12 5v14"/></svg>
+                </span>
+                <span class="documento-codificar-info">
+                  <strong><%= doc.title %></strong>
+                  <span><%= t('coding.excerptCountBadge', { n: doc.total }) %></span>
+                </span>
+                <svg class="icone seta-linha" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+            <% }); %>
+          </div>
+        <% } %>
+      </section>
+
+    <% } else { %>
+
+      <div class="linha-topo-codificacao">
+        <a href="/codificacao" class="link-voltar">
+          <svg class="icone" viewBox="0 0 24 24"><path d="M19 12H5m0 0l6-6m-6 6l6 6"/></svg>
+          <%= t('coding.switchResearch') %>
+        </a>
+        <a class="botao" href="/documentos/<%= documentoId %>/dashboard.pdf">
+          <svg class="icone" viewBox="0 0 24 24"><path d="M4 19V10M10 19V5M16 19v-7M20 19H4"/></svg>
+          <%= t('coding.downloadDashboardPdf') %>
+        </a>
+      </div>
+
+      <%
+        function querystringFiltro(codigoId) {
+          var params = new URLSearchParams();
+          params.set('documento', documentoId);
+          if (codigoId) params.set('codigo', codigoId);
+          return '?' + params.toString();
+        }
+      %>
+
+      <section class="secao">
+        <div class="documentos-cabecalho">
+          <div class="titulo-com-icone">
+            <span class="icone-caixa">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M20.59 13.41L11 3.83A2 2 0 009.59 3H4a1 1 0 00-1 1v5.59a2 2 0 00.59 1.41l9.58 9.58a2 2 0 002.83 0l4.59-4.59a2 2 0 000-2.83z"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <div>
+              <h2><%= t('coding.myCodesHeading') %></h2>
+              <p class="subtitulo-documentos"><%= t('coding.myCodesSubtitlePrefix') %><strong><%= documentoEscolhido.title %></strong><%= t('coding.myCodesSubtitleSuffix') %></p>
+            </div>
+          </div>
+        </div>
+
+        <form method="POST" action="/codigos" class="form-novo-codigo">
+          <input type="hidden" name="documentId" value="<%= documentoId %>" />
+          <input type="text" name="name" placeholder="<%= t('coding.newCodePlaceholder') %>" required maxlength="60" />
+          <div class="paleta-cores">
+            <% coresCodigo.forEach(function (cor, i) { %>
+              <label class="swatch-cor-label" style="--cor-swatch: <%= cor %>;">
+                <input type="radio" name="color" value="<%= cor %>" <%= i === 0 ? 'checked' : '' %> />
+              </label>
+            <% }); %>
+          </div>
+          <button class="botao" type="submit">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            <%= t('coding.createCodeButton') %>
+          </button>
+        </form>
+
+        <% if (codigos.length === 0) { %>
+          <p class="lista-vazia"><%= t('coding.noCodesYet') %></p>
+        <% } else { %>
+          <div class="lista-codigos">
+            <a href="<%= querystringFiltro(null) %>" class="chip-codigo-filtro <%= !filtroCodigo ? 'ativo' : '' %>"><%= t('coding.allExcerptsChip') %></a>
+            <% codigos.forEach(function (codigo) { %>
+              <div class="chip-codigo">
+                <a href="<%= querystringFiltro(codigo.id) %>" class="chip-codigo-link <%= filtroCodigo === codigo.id ? 'ativo' : '' %>">
+                  <span class="chip-codigo-ponto" style="background: <%= codigo.color %>;"></span>
+                  <%= codigo.name %>
+                  <span class="chip-codigo-contagem"><%= codigo.total %></span>
+                </a>
+                <form method="POST" action="/codigos/<%= codigo.id %>/remover" onsubmit="return confirm('<%= t('coding.confirmRemoveCode', { nome: codigo.name }) %>');">
+                  <button class="chip-codigo-remover" type="submit" title="<%= t('coding.removeCodeTitle') %>">
+                    <svg class="icone" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                  </button>
+                </form>
+              </div>
+            <% }); %>
+          </div>
+        <% } %>
+      </section>
+
+      <section class="secao" style="margin-top: 2.8rem;">
+        <div class="documentos-cabecalho">
+          <div class="titulo-com-icone">
+            <span class="icone-caixa">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M4 5c3-1.3 6-1.3 8 0 2-1.3 5-1.3 8 0v14c-3-1.3-6-1.3-8 0-2-1.3-5-1.3-8 0z"/><path d="M12 5v14"/></svg>
+            </span>
+            <div>
+              <h2><%= t('coding.markedExcerptsHeading') %> <span class="contagem"><%= t('coding.excerptCountSuffix', { n: trechos.length }) %></span></h2>
+              <p class="subtitulo-documentos">
+                <% if (filtroCodigo) { %>
+                  <%= t('coding.filteredNotice') %> <a href="<%= querystringFiltro(null) %>"><%= t('coding.viewAll') %></a>.
+                <% } else { %>
+                  <%= t('coding.allExcerptsNotice') %>
+                <% } %>
+              </p>
+            </div>
+          </div>
+          <% if (trechos.length > 0) { %>
+            <a class="botao secundario" href="/codificacao/exportar.csv<%= querystringFiltro(filtroCodigo) %>"><%= t('coding.exportCsv') %></a>
+          <% } %>
+        </div>
+
+        <% if (trechos.length === 0) { %>
+          <p class="lista-vazia">
+            <% if (filtroCodigo) { %>
+              <%= t('coding.noExcerptsWithCode') %>
+            <% } else { %>
+              <%= t('coding.noExcerptsYet') %>
+            <% } %>
+          </p>
+        <% } else { %>
+          <div class="lista-trechos-codificar">
+            <% trechos.forEach(function (trecho) { %>
+              <div class="trecho-codificar" id="trecho-<%= trecho.id %>">
+                <% if (trecho.type === 'imagem') { %>
+                  <img class="trecho-codificar-imagem" src="/destaques/<%= trecho.id %>/imagem" alt="<%= t('coding.markedCropAlt') %>" />
+                  <% if (trecho.excerpt) { %><p class="trecho-codificar-legenda"><%= trecho.excerpt %></p><% } %>
+                <% } else { %>
+                  <p class="trecho-codificar-texto">"<%= trecho.excerpt %>"</p>
+                <% } %>
+
+                <div class="trecho-codificar-rodape">
+                  <div class="trecho-codificar-codigos">
+                    <% trecho.codigos.forEach(function (codigo) { %>
+                      <form method="POST" action="/trechos/<%= trecho.id %>/alternar-codigo" class="chip-codigo-mini-form">
+                        <input type="hidden" name="codeId" value="<%= codigo.id %>" />
+                        <input type="hidden" name="voltarParaDocumento" value="<%= documentoId %>" />
+                        <% if (filtroCodigo) { %><input type="hidden" name="voltarParaCodigo" value="<%= filtroCodigo %>" /><% } %>
+                        <span class="chip-codigo-mini" style="background: <%= codigo.color %>1a; color: <%= codigo.color %>; border-color: <%= codigo.color %>66;">
+                          <%= codigo.name %>
+                          <button type="submit" class="chip-codigo-mini-remover" title="<%= t('coding.removeCodeFromExcerptTitle') %>">×</button>
+                        </span>
+                      </form>
+                    <% }); %>
+                    <% if (trecho.codigos.length === 0) { %>
+                      <span class="trecho-sem-codigo"><%= t('coding.noCodeYet') %></span>
+                    <% } %>
+                  </div>
+
+                  <% if (codigos.length > 0) { %>
+                    <details class="seletor-codigos">
+                      <summary class="botao-icone" title="<%= t('coding.addCodeTitle') %>">
+                        <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                      </summary>
+                      <div class="menu-codigos">
+                        <% codigos.forEach(function (codigo) { %>
+                          <% var marcado = trecho.codigos.some(function (c) { return c.id === codigo.id; }); %>
+                          <form method="POST" action="/trechos/<%= trecho.id %>/alternar-codigo">
+                            <input type="hidden" name="codeId" value="<%= codigo.id %>" />
+                            <input type="hidden" name="voltarParaDocumento" value="<%= documentoId %>" />
+                            <% if (filtroCodigo) { %><input type="hidden" name="voltarParaCodigo" value="<%= filtroCodigo %>" /><% } %>
+                            <button type="submit" class="item-menu-codigo <%= marcado ? 'marcado' : '' %>">
+                              <span class="chip-codigo-ponto" style="background: <%= codigo.color %>;"></span>
+                              <%= codigo.name %>
+                              <% if (marcado) { %><svg class="icone icone-check-menu" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><% } %>
+                            </button>
+                          </form>
+                        <% }); %>
+                      </div>
+                    </details>
+                  <% } %>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } %>
+      </section>
+
+    <% } %>
+    </main>
+  </div>
+</body>
+</html>

@@ -12,6 +12,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 const ESCALA_RENDER = 1.5;
+const I18N_LEITURA_TXT = window.I18N_LEITURA;
+
+function preencher(modelo, valores) {
+  return modelo.replace(/\{(\w+)\}/g, (_, nome) => valores[nome]);
+}
 
 const formUpload = document.getElementById('form-upload');
 const campoArquivo = document.getElementById('arquivo-pdf');
@@ -33,6 +38,14 @@ const indicadorPagina = document.getElementById('indicador-pagina');
 const popupMarcar = document.getElementById('popup-marcar');
 const botaoMarcar = document.getElementById('botao-marcar');
 
+const botaoModoRecorte = document.getElementById('botao-modo-recorte');
+const textoModoRecorte = document.getElementById('texto-modo-recorte');
+const popupRecorte = document.getElementById('popup-recorte');
+const previewRecorte = document.getElementById('preview-recorte');
+const legendaRecorte = document.getElementById('legenda-recorte');
+const botaoCancelarRecorte = document.getElementById('botao-cancelar-recorte');
+const botaoSalvarRecorte = document.getElementById('botao-salvar-recorte');
+
 const dropzoneArquivo = document.getElementById('dropzone-arquivo');
 const dropzoneTexto = document.getElementById('dropzone-texto');
 
@@ -44,6 +57,13 @@ let indiceBuscaAtual = -1;
 let ultimoTermoBuscado = '';
 let excertoSelecionadoAtual = '';
 
+let modoRecorteAtivo = false;
+let recorteWrapperAtual = null;
+let recortePontoInicial = null;
+let recorteRetangulo = null;
+let dataUrlRecorteAtual = null;
+let paginaRecorteAtual = null;
+
 campoArquivo.addEventListener('change', () => {
   const arquivo = campoArquivo.files[0];
   if (!arquivo) return;
@@ -51,7 +71,7 @@ campoArquivo.addEventListener('change', () => {
   if (!campoTitulo.value.trim()) {
     campoTitulo.value = nomeParaTitulo(arquivo.name);
   }
-  dropzoneTexto.innerHTML = `<strong>${escaparHtml(arquivo.name)}</strong><small>Clique ou arraste outro arquivo para trocar</small>`;
+  dropzoneTexto.innerHTML = `<strong>${escaparHtml(arquivo.name)}</strong><small>${escaparHtml(I18N_LEITURA_TXT.dropChangeHint)}</small>`;
 });
 
 // Arrastar e soltar um PDF na zona de envio (alem de clicar e escolher).
@@ -75,7 +95,7 @@ dropzoneArquivo.addEventListener('drop', (evento) => {
   const arquivo = evento.dataTransfer.files[0];
   if (!arquivo) return;
   if (arquivo.type !== 'application/pdf') {
-    statusUpload.textContent = 'Envie apenas arquivos PDF.';
+    statusUpload.textContent = I18N_LEITURA_TXT.onlyPdfError;
     statusUpload.classList.add('erro-texto');
     return;
   }
@@ -109,6 +129,16 @@ function criarFichaDestaque(destaque) {
   return item;
 }
 
+function criarFichaDestaqueImagem(destaque) {
+  const item = document.createElement('div');
+  item.className = 'destaque-item destaque-item-imagem';
+  const legenda = destaque.excerpt
+    ? `<p class="legenda-recorte-item">${escaparHtml(destaque.excerpt)}</p>`
+    : '';
+  item.innerHTML = `<img src="/destaques/${destaque.id}/imagem" alt="${escaparHtml(I18N_LEITURA_TXT.markedCropAlt)}" />${legenda}`;
+  return item;
+}
+
 // Desenha a pagina indicada num <canvas> (visual identico ao PDF) e sobrepoe
 // uma camada de spans de texto invisiveis, na mesma posicao, pra permitir
 // selecionar/buscar texto. Retorna quantos itens de texto foram encontrados
@@ -116,6 +146,9 @@ function criarFichaDestaque(destaque) {
 async function renderizarPagina(numero) {
   visorPdf.innerHTML = '';
   esconderPopupMarcar();
+  esconderPopupRecorte();
+  recorteRetangulo = null;
+  recorteWrapperAtual = null;
 
   const pagina = await pdfAtual.getPage(numero);
   const viewport = pagina.getViewport({ scale: ESCALA_RENDER });
@@ -146,7 +179,7 @@ async function renderizarPagina(numero) {
   }).promise;
 
   paginaAtualNumero = numero;
-  indicadorPagina.textContent = `Página ${numero} de ${pdfAtual.numPages}`;
+  indicadorPagina.textContent = preencher(I18N_LEITURA_TXT.pageIndicator, { atual: numero, total: pdfAtual.numPages });
   botaoPaginaAnterior.disabled = numero <= 1;
   botaoPaginaSeguinte.disabled = numero >= pdfAtual.numPages;
 
@@ -178,6 +211,8 @@ async function iniciarLeitura() {
   buscaTexto.value = '';
   avisoBuscaTexto.textContent = '';
 
+  if (modoRecorteAtivo) botaoModoRecorte.click(); // volta pro modo normal ao trocar de documento
+
   const totalItensDeTexto = await renderizarPagina(1);
   areaLeitura.style.display = 'block';
   areaLeitura.scrollIntoView({ behavior: 'smooth' });
@@ -189,7 +224,7 @@ formUpload.addEventListener('submit', async (evento) => {
   const arquivo = campoArquivo.files[0];
   if (!arquivo) return;
 
-  statusUpload.textContent = 'Enviando e lendo o PDF...';
+  statusUpload.textContent = I18N_LEITURA_TXT.uploadingStatus;
   statusUpload.classList.remove('erro-texto');
 
   try {
@@ -205,7 +240,7 @@ formUpload.addEventListener('submit', async (evento) => {
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-      statusUpload.textContent = dados.erro || 'Não foi possível salvar o documento.';
+      statusUpload.textContent = dados.erro || I18N_LEITURA_TXT.uploadErrorGeneric;
       statusUpload.classList.add('erro-texto');
       return;
     }
@@ -216,11 +251,11 @@ formUpload.addEventListener('submit', async (evento) => {
 
     statusUpload.textContent =
       totalItensDeTexto > 0
-        ? `PDF carregado: ${pdfAtual.numPages} página(s).`
-        : 'O PDF foi salvo, mas não encontrei texto selecionável nele (pode ser uma imagem escaneada) — a busca e a marcação de trechos podem não funcionar.';
+        ? preencher(I18N_LEITURA_TXT.pdfLoadedStatus, { n: pdfAtual.numPages })
+        : I18N_LEITURA_TXT.pdfNoTextWarning;
     statusUpload.classList.toggle('erro-texto', totalItensDeTexto === 0);
   } catch (erro) {
-    statusUpload.textContent = 'Não foi possível ler esse PDF. Verifique se o arquivo não está corrompido.';
+    statusUpload.textContent = I18N_LEITURA_TXT.pdfReadError;
     statusUpload.classList.add('erro-texto');
   }
 });
@@ -234,14 +269,14 @@ document.addEventListener('click', async (evento) => {
   const id = botao.dataset.documentoId;
   const titulo = botao.dataset.documentoTitulo || '';
 
-  statusUpload.textContent = 'Carregando PDF salvo...';
+  statusUpload.textContent = I18N_LEITURA_TXT.loadingSavedPdf;
   statusUpload.classList.remove('erro-texto');
 
   try {
     const resposta = await fetch(`/documentos/${id}/arquivo`);
     if (!resposta.ok) {
       const texto = await resposta.text();
-      throw new Error(texto || 'Não foi possível carregar o arquivo.');
+      throw new Error(texto || I18N_LEITURA_TXT.loadFileErrorGeneric);
     }
 
     const arrayBuffer = await resposta.arrayBuffer();
@@ -259,10 +294,10 @@ document.addEventListener('click', async (evento) => {
     const totalItensDeTexto = await iniciarLeitura();
     statusUpload.textContent =
       totalItensDeTexto > 0
-        ? `"${titulo}" — ${pdfAtual.numPages} página(s).`
-        : 'Esse PDF não tem texto selecionável (pode ser uma imagem escaneada).';
+        ? preencher(I18N_LEITURA_TXT.viewingLoadedStatus, { titulo, n: pdfAtual.numPages })
+        : I18N_LEITURA_TXT.noSelectableTextStatus;
   } catch (erro) {
-    statusUpload.textContent = erro.message || 'Não foi possível carregar esse PDF salvo.';
+    statusUpload.textContent = erro.message || I18N_LEITURA_TXT.loadSavedPdfError;
     statusUpload.classList.add('erro-texto');
   }
 });
@@ -292,14 +327,14 @@ botaoBuscarTexto.addEventListener('click', async () => {
   }
 
   if (termo !== ultimoTermoBuscado) {
-    avisoBuscaTexto.textContent = 'Procurando em todas as páginas...';
+    avisoBuscaTexto.textContent = I18N_LEITURA_TXT.searchingAllPages;
     paginasComOcorrencia = await encontrarPaginasComTermo(termo);
     indiceBuscaAtual = -1;
     ultimoTermoBuscado = termo;
   }
 
   if (paginasComOcorrencia.length === 0) {
-    avisoBuscaTexto.textContent = 'Nenhuma ocorrência encontrada neste documento.';
+    avisoBuscaTexto.textContent = I18N_LEITURA_TXT.noOccurrencesFound;
     return;
   }
 
@@ -312,9 +347,11 @@ botaoBuscarTexto.addEventListener('click', async () => {
     destacarTermoNaPaginaAtual(termo);
   }
 
-  avisoBuscaTexto.textContent = `Encontrado na página ${paginaAlvo} — ocorrência ${indiceBuscaAtual + 1} de ${
-    paginasComOcorrencia.length
-  }.`;
+  avisoBuscaTexto.textContent = preencher(I18N_LEITURA_TXT.foundOnPage, {
+    pagina: paginaAlvo,
+    indice: indiceBuscaAtual + 1,
+    total: paginasComOcorrencia.length,
+  });
 });
 
 async function encontrarPaginasComTermo(termo) {
@@ -355,6 +392,7 @@ function mostrarPopupMarcar(x, y, textoSelecionado) {
 }
 
 document.addEventListener('mouseup', (evento) => {
+  if (modoRecorteAtivo) return; // nesse modo quem cuida da selecao e o retangulo de recorte
   if (popupMarcar.contains(evento.target)) return; // clique no proprio popup
 
   const selecaoObj = window.getSelection();
@@ -386,7 +424,7 @@ botaoMarcar.addEventListener('click', async () => {
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-      window.alert(dados.erro || 'Não foi possível marcar esse trecho.');
+      window.alert(dados.erro || I18N_LEITURA_TXT.markExcerptError);
       return;
     }
 
@@ -394,7 +432,136 @@ botaoMarcar.addEventListener('click', async () => {
     window.getSelection().removeAllRanges();
     esconderPopupMarcar();
   } catch (erro) {
-    window.alert('Erro de conexão ao marcar o trecho.');
+    window.alert(I18N_LEITURA_TXT.markExcerptConnectionError);
+  }
+});
+
+// Modo "recorte de imagem": o professor arrasta um retangulo sobre a pagina
+// (por cima do canvas) pra marcar uma figura/imagem, ja que ela nao tem
+// texto selecionavel como o resto do PDF.
+botaoModoRecorte.addEventListener('click', () => {
+  modoRecorteAtivo = !modoRecorteAtivo;
+  // Enquanto ativo, o botao fica vermelho (mesma cor de "Remover"/acoes que
+  // cancelam algo) pra deixar claro que clicar de novo desarma o modo.
+  botaoModoRecorte.classList.toggle('tijolo', modoRecorteAtivo);
+  textoModoRecorte.textContent = modoRecorteAtivo ? I18N_LEITURA_TXT.cancelCropButton : I18N_LEITURA_TXT.markImageCropButton;
+  visorPdf.classList.toggle('modo-recorte', modoRecorteAtivo);
+  esconderPopupMarcar();
+  esconderPopupRecorte();
+  window.getSelection().removeAllRanges();
+});
+
+function posicaoRelativaAoWrapper(wrapper, evento) {
+  const retangulo = wrapper.getBoundingClientRect();
+  return { x: evento.clientX - retangulo.left, y: evento.clientY - retangulo.top };
+}
+
+function atualizarRetanguloRecorte(left, top, largura, altura) {
+  recorteRetangulo.style.left = `${left}px`;
+  recorteRetangulo.style.top = `${top}px`;
+  recorteRetangulo.style.width = `${largura}px`;
+  recorteRetangulo.style.height = `${altura}px`;
+}
+
+visorPdf.addEventListener('mousedown', (evento) => {
+  if (!modoRecorteAtivo) return;
+  const wrapper = evento.target.closest('.pagina-pdf');
+  if (!wrapper) return;
+  evento.preventDefault(); // evita que o navegador tente selecionar texto durante o arraste
+
+  recorteWrapperAtual = wrapper;
+  recortePontoInicial = posicaoRelativaAoWrapper(wrapper, evento);
+
+  recorteRetangulo = document.createElement('div');
+  recorteRetangulo.className = 'retangulo-recorte';
+  wrapper.appendChild(recorteRetangulo);
+  atualizarRetanguloRecorte(recortePontoInicial.x, recortePontoInicial.y, 0, 0);
+});
+
+document.addEventListener('mousemove', (evento) => {
+  if (!recorteRetangulo || !recorteWrapperAtual) return;
+  const ponto = posicaoRelativaAoWrapper(recorteWrapperAtual, evento);
+  atualizarRetanguloRecorte(
+    Math.min(recortePontoInicial.x, ponto.x),
+    Math.min(recortePontoInicial.y, ponto.y),
+    Math.abs(ponto.x - recortePontoInicial.x),
+    Math.abs(ponto.y - recortePontoInicial.y)
+  );
+});
+
+document.addEventListener('mouseup', (evento) => {
+  if (!recorteRetangulo || !recorteWrapperAtual) return;
+
+  const largura = Number.parseFloat(recorteRetangulo.style.width);
+  const altura = Number.parseFloat(recorteRetangulo.style.height);
+  const left = Number.parseFloat(recorteRetangulo.style.left);
+  const top = Number.parseFloat(recorteRetangulo.style.top);
+  const wrapper = recorteWrapperAtual;
+
+  recorteRetangulo.remove();
+  recorteRetangulo = null;
+  recorteWrapperAtual = null;
+
+  if (largura < 15 || altura < 15) return; // arraste pequeno demais pra ser um recorte de verdade
+
+  const canvasOriginal = wrapper.querySelector('canvas');
+  const canvasRecorte = document.createElement('canvas');
+  canvasRecorte.width = largura;
+  canvasRecorte.height = altura;
+  canvasRecorte.getContext('2d').drawImage(canvasOriginal, left, top, largura, altura, 0, 0, largura, altura);
+
+  mostrarPopupRecorte(evento.clientX, evento.clientY, canvasRecorte.toDataURL('image/png'));
+});
+
+function esconderPopupRecorte() {
+  popupRecorte.style.display = 'none';
+  dataUrlRecorteAtual = null;
+  legendaRecorte.value = '';
+}
+
+function mostrarPopupRecorte(x, y, dataUrl) {
+  dataUrlRecorteAtual = dataUrl;
+  paginaRecorteAtual = paginaAtualNumero;
+  previewRecorte.src = dataUrl;
+  popupRecorte.style.display = 'flex';
+
+  let left = x - 130;
+  if (left < 10) left = 10;
+  const maxLeft = window.innerWidth - 280;
+  if (left > maxLeft) left = maxLeft;
+  let top = y + 15;
+  if (top + 260 > window.innerHeight) top = Math.max(10, y - 260);
+
+  popupRecorte.style.top = `${top + window.scrollY}px`;
+  popupRecorte.style.left = `${left + window.scrollX}px`;
+}
+
+botaoCancelarRecorte.addEventListener('click', esconderPopupRecorte);
+
+botaoSalvarRecorte.addEventListener('click', async () => {
+  if (!dataUrlRecorteAtual || !documentoAtualId) return;
+
+  try {
+    const resposta = await fetch(`/api/documentos/${documentoAtualId}/destaques-imagem`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageDataUrl: dataUrlRecorteAtual,
+        caption: legendaRecorte.value.trim(),
+        pageNumber: paginaRecorteAtual,
+      }),
+    });
+    const dados = await resposta.json();
+
+    if (!resposta.ok) {
+      window.alert(dados.erro || I18N_LEITURA_TXT.saveCropError);
+      return;
+    }
+
+    listaDestaquesAtual.prepend(criarFichaDestaqueImagem(dados.destaque));
+    esconderPopupRecorte();
+  } catch (erro) {
+    window.alert(I18N_LEITURA_TXT.saveCropConnectionError);
   }
 });
 

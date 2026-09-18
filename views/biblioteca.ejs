@@ -1,27 +1,30 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="<%= locale %>">
 <head>
-  <title>Biblioteca — Lumen</title>
+  <title><%= t('library.tabTitle') %></title>
   <%- include('partials/head') %>
 </head>
 <body>
-  <%- include('partials/topo', { userName: userName || '', paginaAtiva: 'biblioteca' }) %>
+  <%- include('partials/cabecalho') %>
 
-  <main>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'biblioteca' }) %>
+
+    <main>
     <%- include('partials/voltar-modulos') %>
     <section class="secao">
       <h2>
-        Biblioteca
-        <span class="contagem"><%= salvos.length %> item(ns)</span>
+        <%= t('library.heading') %>
+        <span class="contagem"><%= t('library.itemCount', { n: salvos.length }) %></span>
       </h2>
       <div class="acoes-painel" style="margin-bottom: 1.5rem;">
-        <a class="botao secundario" href="/artigos/exportar.csv">Exportar CSV</a>
-        <a class="botao secundario" href="/artigos">Buscar mais artigos</a>
+        <a class="botao secundario" href="/artigos/exportar.csv"><%= t('library.exportCsv') %></a>
+        <a class="botao secundario" href="/artigos"><%= t('library.searchMore') %></a>
       </div>
 
       <% if (salvos.length === 0) { %>
         <p class="lista-vazia">
-          Nenhum artigo salvo ainda. Vá em <a href="/artigos">Artigos</a> pra buscar e salvar.
+          <%- t('library.emptyState') %>
         </p>
       <% } %>
 
@@ -31,7 +34,8 @@
         <% }); %>
       </div>
     </section>
-  </main>
+    </main>
+  </div>
 
   <%- include('partials/modal-pdf') %>
 

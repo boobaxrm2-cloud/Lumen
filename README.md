@@ -46,10 +46,13 @@ db/
   articles.js       funções para os artigos salvos
   documents.js      funções para os PDFs enviados (documentos)
   highlights.js     funções para os trechos-chave marcados
+  codes.js          funções para os códigos (categorias) da codificação qualitativa
+  highlight-codes.js funções para ligar/desligar um código num trecho-chave
 routes/
   auth.js           rotas de /cadastro, /login, /logout
   articles.js       rotas de busca/salvar/remover artigos
   reading.js        rotas de upload de documento e marcação de trechos-chave
+  codificacao.js    rotas do módulo de codificação qualitativa
 middleware/
   auth.js           protege páginas que exigem login
 views/              páginas HTML (templates EJS)
@@ -63,9 +66,16 @@ Tema escuro (navy) com destaque dourado. Títulos e interface usam a mesma fonte
 (IBM Plex Sans), títulos em negrito. As definições de cor/fonte ficam no `:root`
 de `public/css/style.css` — trocar a paleta é so mudar essas variáveis ali.
 
+Nas páginas logadas, a navegação fica numa barra lateral fixa à esquerda
+(`views/partials/barra-lateral.ejs`), com um cabeçalho fino no topo mostrando só
+a marca Lumen centralizada (`views/partials/cabecalho.ejs`). Como não sobrou
+espaço pro menu do usuário no cabeçalho, o botão de sair ficou na página
+"Minha conta".
+
 As fotos em `public/images/` são do banco gratuito Unsplash (Unsplash License,
 uso livre sem exigir atribuição): foto de mesa/escritório por Zoshua Colah, foto
-de lupa sobre livro por Coppertist Wu, e foto de página aberta por Simran Sood.
+de lupa sobre livro por Coppertist Wu, foto de página aberta por Simran Sood, e
+foto de post-its coloridos (módulo de codificação) por Jakub Żerdzicki.
 
 ## Status atual
 
@@ -76,7 +86,8 @@ de lupa sobre livro por Coppertist Wu, e foto de página aberta por Simran Sood.
       duplicidade (DOI ou título parecido), remover e exportar CSV
 - [x] 3. Leitura de PDF: extração de texto no navegador, busca com destaque no
       texto, marcação de trechos-chave salvos por documento
-- [ ] 4. Codificação qualitativa de texto
+- [x] 4. Codificação qualitativa: criar códigos, marcar os trechos-chave da
+      Leitura com um ou mais códigos, filtrar por código e exportar CSV
 
 ## Sobre a busca de artigos (módulo 2)
 
@@ -138,6 +149,22 @@ de lupa sobre livro por Coppertist Wu, e foto de página aberta por Simran Sood.
 - PDFs de páginas escaneadas como imagem (sem texto selecionável) não têm texto
   para extrair — o app avisa quando isso acontece.
 - Você pode, opcionalmente, vincular o PDF a um artigo já salvo no módulo de busca.
+
+## Sobre a codificação qualitativa (módulo 4)
+
+- Os trechos disponíveis pra codificar são os mesmos "trechos-chave" marcados
+  no módulo de Leitura — não existe uma marcação de texto separada aqui. Se a
+  lista estiver vazia, é porque ainda não tem nenhum trecho-chave marcado em
+  nenhum PDF.
+- Cada pesquisador cria seus próprios códigos (nome + uma cor de uma paleta
+  fixa) em `/codificacao`. Um trecho pode receber vários códigos ao mesmo
+  tempo — clique no "+" no trecho pra abrir a lista e marcar/desmarcar.
+- Clicar num código acima da lista filtra os trechos que têm esse código; o
+  número ao lado do nome já mostra quantos trechos estão marcados com ele.
+- Remover um código também desmarca ele de todos os trechos que o tinham
+  (os trechos em si não são apagados, só perdem esse código).
+- "Exportar CSV" traz o trecho, o documento de origem e os códigos marcados
+  (separados por `;` quando houver mais de um).
 
 ## Segurança e limites conhecidos (ok para uso local/grupo pequeno)
 

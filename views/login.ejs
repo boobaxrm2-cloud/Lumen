@@ -1,33 +1,89 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="<%= locale %>">
 <head>
-  <title>Entrar — Lumen</title>
+  <title><%= t('login.tabTitle') %></title>
   <%- include('partials/head') %>
 </head>
 <body>
   <div class="auth-tela">
+    <div class="auth-fundo" style="background-image: url('/images/login-background.png');"></div>
     <div class="ficha-auth">
-      <h1><svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M2 12h2.4M19.6 12H22M4.9 19.1l1.7-1.7M17.4 6.6l1.7-1.7"/></svg> Lumen</h1>
-      <p class="subtitulo">Catálogo pessoal de pesquisa: artigos, leituras e codificação.</p>
+      <div class="seletor-idioma-auth">
+        <%- include('partials/seletor-idioma') %>
+      </div>
+      <h1 class="auth-logo-titulo"><img class="auth-logo" src="/images/logo-lumen.png" alt="Lumen" /></h1>
+      <p class="subtitulo"><%= t('login.subtitle') %></p>
 
+      <% if (sucesso) { %>
+        <div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucesso %></div>
+      <% } %>
       <% if (erro) { %>
         <div class="erro"><%= erro %></div>
       <% } %>
 
       <form method="POST" action="/login">
         <div class="campo">
-          <label for="email">Email</label>
+          <label for="email"><%= t('login.emailLabel') %></label>
           <input type="email" id="email" name="email" value="<%= valores.email %>" required autofocus />
         </div>
         <div class="campo">
-          <label for="password">Senha</label>
+          <label for="password"><%= t('login.passwordLabel') %></label>
           <input type="password" id="password" name="password" required />
         </div>
-        <button class="botao acao-larga" type="submit">Entrar</button>
+        <button class="botao acao-larga" type="submit"><%= t('login.submitButton') %></button>
       </form>
 
-      <p class="rodape-ficha">Ainda não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+      <p class="rodape-ficha">
+        <button type="button" class="link-esqueci-senha" id="botao-esqueci-senha"><%= t('login.forgotPassword') %></button>
+      </p>
+      <p class="rodape-ficha"><%= t('login.noAccount') %> <a href="/cadastro"><%= t('login.signupLink') %></a></p>
     </div>
   </div>
+
+  <div id="modal-recuperar" class="modal-pdf" style="display: none;">
+    <div class="modal-pdf-fundo" id="modal-recuperar-fundo"></div>
+    <div class="modal-recuperar-caixa">
+      <h3><%= t('login.recovery.title') %></h3>
+      <p class="aviso-busca" id="recuperar-status"></p>
+
+      <div id="recuperar-etapa-email" class="recuperar-etapa">
+        <div class="campo">
+          <label for="recuperar-email"><%= t('login.emailLabel') %></label>
+          <input type="email" id="recuperar-email" required autofocus />
+        </div>
+        <button class="botao acao-larga" type="button" id="botao-recuperar-continuar"><%= t('login.recovery.continueButton') %></button>
+      </div>
+
+      <div id="recuperar-etapa-pergunta" class="recuperar-etapa" style="display: none;">
+        <p class="recuperar-pergunta-texto"><strong><%= t('login.recovery.questionIntro') %></strong> <span id="recuperar-pergunta"></span></p>
+        <div class="campo">
+          <label for="recuperar-resposta"><%= t('login.recovery.answerLabel') %></label>
+          <input type="text" id="recuperar-resposta" required />
+        </div>
+        <button class="botao acao-larga" type="button" id="botao-recuperar-confirmar-resposta"><%= t('login.recovery.confirmAnswerButton') %></button>
+      </div>
+
+      <div id="recuperar-etapa-senha" class="recuperar-etapa" style="display: none;">
+        <div class="campo">
+          <label for="recuperar-nova-senha"><%= t('login.recovery.newPasswordLabel') %></label>
+          <input type="password" id="recuperar-nova-senha" minlength="6" required />
+        </div>
+        <div class="campo">
+          <label for="recuperar-confirmar-senha"><%= t('login.recovery.confirmNewPasswordLabel') %></label>
+          <input type="password" id="recuperar-confirmar-senha" minlength="6" required />
+        </div>
+        <button class="botao acao-larga" type="button" id="botao-recuperar-salvar"><%= t('login.recovery.saveButton') %></button>
+      </div>
+
+      <button type="button" class="botao secundario acao-larga" id="botao-recuperar-cancelar" style="margin-top: 0.8rem;"><%= t('login.recovery.cancelButton') %></button>
+    </div>
+  </div>
+
+  <script>
+    window.I18N_LOGIN = <%- JSON.stringify({
+      erroConexao: t('login.recovery.erroConexao'),
+    }) %>;
+  </script>
+  <script src="/js/login.js"></script>
 </body>
 </html>

@@ -2,11 +2,17 @@ require('dotenv').config();
 const path = require('node:path');
 const express = require('express');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 const authRoutes = require('./routes/auth');
 const articleRoutes = require('./routes/articles');
 const readingRoutes = require('./routes/reading');
+const codingRoutes = require('./routes/codificacao');
+const idiomaRoutes = require('./routes/idioma');
+const adminRoutes = require('./routes/admin');
 const { requireAuth } = require('./middleware/auth');
+const { t, idiomaValido, LOCALE_POR_IDIOMA } = require('./utils/i18n');
+const visits = require('./db/visits');
 
 if (!process.env.SESSION_SECRET) {
   console.error('Faltou configurar a variavel de ambiente SESSION_SECRET (veja o .env.example).');
@@ -28,7 +34,10 @@ if (EM_PRODUCAO) {
 }
 
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+// Limite maior que o padrao (100kb) porque os recortes de imagem da
+// codificacao chegam como base64 dentro do JSON.
+app.use(express.json({ limit: '8mb' }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -45,15 +54,43 @@ app.use(
   })
 );
 
-// Deixa o nome do usuario logado disponivel em todas as views (ex: no cabecalho).
+// Deixa o nome do usuario logado e o idioma atual disponiveis em todas as views.
 app.use((req, res, next) => {
   res.locals.userName = req.session.userName || null;
+  res.locals.isAdmin = Boolean(req.session.isAdmin);
+
+  const lang = idiomaValido(req.cookies.idioma);
+  res.locals.lang = lang;
+  res.locals.locale = LOCALE_POR_IDIOMA[lang];
+  res.locals.t = (chave, params) => t(lang, chave, params);
+  res.locals.paginaAtualUrl = req.originalUrl;
+
   next();
 });
 
+// Conta visitantes unicos por dia (usado no painel de admin). So em GETs de
+// pagina de verdade - nao em chamadas de API nem no proprio painel de admin.
+// Guardar a data na sessao evita bater no banco de novo pra cada pagina que
+// a mesma pessoa visita no mesmo dia, e tambem garante que o navegador dela
+// passe a ter um cookie de sessao estavel (sem isso, saveUninitialized:false
+// geraria um sessionID novo a cada request de quem nunca fez login).
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api/') && !req.path.startsWith('/admin')) {
+    const hoje = visits.hojeISO();
+    if (req.session.ultimaVisitaRegistrada !== hoje) {
+      req.session.ultimaVisitaRegistrada = hoje;
+      visits.registrar(req.sessionID, hoje);
+    }
+  }
+  next();
+});
+
+app.use('/', idiomaRoutes);
 app.use('/', authRoutes);
 app.use('/', articleRoutes);
 app.use('/', readingRoutes);
+app.use('/', codingRoutes);
+app.use('/', adminRoutes);
 
 app.get('/', requireAuth, (req, res) => {
   res.render('home', { userName: req.session.userName });

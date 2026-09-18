@@ -1,0 +1,6 @@
+<form method="POST" action="/idioma" class="seletor-idioma alternar-visual">
+  <input type="hidden" name="voltarPara" value="<%= paginaAtualUrl %>" />
+  <button type="submit" name="idioma" value="en" class="botao-visual <%= lang === 'en' ? 'ativo' : '' %>">EN</button>
+  <button type="submit" name="idioma" value="pt" class="botao-visual <%= lang === 'pt' ? 'ativo' : '' %>">PT</button>
+  <button type="submit" name="idioma" value="es" class="botao-visual <%= lang === 'es' ? 'ativo' : '' %>">ES</button>
+</form>
