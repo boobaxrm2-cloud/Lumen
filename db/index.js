@@ -44,6 +44,7 @@ adicionarColunaSeNaoExistir('users', 'avatar_path', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'study_area', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'university', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'academic_background', 'TEXT');
+adicionarColunaSeNaoExistir('visits', 'user_agent', 'TEXT');
 
 // Codigos criados antes de existir a coluna document_id ficam sem documento -
 // associa cada um ao documento do primeiro trecho em que ele foi usado (ou

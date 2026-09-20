@@ -17,6 +17,37 @@
       <span class="cartao-estatistica-legenda">Visitantes únicos hoje</span>
     </div>
 
+    <details class="seletor-codigos" style="margin-top: 0.8rem;">
+      <summary class="botao secundario">Ver acessos de hoje</summary>
+      <div class="cartao" style="margin-top: 0.8rem;">
+        <p class="aviso-busca" style="margin-bottom: 0.8rem;">
+          O "user agent" identifica o navegador/programa que acessou o site - pode ajudar a notar bots/crawlers (ex.: "Googlebot", "bot", "crawler", "python-requests"), mas pode ser forjado, então não é 100% confiável.
+        </p>
+        <% if (acessosHoje.length === 0) { %>
+          <p class="lista-vazia">Nenhum acesso registrado hoje ainda.</p>
+        <% } else { %>
+          <div class="tabela-wrapper">
+            <table class="tabela-admin">
+              <thead>
+                <tr>
+                  <th>Horário</th>
+                  <th>User agent</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% acessosHoje.forEach(function (acesso) { %>
+                  <tr>
+                    <td><%= acesso.horario %></td>
+                    <td style="word-break: break-all;"><%= acesso.user_agent || '(não informado)' %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </details>
+
     <h3 style="margin-top: 2.2rem;">Usuários cadastrados <span class="contagem"><%= usuarios.length %></span></h3>
 
     <div class="tabela-wrapper">

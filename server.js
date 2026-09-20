@@ -98,7 +98,7 @@ app.use((req, res, next) => {
     const hoje = visits.hojeISO();
     if (req.session.ultimaVisitaRegistrada !== hoje) {
       req.session.ultimaVisitaRegistrada = hoje;
-      visits.registrar(req.sessionID, hoje);
+      visits.registrar(req.sessionID, hoje, req.get('User-Agent'));
     }
   }
   next();

@@ -21,9 +21,15 @@ router.get('/admin', requireAdmin, (req, res) => {
     ultimoLogin: formatarDataHora(usuario.last_login_at),
   }));
 
+  const acessosHoje = visits.listarPorData(visits.hojeISO()).map((acesso) => ({
+    ...acesso,
+    horario: formatarDataHora(acesso.created_at),
+  }));
+
   res.render('admin-dashboard', {
     usuarios,
     visitasHoje: visits.contarPorData(visits.hojeISO()),
+    acessosHoje,
   });
 });
 

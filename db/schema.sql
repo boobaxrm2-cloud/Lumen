@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS visits (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   session_id TEXT NOT NULL,
   visit_date TEXT NOT NULL,
+  user_agent TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
