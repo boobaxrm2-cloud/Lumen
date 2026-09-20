@@ -1,9 +1,12 @@
-<details class="seletor-codigos seletor-idioma-flutuante">
-  <summary class="botao-idioma-flutuante">
+<%
+  const NOMES_IDIOMA = { en: 'English', pt: 'Português', es: 'Español' };
+%>
+<details class="seletor-codigos item-idioma-lateral">
+  <summary class="item-lateral">
     <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18 15 15 0 010-18z"/></svg>
-    <span><%= lang.toUpperCase() %></span>
+    <%= NOMES_IDIOMA[lang] %>
   </summary>
-  <div class="menu-codigos menu-idioma-flutuante">
+  <div class="menu-codigos menu-idioma-lateral">
     <form method="POST" action="/idioma">
       <input type="hidden" name="voltarPara" value="<%= paginaAtualUrl %>" />
       <button type="submit" name="idioma" value="en" class="item-menu-codigo <%= lang === 'en' ? 'marcado' : '' %>">English</button>

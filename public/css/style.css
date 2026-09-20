@@ -108,7 +108,6 @@ svg.icone {
 }
 
 .barra-lateral nav,
-.barra-lateral .promo-lateral,
 .logo-lateral {
   position: relative;
   z-index: 1;
@@ -130,10 +129,6 @@ svg.icone {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-}
-
-.barra-lateral .promo-lateral {
-  margin: 0 1rem;
 }
 
 .divisor-lateral {
@@ -197,70 +192,26 @@ svg.icone {
   color: #2c1f06;
 }
 
-details.seletor-idioma-flutuante {
-  position: absolute;
-  top: 1.3rem;
-  right: 0.8rem;
-  z-index: 5;
-  width: auto;
-}
-
-.botao-idioma-flutuante {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.35rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--cor-cartao-borda);
-  background: rgba(22, 31, 52, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  color: var(--cor-texto-suave);
-  font-family: var(--fonte-corpo);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.botao-idioma-flutuante:hover {
-  color: var(--cor-dourado);
-  border-color: rgba(240, 193, 75, 0.5);
-}
-
-.botao-idioma-flutuante .icone {
-  width: 0.95rem;
-  height: 0.95rem;
-}
-
-.menu-idioma-flutuante {
-  min-width: 140px;
-}
-
-.promo-lateral {
-  background: var(--cor-fundo);
-  border: 1px solid var(--cor-cartao-borda);
-  border-radius: 10px;
-  padding: 1.1rem;
-  font-size: 0.85rem;
-  color: var(--cor-texto-suave);
-}
-
-.promo-lateral svg {
-  display: block;
-  color: var(--cor-dourado);
-  width: 1.3rem;
-  height: 1.3rem;
+.item-idioma-lateral {
   margin-bottom: 0.6rem;
 }
 
-.promo-lateral p {
-  margin: 0 0 0.6rem;
-  line-height: 1.45;
+.item-idioma-lateral summary::after {
+  content: "";
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.6;
 }
 
-.promo-lateral .assinatura {
-  color: var(--cor-texto);
-  font-weight: 600;
+.menu-idioma-lateral {
+  left: 1rem;
+  right: auto;
+  min-width: 170px;
 }
 
 @media (max-width: 780px) {
@@ -282,9 +233,6 @@ details.seletor-idioma-flutuante {
     flex-wrap: wrap;
   }
   .divisor-lateral {
-    display: none;
-  }
-  .promo-lateral {
     display: none;
   }
 }
