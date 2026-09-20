@@ -1,5 +1,5 @@
 <%
-  const NOMES_IDIOMA = { en: 'English', pt: 'Português', es: 'Español', ko: '한국어' };
+  const NOMES_IDIOMA = { en: 'English', pt: 'Português', es: 'Español', ko: '한국어', zh: '中文' };
 %>
 <details class="seletor-codigos item-idioma-lateral">
   <summary class="item-lateral">
@@ -22,6 +22,10 @@
     <form method="POST" action="/idioma">
       <input type="hidden" name="voltarPara" value="<%= paginaAtualUrl %>" />
       <button type="submit" name="idioma" value="ko" class="item-menu-codigo <%= lang === 'ko' ? 'marcado' : '' %>">한국어</button>
+    </form>
+    <form method="POST" action="/idioma">
+      <input type="hidden" name="voltarPara" value="<%= paginaAtualUrl %>" />
+      <button type="submit" name="idioma" value="zh" class="item-menu-codigo <%= lang === 'zh' ? 'marcado' : '' %>">中文</button>
     </form>
   </div>
 </details>
