@@ -1,6 +1,9 @@
 const express = require('express');
 const { requireAuth } = require('../middleware/auth');
 const articles = require('../db/articles');
+const users = require('../db/users');
+const libraryShares = require('../db/library-shares');
+const notifications = require('../db/notifications');
 const { similaridadeTitulos } = require('../utils/similaridade');
 const { t, CSV_DELIMITADOR_POR_IDIOMA } = require('../utils/i18n');
 
@@ -91,8 +94,90 @@ router.get('/pdf-externo', requireAuth, async (req, res) => {
 });
 
 router.get('/biblioteca', requireAuth, (req, res) => {
-  const salvos = articles.listByUser(req.session.userId);
-  res.render('biblioteca', { salvos });
+  const userId = req.session.userId;
+  const vista = req.query.vista === 'compartilhada' ? 'compartilhada' : 'minha';
+
+  if (vista === 'compartilhada') {
+    const donoId = req.query.de ? Number.parseInt(req.query.de, 10) : null;
+
+    if (donoId) {
+      // Confere de novo, a cada requisicao, se esse dono realmente
+      // compartilhou a biblioteca dele com quem esta pedindo - nunca confia
+      // que o link so existe se for permitido.
+      if (!libraryShares.exists(donoId, userId)) {
+        return res.redirect('/biblioteca?vista=compartilhada');
+      }
+      const dono = users.findById(donoId);
+      const salvos = articles.listByUser(donoId);
+      return res.render('biblioteca', {
+        vista,
+        donoId,
+        dono,
+        salvos,
+        compartilhadores: [],
+        sucessoCompartilhar: null,
+      });
+    }
+
+    const compartilhadores = libraryShares.listSharedWithMe(userId);
+    return res.render('biblioteca', {
+      vista,
+      donoId: null,
+      dono: null,
+      salvos: [],
+      compartilhadores,
+      sucessoCompartilhar: null,
+    });
+  }
+
+  const salvos = articles.listByUser(userId);
+  const sucessoCompartilhar = req.query.compartilhado ? res.locals.t('library.share.sucesso') : null;
+  res.render('biblioteca', { vista, donoId: null, dono: null, salvos, compartilhadores: [], sucessoCompartilhar });
+});
+
+// Etapa 1 do compartilhamento: so confere se o email existe, se nao e a
+// propria conta e se ja nao foi compartilhado antes - nao cria nada ainda.
+router.post('/api/biblioteca/compartilhar/verificar', requireAuth, (req, res) => {
+  const email = (req.body.email || '').trim();
+  const destinatario = email ? users.findByEmail(email) : null;
+
+  if (!destinatario) {
+    return res.status(404).json({ erro: res.locals.t('library.share.erroEmailNaoEncontrado') });
+  }
+  if (destinatario.id === req.session.userId) {
+    return res.status(400).json({ erro: res.locals.t('library.share.erroSelfShare') });
+  }
+  if (libraryShares.exists(req.session.userId, destinatario.id)) {
+    return res.status(409).json({ erro: res.locals.t('library.share.erroJaCompartilhado') });
+  }
+
+  res.json({ nome: destinatario.name, email: destinatario.email });
+});
+
+// Etapa 2: revalida tudo de novo a partir do email (nunca confia no id/estado
+// que o cliente diz que validou na etapa 1) antes de gravar o compartilhamento.
+router.post('/api/biblioteca/compartilhar', requireAuth, (req, res) => {
+  const email = (req.body.email || '').trim();
+  const destinatario = email ? users.findByEmail(email) : null;
+
+  if (!destinatario) {
+    return res.status(404).json({ erro: res.locals.t('library.share.erroEmailNaoEncontrado') });
+  }
+  if (destinatario.id === req.session.userId) {
+    return res.status(400).json({ erro: res.locals.t('library.share.erroSelfShare') });
+  }
+  if (libraryShares.exists(req.session.userId, destinatario.id)) {
+    return res.status(409).json({ erro: res.locals.t('library.share.erroJaCompartilhado') });
+  }
+
+  libraryShares.create(req.session.userId, destinatario.id);
+  notifications.create({
+    userId: destinatario.id,
+    actorUserId: req.session.userId,
+    type: 'library_share',
+    link: `/biblioteca?vista=compartilhada&de=${req.session.userId}`,
+  });
+  res.status(201).json({ ok: true });
 });
 
 router.get('/api/artigos/buscar', requireAuth, async (req, res) => {

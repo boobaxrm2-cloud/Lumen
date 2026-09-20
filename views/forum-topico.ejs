@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= topico.title %> — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'forum' }) %>
+
+    <main>
+    <a class="link-voltar" href="/forum">
+      <svg class="icone" viewBox="0 0 24 24"><path d="M19 12H5m0 0l6-6m-6 6l6 6"/></svg>
+      <%= t('forum.backToList') %>
+    </a>
+
+    <div class="cartao" style="margin-top: 1.5rem;">
+      <%- include('partials/autor-info', { autorId: topico.user_id, autorNome: topico.autor_nome, autorAvatar: topico.autor_avatar, autorArea: topico.autor_area }) %>
+      <h2 style="margin-top: 1rem;"><%= topico.title %></h2>
+      <p class="topico-forum-mensagem"><%= topico.message %></p>
+
+      <% if (anexosTopico.length > 0) { %>
+        <div class="lista-anexos-forum">
+          <% anexosTopico.forEach(function (anexo) { %>
+            <a class="botao secundario" href="/forum/anexos/<%= anexo.id %>" target="_blank" rel="noopener">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+              <%= anexo.original_name %>
+            </a>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <% if (podeGerenciarTopico) { %>
+        <div class="acoes" style="margin-top: 1rem;">
+          <details class="seletor-codigos">
+            <summary class="botao secundario"><%= t('forum.editButton') %></summary>
+            <div class="menu-codigos menu-editar-forum">
+              <form method="POST" action="/forum/topicos/<%= topico.id %>/editar">
+                <div class="campo">
+                  <label><%= t('forum.titleLabel') %></label>
+                  <input type="text" name="title" value="<%= topico.title %>" maxlength="150" required />
+                </div>
+                <div class="campo">
+                  <label><%= t('forum.messageLabel') %></label>
+                  <textarea name="message" rows="4" required><%= topico.message %></textarea>
+                </div>
+                <button class="botao" type="submit"><%= t('forum.saveEditButton') %></button>
+              </form>
+            </div>
+          </details>
+          <form method="POST" action="/forum/topicos/<%= topico.id %>/excluir" onsubmit="return confirm('<%= t('forum.confirmDeleteTopic') %>');">
+            <button class="botao secundario botao-perigo" type="submit"><%= t('forum.deleteButton') %></button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+
+    <h3 style="margin-top: 2.5rem;"><%= t('forum.repliesHeading', { n: respostas.length }) %></h3>
+
+    <% if (respostas.length === 0) { %>
+      <p class="lista-vazia"><%= t('forum.noReplies') %></p>
+    <% } else { %>
+      <div class="lista-respostas-forum">
+        <% respostas.forEach(function (resposta) { %>
+          <div class="cartao resposta-forum" id="resposta-<%= resposta.id %>">
+            <%- include('partials/autor-info', { autorId: resposta.user_id, autorNome: resposta.autor_nome, autorAvatar: resposta.autor_avatar, autorArea: resposta.autor_area }) %>
+            <p class="topico-forum-mensagem"><%= resposta.message %></p>
+
+            <% if (resposta.anexos.length > 0) { %>
+              <div class="lista-anexos-forum">
+                <% resposta.anexos.forEach(function (anexo) { %>
+                  <a class="botao secundario" href="/forum/anexos/<%= anexo.id %>" target="_blank" rel="noopener">
+                    <svg class="icone" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                    <%= anexo.original_name %>
+                  </a>
+                <% }); %>
+              </div>
+            <% } %>
+
+            <% if (resposta.podeGerenciar) { %>
+              <div class="acoes" style="margin-top: 0.8rem;">
+                <details class="seletor-codigos">
+                  <summary class="botao secundario"><%= t('forum.editButton') %></summary>
+                  <div class="menu-codigos menu-editar-forum">
+                    <form method="POST" action="/forum/respostas/<%= resposta.id %>/editar">
+                      <textarea name="message" rows="3" required><%= resposta.message %></textarea>
+                      <button class="botao" type="submit"><%= t('forum.saveEditButton') %></button>
+                    </form>
+                  </div>
+                </details>
+                <form method="POST" action="/forum/respostas/<%= resposta.id %>/excluir" onsubmit="return confirm('<%= t('forum.confirmDeleteReply') %>');">
+                  <button class="botao secundario botao-perigo" type="submit"><%= t('forum.deleteButton') %></button>
+                </form>
+              </div>
+            <% } %>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <div class="cartao" style="margin-top: 1.5rem;">
+      <form method="POST" action="/forum/topicos/<%= topico.id %>/respostas" enctype="multipart/form-data">
+        <div class="campo">
+          <label for="message"><%= t('forum.replyPlaceholder') %></label>
+          <textarea id="message" name="message" rows="3" required></textarea>
+        </div>
+        <div class="campo">
+          <label><%= t('forum.attachmentsLabel') %></label>
+          <label for="anexos" class="dropzone-arquivo" id="dropzone-anexos-resposta">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 16v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3"/></svg>
+            <span id="dropzone-anexos-resposta-texto">
+              <strong><%= t('forum.chooseFiles') %></strong>
+              <small><%= t('forum.dragHintFiles') %></small>
+            </span>
+            <input type="file" id="anexos" name="anexos" accept="application/pdf,image/png,image/jpeg,image/webp" multiple />
+          </label>
+        </div>
+        <button class="botao" type="submit"><%= t('forum.replyButton') %></button>
+      </form>
+    </div>
+    </main>
+  </div>
+
+  <%- include('partials/modal-perfil') %>
+
+  <script>
+    window.I18N_FORUM = <%- JSON.stringify({
+      chooseFiles: t('forum.chooseFiles'),
+      dragHintFiles: t('forum.dragHintFiles'),
+      filesSelectedCount: t('forum.filesSelectedCount', { n: '{n}' }),
+      erroAnexoTipoInvalido: t('forum.erroAnexoTipoInvalido'),
+      erroConexao: t('network.erroConexao'),
+      requestButton: t('network.profile.requestButton'),
+      requestPendingButton: t('network.profile.requestPendingButton'),
+      acceptButton: t('network.acceptButton'),
+      rejectButton: t('network.rejectButton'),
+      sendMessageButton: t('network.sendMessageButton'),
+    }) %>;
+  </script>
+  <script src="/js/forum.js"></script>
+</body>
+</html>

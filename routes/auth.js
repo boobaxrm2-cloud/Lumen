@@ -1,12 +1,44 @@
+const path = require('node:path');
+const fs = require('node:fs');
 const express = require('express');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
 const users = require('../db/users');
 const { redirectIfLoggedIn, requireAuth } = require('../middleware/auth');
-const { t } = require('../utils/i18n');
+const { t, idiomaValido } = require('../utils/i18n');
 
 const router = express.Router();
 
 const SALT_ROUNDS = 10;
+const PASTA_UPLOADS = require('../db/uploads-dir');
+const LIMITE_TAMANHO_AVATAR = 5 * 1024 * 1024; // 5 MB
+const TIPOS_AVATAR_VALIDOS = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
+
+// Guarda a foto de perfil em disco (pasta uploads/<id-do-usuario>/), mesmo
+// padrao ja usado pros PDFs em routes/reading.js.
+const armazenamentoAvatar = multer.diskStorage({
+  destination: (req, file, callback) => {
+    const pastaUsuario = path.join(PASTA_UPLOADS, String(req.session.userId));
+    fs.mkdirSync(pastaUsuario, { recursive: true });
+    callback(null, pastaUsuario);
+  },
+  filename: (req, file, callback) => {
+    const extensao = TIPOS_AVATAR_VALIDOS[file.mimetype] || '';
+    callback(null, `avatar-${Date.now()}-${Math.round(Math.random() * 1e9)}${extensao}`);
+  },
+});
+
+const uploadAvatar = multer({
+  storage: armazenamentoAvatar,
+  limits: { fileSize: LIMITE_TAMANHO_AVATAR },
+  fileFilter: (req, file, callback) => {
+    if (!TIPOS_AVATAR_VALIDOS[file.mimetype]) {
+      const lang = idiomaValido(req.cookies.idioma);
+      return callback(new Error(t(lang, 'account.erroFotoTipoInvalido')));
+    }
+    callback(null, true);
+  },
+});
 
 // As 5 perguntas secretas disponiveis no cadastro (chaves - o texto traduzido
 // fica em locales/*.json em "secretQuestion.<chave>"). Guardamos so a chave
@@ -161,13 +193,15 @@ router.post('/logout', (req, res) => {
   });
 });
 
-function renderConta(res, status, { user, erroNome, sucessoNome, erroSenha, sucessoSenha }) {
+function renderConta(res, status, { user, erroNome, sucessoNome, erroSenha, sucessoSenha, erroPerfil, sucessoPerfil }) {
   res.status(status).render('conta', {
     user,
     erroNome: erroNome || null,
     sucessoNome: sucessoNome || null,
     erroSenha: erroSenha || null,
     sucessoSenha: sucessoSenha || null,
+    erroPerfil: erroPerfil || null,
+    sucessoPerfil: sucessoPerfil || null,
   });
 }
 
@@ -207,6 +241,40 @@ router.post('/conta/senha', requireAuth, (req, res) => {
   const novoHash = bcrypt.hashSync(novaSenha, SALT_ROUNDS);
   users.updatePasswordHash(req.session.userId, novoHash);
   renderConta(res, 200, { user, sucessoSenha: t(res.locals.lang, 'account.sucessoSenha') });
+});
+
+router.post('/conta/perfil', requireAuth, (req, res) => {
+  uploadAvatar.single('avatar')(req, res, (erroUpload) => {
+    const user = users.findById(req.session.userId);
+
+    if (erroUpload) {
+      return renderConta(res, 400, { user, erroPerfil: erroUpload.message || t(res.locals.lang, 'account.erroFotoGenerico') });
+    }
+
+    if (req.file) {
+      users.updateAvatarPath(req.session.userId, `${req.session.userId}/${req.file.filename}`);
+    }
+
+    const atualizado = users.updateProfile(req.session.userId, {
+      studyArea: (req.body.studyArea || '').trim(),
+      university: (req.body.university || '').trim(),
+      academicBackground: (req.body.academicBackground || '').trim(),
+    });
+
+    renderConta(res, 200, { user: atualizado, sucessoPerfil: t(res.locals.lang, 'account.sucessoPerfil') });
+  });
+});
+
+router.get('/conta/foto', requireAuth, (req, res) => {
+  const user = users.findById(req.session.userId);
+  if (!user || !user.avatar_path) {
+    return res.status(404).send(t(res.locals.lang, 'account.erroFotoNaoEncontrada'));
+  }
+
+  const caminhoAbsoluto = path.join(PASTA_UPLOADS, user.avatar_path);
+  res.sendFile(caminhoAbsoluto, (erro) => {
+    if (erro && !res.headersSent) res.status(404).send(t(res.locals.lang, 'account.erroFotoNaoEncontrada'));
+  });
 });
 
 module.exports = router;

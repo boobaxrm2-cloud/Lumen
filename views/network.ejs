@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= t('network.tabTitle') %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'network' }) %>
+
+    <main>
+    <%- include('partials/voltar-modulos') %>
+    <p class="eyebrow-secao"><%= t('network.eyebrow') %></p>
+    <h2><%= t('network.heading') %></h2>
+    <p class="subtitulo-documentos" style="margin-bottom: 1.3rem;"><%= t('network.subtitle') %></p>
+
+    <% if (pendentes.length > 0) { %>
+      <section class="secao" style="margin-bottom: 2.5rem;">
+        <h3><%= t('network.pendingHeading') %></h3>
+        <div class="lista-solicitacoes-amizade">
+          <% pendentes.forEach(function (pedido) { %>
+            <div class="cartao solicitacao-amizade-card">
+              <%- include('partials/autor-info', { autorId: pedido.autor_id, autorNome: pedido.autor_nome, autorAvatar: pedido.autor_avatar, autorArea: pedido.autor_area }) %>
+              <div class="acoes">
+                <form method="POST" action="/solicitacoes/<%= pedido.id %>/aceitar">
+                  <button class="botao" type="submit"><%= t('network.acceptButton') %></button>
+                </form>
+                <form method="POST" action="/solicitacoes/<%= pedido.id %>/recusar">
+                  <button class="botao secundario" type="submit"><%= t('network.rejectButton') %></button>
+                </form>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </section>
+    <% } %>
+
+    <section class="secao">
+      <h3><%= t('network.friendsHeading') %></h3>
+      <% if (amigos.length === 0) { %>
+        <p class="lista-vazia"><%= t('network.emptyFriends') %></p>
+      <% } else { %>
+        <div class="grade-amigos">
+          <% amigos.forEach(function (amigo) { %>
+            <article class="ficha-amigo">
+              <div class="perfil-cabecalho">
+                <% if (amigo.avatar_path) { %>
+                  <img class="avatar-preview" src="/usuarios/<%= amigo.id %>/foto" alt="<%= amigo.name %>" />
+                <% } else { %>
+                  <span class="avatar-preview avatar-preview-vazio">
+                    <svg class="icone" viewBox="0 0 24 24"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
+                  </span>
+                <% } %>
+                <h3><%= amigo.name %></h3>
+              </div>
+              <dl class="perfil-detalhes">
+                <% if (amigo.study_area) { %>
+                  <div class="perfil-detalhe-item">
+                    <dt><%= t('account.studyAreaLabel') %></dt>
+                    <dd><%= amigo.study_area %></dd>
+                  </div>
+                <% } %>
+                <% if (amigo.university) { %>
+                  <div class="perfil-detalhe-item">
+                    <dt><%= t('account.universityLabel') %></dt>
+                    <dd><%= amigo.university %></dd>
+                  </div>
+                <% } %>
+                <% if (amigo.academic_background) { %>
+                  <div class="perfil-detalhe-item">
+                    <dt><%= t('account.academicBackgroundLabel') %></dt>
+                    <dd><%= amigo.academic_background %></dd>
+                  </div>
+                <% } %>
+              </dl>
+              <a class="botao acao-larga" href="/mensagens/<%= amigo.id %>"><%= t('network.sendMessageButton') %></a>
+            </article>
+          <% }); %>
+        </div>
+      <% } %>
+    </section>
+    </main>
+  </div>
+</body>
+</html>

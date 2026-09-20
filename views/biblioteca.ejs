@@ -5,41 +5,132 @@
   <%- include('partials/head') %>
 </head>
 <body>
-  <%- include('partials/cabecalho') %>
-
   <div class="corpo-app">
     <%- include('partials/barra-lateral', { paginaAtiva: 'biblioteca' }) %>
 
     <main>
     <%- include('partials/voltar-modulos') %>
     <section class="secao">
-      <h2>
-        <%= t('library.heading') %>
-        <span class="contagem"><%= t('library.itemCount', { n: salvos.length }) %></span>
-      </h2>
-      <div class="acoes-painel" style="margin-bottom: 1.5rem;">
-        <a class="botao secundario" href="/artigos/exportar.csv"><%= t('library.exportCsv') %></a>
-        <a class="botao secundario" href="/artigos"><%= t('library.searchMore') %></a>
+      <div class="documentos-cabecalho">
+        <h2 style="margin: 0;">
+          <% if (vista === 'compartilhada' && dono) { %>
+            <%= t('library.sharedByHeading', { nome: dono.name }) %>
+          <% } else { %>
+            <%= t('library.heading') %>
+            <% if (vista === 'minha') { %><span class="contagem"><%= t('library.itemCount', { n: salvos.length }) %></span><% } %>
+          <% } %>
+        </h2>
+        <% if (vista !== 'compartilhada' || !dono) { %>
+          <div class="alternar-visual">
+            <a href="/biblioteca" class="botao-visual <%= vista === 'minha' ? 'ativo' : '' %>"><%= t('library.tabMine') %></a>
+            <a href="/biblioteca?vista=compartilhada" class="botao-visual <%= vista === 'compartilhada' ? 'ativo' : '' %>"><%= t('library.tabShared') %></a>
+          </div>
+        <% } %>
       </div>
 
-      <% if (salvos.length === 0) { %>
-        <p class="lista-vazia">
-          <%- t('library.emptyState') %>
-        </p>
+      <% if (vista === 'compartilhada' && dono) { %>
+        <div class="acoes-painel" style="margin-bottom: 1.5rem;">
+          <a class="link-voltar" href="/biblioteca?vista=compartilhada">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M19 12H5m0 0l6-6m-6 6l6 6"/></svg>
+            <%= t('library.backToSharedList') %>
+          </a>
+        </div>
+
+        <% if (salvos.length === 0) { %>
+          <p class="lista-vazia"><%= t('library.emptySharedLibrary') %></p>
+        <% } else { %>
+          <div class="grade-fichas">
+            <% salvos.forEach(function (artigo) { %>
+              <%- include('partials/ficha-artigo', { artigo, salvo: true, somenteLeitura: true }) %>
+            <% }); %>
+          </div>
+        <% } %>
+
+      <% } else if (vista === 'compartilhada') { %>
+
+        <% if (compartilhadores.length === 0) { %>
+          <p class="lista-vazia"><%= t('library.emptySharedTab') %></p>
+        <% } else { %>
+          <div class="lista-documentos-codificar">
+            <% compartilhadores.forEach(function (pessoa) { %>
+              <a class="documento-codificar-card" href="/biblioteca?vista=compartilhada&de=<%= pessoa.id %>">
+                <span class="documento-codificar-icone">
+                  <svg class="icone" viewBox="0 0 24 24"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
+                </span>
+                <span class="documento-codificar-info">
+                  <strong><%= pessoa.name %></strong>
+                  <span><%= pessoa.email %></span>
+                </span>
+                <svg class="icone seta-linha" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+            <% }); %>
+          </div>
+        <% } %>
+
+      <% } else { %>
+
+        <% if (sucessoCompartilhar) { %>
+          <div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoCompartilhar %></div>
+        <% } %>
+        <div class="acoes-painel" style="margin-bottom: 1.5rem;">
+          <a class="botao secundario" href="/artigos/exportar.csv"><%= t('library.exportCsv') %></a>
+          <a class="botao secundario" href="/artigos"><%= t('library.searchMore') %></a>
+          <button class="botao secundario" type="button" id="botao-compartilhar-biblioteca"><%= t('library.shareButton') %></button>
+        </div>
+
+        <% if (salvos.length === 0) { %>
+          <p class="lista-vazia">
+            <%- t('library.emptyState') %>
+          </p>
+        <% } %>
+
+        <div class="grade-fichas">
+          <% salvos.forEach(function (artigo) { %>
+            <%- include('partials/ficha-artigo', { artigo, salvo: true }) %>
+          <% }); %>
+        </div>
+
       <% } %>
-
-      <div class="grade-fichas">
-        <% salvos.forEach(function (artigo) { %>
-          <%- include('partials/ficha-artigo', { artigo, salvo: true }) %>
-        <% }); %>
-      </div>
     </section>
     </main>
   </div>
 
   <%- include('partials/modal-pdf') %>
 
+  <div id="modal-compartilhar" class="modal-pdf" style="display: none;">
+    <div class="modal-pdf-fundo" id="modal-compartilhar-fundo"></div>
+    <div class="modal-compartilhar-caixa">
+      <h3><%= t('library.share.title') %></h3>
+      <p class="aviso-busca" id="compartilhar-status"></p>
+
+      <div id="compartilhar-etapa-email" class="recuperar-etapa">
+        <div class="campo">
+          <label for="compartilhar-email"><%= t('login.emailLabel') %></label>
+          <input type="email" id="compartilhar-email" required autofocus />
+        </div>
+        <button class="botao acao-larga" type="button" id="botao-compartilhar-continuar"><%= t('login.recovery.continueButton') %></button>
+      </div>
+
+      <div id="compartilhar-etapa-confirmar" class="recuperar-etapa" style="display: none;">
+        <p class="recuperar-pergunta-texto" id="compartilhar-confirmar-texto"></p>
+        <div class="modal-confirmar-acoes">
+          <button class="botao secundario" type="button" id="botao-compartilhar-nao"><%= t('library.share.no') %></button>
+          <button class="botao" type="button" id="botao-compartilhar-sim"><%= t('library.share.yes') %></button>
+        </div>
+      </div>
+
+      <button type="button" class="botao secundario acao-larga" id="botao-compartilhar-cancelar" style="margin-top: 0.8rem;"><%= t('login.recovery.cancelButton') %></button>
+    </div>
+  </div>
+
+  <script>
+    window.I18N_BIBLIOTECA = <%- JSON.stringify({
+      erroConexao: t('login.recovery.erroConexao'),
+      confirmarTexto: t('library.share.confirmText', { nome: '{nome}', email: '{email}' }),
+    }) %>;
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="/js/pdf-preview.js"></script>
+  <script src="/js/biblioteca.js"></script>
 </body>
 </html>

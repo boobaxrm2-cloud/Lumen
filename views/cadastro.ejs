@@ -20,7 +20,7 @@
       <form method="POST" action="/cadastro">
         <div class="campo">
           <label for="name"><%= t('signup.nameLabel') %></label>
-          <input type="text" id="name" name="name" value="<%= valores.name %>" required autofocus />
+          <input type="text" id="name" name="name" value="<%= valores.name %>" placeholder="<%= t('signup.namePlaceholder') %>" required autofocus />
         </div>
         <div class="campo">
           <label for="email"><%= t('signup.emailLabel') %></label>

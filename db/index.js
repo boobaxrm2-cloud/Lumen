@@ -40,6 +40,10 @@ adicionarColunaSeNaoExistir('highlights', 'page_number', 'INTEGER');
 adicionarColunaSeNaoExistir('users', 'last_login_at', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'secret_question', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'secret_answer_hash', 'TEXT');
+adicionarColunaSeNaoExistir('users', 'avatar_path', 'TEXT');
+adicionarColunaSeNaoExistir('users', 'study_area', 'TEXT');
+adicionarColunaSeNaoExistir('users', 'university', 'TEXT');
+adicionarColunaSeNaoExistir('users', 'academic_background', 'TEXT');
 
 // Codigos criados antes de existir a coluna document_id ficam sem documento -
 // associa cada um ao documento do primeiro trecho em que ele foi usado (ou

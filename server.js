@@ -10,9 +10,16 @@ const readingRoutes = require('./routes/reading');
 const codingRoutes = require('./routes/codificacao');
 const idiomaRoutes = require('./routes/idioma');
 const adminRoutes = require('./routes/admin');
+const forumRoutes = require('./routes/forum');
+const notificationRoutes = require('./routes/notifications');
+const networkRoutes = require('./routes/network');
+const mensagensRoutes = require('./routes/mensagens');
 const { requireAuth } = require('./middleware/auth');
 const { t, idiomaValido, LOCALE_POR_IDIOMA } = require('./utils/i18n');
 const visits = require('./db/visits');
+const notifications = require('./db/notifications');
+const friendships = require('./db/friendships');
+const messages = require('./db/messages');
 
 if (!process.env.SESSION_SECRET) {
   console.error('Faltou configurar a variavel de ambiente SESSION_SECRET (veja o .env.example).');
@@ -65,6 +72,18 @@ app.use((req, res, next) => {
   res.locals.t = (chave, params) => t(lang, chave, params);
   res.locals.paginaAtualUrl = req.originalUrl;
 
+  if (req.session.userId) {
+    res.locals.notificacoesRecentes = notifications.listRecentForUser(req.session.userId, 10);
+    res.locals.notificacoesNaoLidas = notifications.countUnread(req.session.userId);
+    res.locals.mensagensNaoLidas = messages.countUnread(req.session.userId);
+    res.locals.solicitacoesAmizadePendentes = friendships.countPendingReceived(req.session.userId);
+  } else {
+    res.locals.notificacoesRecentes = [];
+    res.locals.notificacoesNaoLidas = 0;
+    res.locals.mensagensNaoLidas = 0;
+    res.locals.solicitacoesAmizadePendentes = 0;
+  }
+
   next();
 });
 
@@ -91,6 +110,10 @@ app.use('/', articleRoutes);
 app.use('/', readingRoutes);
 app.use('/', codingRoutes);
 app.use('/', adminRoutes);
+app.use('/', forumRoutes);
+app.use('/', notificationRoutes);
+app.use('/', networkRoutes);
+app.use('/', mensagensRoutes);
 
 app.get('/', requireAuth, (req, res) => {
   res.render('home', { userName: req.session.userName });

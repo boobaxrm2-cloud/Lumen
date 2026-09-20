@@ -56,46 +56,25 @@ svg.icone {
   vertical-align: -0.15em;
 }
 
-/* ---------- Cabecalho do app (paginas logadas) ---------- */
-
-.cabecalho-app {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  background: var(--cor-fundo-alt);
-  border-bottom: 1px solid var(--cor-cartao-borda);
-  color: var(--cor-texto);
-  padding: 0.7rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cabecalho-app .marca {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.marca-logo {
-  display: block;
-  height: 4.4rem;
-  width: auto;
-}
-
 /* ---------- Corpo do app: barra lateral + conteudo ---------- */
 
 .corpo-app {
   display: flex;
   align-items: stretch;
+  min-height: 100vh;
+  background-image: url('/images/fundo-paginas.png');
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .barra-lateral {
   width: 250px;
   flex-shrink: 0;
   position: sticky;
-  top: 94px;
-  height: calc(100vh - 94px);
+  top: 0;
+  height: 100vh;
   overflow: hidden auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -129,9 +108,22 @@ svg.icone {
 }
 
 .barra-lateral nav,
-.barra-lateral .promo-lateral {
+.barra-lateral .promo-lateral,
+.logo-lateral {
   position: relative;
   z-index: 1;
+}
+
+.logo-lateral {
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem 1.5rem;
+}
+
+.logo-lateral img {
+  display: block;
+  width: 170px;
+  height: auto;
 }
 
 .barra-lateral nav {
@@ -305,7 +297,6 @@ main {
   min-width: 0;
   max-width: 1300px;
   padding: 2.2rem 2.5rem 4rem;
-  background: var(--cor-fundo);
 }
 
 .link-voltar {
@@ -459,7 +450,7 @@ main {
 }
 
 .hero p {
-  color: var(--cor-texto-suave);
+  color: var(--cor-texto);
   font-size: 1.02rem;
   max-width: 480px;
 }
@@ -596,7 +587,8 @@ main {
 }
 
 .campo input,
-.campo select {
+.campo select,
+.campo textarea {
   width: 100%;
   padding: 0.55rem 0.6rem;
   border: 1px solid var(--cor-cartao-borda);
@@ -607,8 +599,14 @@ main {
   color: var(--cor-texto);
 }
 
+.campo textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
 .campo input:focus,
-.campo select:focus {
+.campo select:focus,
+.campo textarea:focus {
   outline: 2px solid var(--cor-dourado);
   outline-offset: 1px;
 }
@@ -738,11 +736,190 @@ main {
 /* ---------- Elementos gerais reutilizaveis ---------- */
 
 .cartao {
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-radius: 10px;
   box-shadow: var(--sombra-cartao);
   padding: 1.5rem 1.6rem;
+}
+
+/* ---------- Minha conta: cards lado a lado + foto de perfil ---------- */
+
+.contas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.contas-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.avatar-editor {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-preview {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--cor-cartao-borda);
+  flex-shrink: 0;
+}
+
+.avatar-preview-vazio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cor-fundo);
+  color: var(--cor-texto-suave);
+}
+
+.avatar-preview-vazio .icone {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.dropzone-avatar {
+  flex: 1;
+  min-width: 0;
+  min-height: auto;
+  padding: 0.8rem 1rem;
+}
+
+.avatar-preview-pequeno {
+  width: 2.3rem;
+  height: 2.3rem;
+}
+
+.avatar-preview-pequeno .icone {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.avatar-preview-grande {
+  width: 5.2rem;
+  height: 5.2rem;
+}
+
+.avatar-preview-grande .icone {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+/* ---------- Forum academico ---------- */
+
+.autor-info {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  border-radius: 6px;
+}
+
+.autor-info:hover .autor-info-texto strong {
+  color: var(--cor-dourado);
+}
+
+.autor-info-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.85rem;
+}
+
+.autor-info-texto strong {
+  color: var(--cor-texto);
+}
+
+.autor-info-area {
+  color: var(--cor-texto-suave);
+  font-size: 0.78rem;
+}
+
+.lista-topicos-forum {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.topico-forum-card {
+  display: block;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.topico-forum-card:hover {
+  border-color: rgba(240, 193, 75, 0.4);
+  transform: translateY(-2px);
+}
+
+.topico-forum-card h3 {
+  margin: 0.8rem 0 0.4rem;
+  color: var(--cor-texto);
+}
+
+.topico-forum-card .resumo {
+  color: var(--cor-texto-suave);
+  margin: 0 0 0.8rem;
+}
+
+.topico-forum-meta {
+  display: flex;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--cor-texto-suave);
+}
+
+.topico-forum-mensagem {
+  color: var(--cor-texto);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.lista-anexos-forum {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.lista-respostas-forum {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.resposta-forum {
+  scroll-margin-top: 100px;
+}
+
+.menu-editar-forum {
+  width: 340px;
+  max-width: 85vw;
+  padding: 1rem;
+}
+
+.menu-editar-forum form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .selo {
@@ -828,7 +1005,9 @@ main {
   grid-template-columns: 170px 1fr 230px auto;
   gap: 1.6rem;
   align-items: center;
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(240, 193, 75, 0.16);
   border-radius: 12px;
   box-shadow: var(--sombra-cartao), 0 0 24px rgba(240, 193, 75, 0.05);
@@ -1054,7 +1233,9 @@ main {
 }
 
 .filtros-busca {
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-radius: 10px;
   padding: 1.2rem;
@@ -1221,6 +1402,8 @@ main {
 }
 
 .botao-visual {
+  display: inline-flex;
+  align-items: center;
   background: transparent;
   color: var(--cor-texto-suave);
   border: none;
@@ -1228,6 +1411,7 @@ main {
   font-family: var(--fonte-corpo);
   font-size: 0.82rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .botao-visual.ativo {
@@ -1333,7 +1517,9 @@ section.secao > h2 .contagem {
 
 .ficha-artigo {
   position: relative;
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-top: 3px solid var(--cor-dourado);
   border-radius: 8px;
@@ -1537,7 +1723,9 @@ section.secao > h2 .contagem {
 .popup-recorte {
   flex-direction: column;
   gap: 0.6rem;
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-radius: 10px;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.5);
@@ -1617,7 +1805,9 @@ section.secao > h2 .contagem {
 }
 
 .destaque-item {
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-left: 3px solid var(--cor-dourado);
   border-radius: 6px;
@@ -1717,7 +1907,9 @@ section.secao > h2 .contagem {
 }
 
 .ficha-documento {
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-top: 3px solid var(--cor-dourado);
   border-radius: 8px;
@@ -2034,7 +2226,9 @@ canvas.pagina-pdf {
 
 .modal-recuperar-caixa {
   position: relative;
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-radius: 10px;
   box-shadow: var(--sombra-cartao);
@@ -2057,6 +2251,190 @@ canvas.pagina-pdf {
   font-size: 0.92rem;
   line-height: 1.5;
   margin: 0 0 1rem;
+}
+
+/* ---------- Modal de compartilhar biblioteca ---------- */
+
+.modal-compartilhar-caixa {
+  position: relative;
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  box-shadow: var(--sombra-cartao);
+  width: min(400px, 100%);
+  padding: 2rem 1.8rem;
+  text-align: left;
+}
+
+.modal-compartilhar-caixa h3 {
+  margin: 0 0 1rem;
+  color: var(--cor-texto);
+}
+
+.modal-compartilhar-caixa .aviso-busca {
+  margin: 0 0 1rem;
+}
+
+/* ---------- Modal de perfil publico (forum / network) ---------- */
+
+.modal-perfil-caixa {
+  position: relative;
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  box-shadow: var(--sombra-cartao);
+  width: min(420px, 100%);
+  padding: 2rem 1.8rem;
+  text-align: left;
+}
+
+.perfil-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.perfil-cabecalho h3 {
+  margin: 0;
+  color: var(--cor-texto);
+}
+
+.perfil-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 0 0 1.3rem;
+}
+
+.perfil-detalhe-item dt {
+  font-size: 0.78rem;
+  color: var(--cor-texto-suave);
+  margin: 0 0 0.15rem;
+}
+
+.perfil-detalhe-item dd {
+  font-size: 0.92rem;
+  color: var(--cor-texto);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.perfil-acoes {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Network (amigos e solicitacoes) ---------- */
+
+.lista-solicitacoes-amizade {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.solicitacao-amizade-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.solicitacao-amizade-card .acoes {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.grade-amigos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+}
+
+.ficha-amigo {
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--cor-cartao-borda);
+  border-top: 3px solid var(--cor-dourado);
+  border-radius: 8px;
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.ficha-amigo .perfil-cabecalho {
+  margin-bottom: 0.4rem;
+}
+
+.ficha-amigo .perfil-cabecalho h3 {
+  font-size: 1.05rem;
+}
+
+.ficha-amigo .perfil-detalhes {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+/* ---------- Mensagens privadas ---------- */
+
+.lista-mensagens-conversa {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.mensagem-item {
+  max-width: 70%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--cor-cartao-borda);
+}
+
+.mensagem-item p {
+  margin: 0;
+  color: var(--cor-texto);
+  white-space: pre-wrap;
+}
+
+.mensagem-data {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--cor-texto-suave);
+}
+
+.mensagem-recebida {
+  align-self: flex-start;
+  background: var(--cor-fundo);
+}
+
+.mensagem-enviada {
+  align-self: flex-end;
+  background: rgba(240, 193, 75, 0.1);
+  border-color: rgba(240, 193, 75, 0.4);
+}
+
+.form-enviar-mensagem {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-end;
+}
+
+.form-enviar-mensagem textarea {
+  flex: 1;
 }
 
 /* ---------- Modulo de codificacao qualitativa ---------- */
@@ -2084,7 +2462,9 @@ canvas.pagina-pdf {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-radius: 10px;
   padding: 1rem 1.3rem;
@@ -2133,7 +2513,9 @@ canvas.pagina-pdf {
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-radius: 10px;
   padding: 1rem 1.2rem;
@@ -2285,7 +2667,9 @@ canvas.pagina-pdf {
 }
 
 .trecho-codificar {
-  background: var(--cor-cartao);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--cor-cartao-borda);
   border-left: 3px solid var(--cor-dourado);
   border-radius: 8px;
@@ -2426,6 +2810,7 @@ canvas.pagina-pdf {
   font-family: var(--fonte-corpo);
   font-size: 0.85rem;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -2444,6 +2829,44 @@ canvas.pagina-pdf {
   margin-left: auto;
   color: var(--cor-sucesso);
   flex-shrink: 0;
+}
+
+/* ---------- Notificacoes (sino na sidebar) ---------- */
+
+.item-notificacoes-lateral {
+  position: relative;
+}
+
+.badge-notificacao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--cor-vermelho);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.menu-notificacoes {
+  left: 0;
+  right: auto;
+  width: 210px;
+  max-width: 80vw;
+}
+
+.item-notificacao {
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.item-notificacao.nao-lida {
+  color: var(--cor-dourado);
+  font-weight: 600;
 }
 
 /* ---------- Painel administrativo ---------- */

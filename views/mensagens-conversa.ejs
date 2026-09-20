@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= outro.name %> — <%= t('messages.heading') %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'mensagens' }) %>
+
+    <main>
+    <a class="link-voltar" href="/mensagens">
+      <svg class="icone" viewBox="0 0 24 24"><path d="M19 12H5m0 0l6-6m-6 6l6 6"/></svg>
+      <%= t('messages.backToConversations') %>
+    </a>
+
+    <div class="perfil-cabecalho" style="margin-top: 1.5rem;">
+      <% if (outro.avatar_path) { %>
+        <img class="avatar-preview avatar-preview-pequeno" src="/usuarios/<%= outro.id %>/foto" alt="<%= outro.name %>" />
+      <% } else { %>
+        <span class="avatar-preview avatar-preview-pequeno avatar-preview-vazio">
+          <svg class="icone" viewBox="0 0 24 24"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
+        </span>
+      <% } %>
+      <h2 style="margin: 0;"><%= outro.name %></h2>
+    </div>
+
+    <div class="cartao lista-mensagens-conversa" style="margin-top: 1.2rem;">
+      <% if (historico.length === 0) { %>
+        <p class="lista-vazia"><%= t('messages.noMessagesYet') %></p>
+      <% } else { %>
+        <% historico.forEach(function (mensagem) { %>
+          <div class="mensagem-item <%= mensagem.sender_id === outro.id ? 'mensagem-recebida' : 'mensagem-enviada' %>">
+            <p><%= mensagem.body %></p>
+            <span class="mensagem-data"><%= new Date(mensagem.created_at.replace(' ', 'T') + 'Z').toLocaleString(locale) %></span>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+
+    <form method="POST" action="/mensagens/<%= outro.id %>" class="cartao form-enviar-mensagem" style="margin-top: 1.2rem;">
+      <textarea name="body" rows="2" placeholder="<%= t('messages.placeholder') %>" required></textarea>
+      <button class="botao" type="submit"><%= t('messages.sendButton') %></button>
+    </form>
+    </main>
+  </div>
+</body>
+</html>

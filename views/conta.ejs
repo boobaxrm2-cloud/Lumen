@@ -5,8 +5,6 @@
   <%- include('partials/head') %>
 </head>
 <body>
-  <%- include('partials/cabecalho') %>
-
   <div class="corpo-app">
     <%- include('partials/barra-lateral', { paginaAtiva: 'conta' }) %>
 
@@ -14,52 +12,105 @@
     <%- include('partials/voltar-modulos') %>
     <h2><%= t('account.heading') %></h2>
 
-    <div class="cartao" style="max-width: 480px; margin-bottom: 1.5rem;">
-      <h3 style="margin-top: 0;"><%= t('account.profileHeading') %></h3>
-      <% if (sucessoNome) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoNome %></div><% } %>
-      <% if (erroNome) { %><div class="erro"><%= erroNome %></div><% } %>
+    <div class="contas-grid">
+      <div class="contas-coluna">
+        <div class="cartao">
+          <h3 style="margin-top: 0;"><%= t('account.profileHeading') %></h3>
+          <% if (sucessoNome) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoNome %></div><% } %>
+          <% if (erroNome) { %><div class="erro"><%= erroNome %></div><% } %>
 
-      <form method="POST" action="/conta/nome">
-        <div class="campo">
-          <label for="name"><%= t('account.nameLabel') %></label>
-          <input type="text" id="name" name="name" value="<%= user.name %>" required />
+          <form method="POST" action="/conta/nome">
+            <div class="campo">
+              <label for="name"><%= t('account.nameLabel') %></label>
+              <input type="text" id="name" name="name" value="<%= user.name %>" required />
+            </div>
+            <div class="campo">
+              <label><%= t('account.emailLabel') %></label>
+              <input type="email" value="<%= user.email %>" disabled />
+            </div>
+            <button class="botao" type="submit"><%= t('account.saveNameButton') %></button>
+          </form>
         </div>
-        <div class="campo">
-          <label><%= t('account.emailLabel') %></label>
-          <input type="email" value="<%= user.email %>" disabled />
+
+        <div class="cartao">
+          <h3 style="margin-top: 0;"><%= t('account.passwordHeading') %></h3>
+          <% if (sucessoSenha) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoSenha %></div><% } %>
+          <% if (erroSenha) { %><div class="erro"><%= erroSenha %></div><% } %>
+
+          <form method="POST" action="/conta/senha">
+            <div class="campo">
+              <label for="senhaAtual"><%= t('account.currentPasswordLabel') %></label>
+              <input type="password" id="senhaAtual" name="senhaAtual" required />
+            </div>
+            <div class="campo">
+              <label for="novaSenha"><%= t('account.newPasswordLabel') %></label>
+              <input type="password" id="novaSenha" name="novaSenha" minlength="6" required />
+            </div>
+            <div class="campo">
+              <label for="confirmarSenha"><%= t('account.confirmPasswordLabel') %></label>
+              <input type="password" id="confirmarSenha" name="confirmarSenha" minlength="6" required />
+            </div>
+            <button class="botao" type="submit"><%= t('account.changePasswordButton') %></button>
+          </form>
         </div>
-        <button class="botao" type="submit"><%= t('account.saveNameButton') %></button>
-      </form>
+      </div>
+
+      <div class="cartao">
+        <h3 style="margin-top: 0;"><%= t('account.academicHeading') %></h3>
+        <% if (sucessoPerfil) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoPerfil %></div><% } %>
+        <% if (erroPerfil) { %><div class="erro"><%= erroPerfil %></div><% } %>
+
+        <form method="POST" action="/conta/perfil" enctype="multipart/form-data">
+          <div class="campo campo-avatar">
+            <label><%= t('account.avatarLabel') %></label>
+            <div class="avatar-editor">
+              <% if (user.avatar_path) { %>
+                <img class="avatar-preview" src="/conta/foto?<%= Date.now() %>" alt="<%= t('account.avatarLabel') %>" />
+              <% } else { %>
+                <span class="avatar-preview avatar-preview-vazio">
+                  <svg class="icone" viewBox="0 0 24 24"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
+                </span>
+              <% } %>
+              <label for="avatar-input" class="dropzone-arquivo dropzone-avatar" id="dropzone-avatar">
+                <svg class="icone" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 16v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3"/></svg>
+                <span id="dropzone-avatar-texto">
+                  <strong><%= t('account.chooseFileButton') %></strong>
+                  <small><%= t('account.avatarDragHint') %></small>
+                </span>
+                <input type="file" id="avatar-input" name="avatar" accept="image/png, image/jpeg, image/webp" />
+              </label>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="studyArea"><%= t('account.studyAreaLabel') %></label>
+            <input type="text" id="studyArea" name="studyArea" value="<%= user.study_area || '' %>" placeholder="<%= t('account.studyAreaPlaceholder') %>" />
+          </div>
+          <div class="campo">
+            <label for="university"><%= t('account.universityLabel') %></label>
+            <input type="text" id="university" name="university" value="<%= user.university || '' %>" placeholder="<%= t('account.universityPlaceholder') %>" />
+          </div>
+          <div class="campo">
+            <label for="academicBackground"><%= t('account.academicBackgroundLabel') %></label>
+            <textarea id="academicBackground" name="academicBackground" rows="4" placeholder="<%= t('account.academicBackgroundPlaceholder') %>"><%= user.academic_background || '' %></textarea>
+          </div>
+          <button class="botao" type="submit"><%= t('account.saveProfileButton') %></button>
+        </form>
+      </div>
     </div>
 
-    <div class="cartao" style="max-width: 480px;">
-      <h3 style="margin-top: 0;"><%= t('account.passwordHeading') %></h3>
-      <% if (sucessoSenha) { %><div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucessoSenha %></div><% } %>
-      <% if (erroSenha) { %><div class="erro"><%= erroSenha %></div><% } %>
-
-      <form method="POST" action="/conta/senha">
-        <div class="campo">
-          <label for="senhaAtual"><%= t('account.currentPasswordLabel') %></label>
-          <input type="password" id="senhaAtual" name="senhaAtual" required />
-        </div>
-        <div class="campo">
-          <label for="novaSenha"><%= t('account.newPasswordLabel') %></label>
-          <input type="password" id="novaSenha" name="novaSenha" minlength="6" required />
-        </div>
-        <div class="campo">
-          <label for="confirmarSenha"><%= t('account.confirmPasswordLabel') %></label>
-          <input type="password" id="confirmarSenha" name="confirmarSenha" minlength="6" required />
-        </div>
-        <button class="botao" type="submit"><%= t('account.changePasswordButton') %></button>
-      </form>
-    </div>
-
-    <form method="POST" action="/logout">
+    <form method="POST" action="/logout" style="margin-top: 1.5rem;">
       <button class="botao secundario botao-perigo" type="submit">
         <svg class="icone" viewBox="0 0 24 24"><path d="M15 4H6v16h9"/><path d="M10 12h10m0 0l-3-3m3 3l-3 3"/></svg>
         <%= t('account.logoutButton') %>
       </button>
     </form>
+
+    <script>
+      window.I18N_CONTA = <%- JSON.stringify({
+        avatarChangeHint: t('account.avatarChangeHint'),
+      }) %>;
+    </script>
+    <script src="/js/conta.js"></script>
     </main>
   </div>
 </body>

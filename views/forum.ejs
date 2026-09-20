@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= t('forum.tabTitle') %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'forum' }) %>
+
+    <main>
+    <%- include('partials/voltar-modulos') %>
+    <p class="eyebrow-secao"><%= t('forum.eyebrow') %></p>
+    <h2><%= t('forum.heading') %></h2>
+    <p class="subtitulo-documentos" style="margin-bottom: 1.3rem;"><%= t('forum.subtitle') %></p>
+
+    <div class="cartao" style="margin-bottom: 1.5rem;">
+      <h3 style="margin-top: 0;"><%= t('forum.newTopicHeading') %></h3>
+      <% if (erroNovoTopico) { %><div class="erro"><%= erroNovoTopico %></div><% } %>
+      <form method="POST" action="/forum/topicos" enctype="multipart/form-data">
+        <div class="campo">
+          <label for="title"><%= t('forum.titleLabel') %></label>
+          <input type="text" id="title" name="title" maxlength="150" required />
+        </div>
+        <div class="campo">
+          <label for="message"><%= t('forum.messageLabel') %></label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <div class="campo">
+          <label><%= t('forum.attachmentsLabel') %></label>
+          <label for="anexos" class="dropzone-arquivo" id="dropzone-anexos-topico">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M20 16v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3"/></svg>
+            <span id="dropzone-anexos-topico-texto">
+              <strong><%= t('forum.chooseFiles') %></strong>
+              <small><%= t('forum.dragHintFiles') %></small>
+            </span>
+            <input type="file" id="anexos" name="anexos" accept="application/pdf,image/png,image/jpeg,image/webp" multiple />
+          </label>
+        </div>
+        <button class="botao" type="submit"><%= t('forum.createTopicButton') %></button>
+      </form>
+    </div>
+
+    <div class="documentos-cabecalho">
+      <h2 style="margin: 0;"><%= t('forum.topicsHeading') %></h2>
+      <form method="GET" action="/forum" class="busca-form" style="margin: 0;">
+        <input type="text" name="q" value="<%= q %>" placeholder="<%= t('forum.searchPlaceholder') %>" />
+        <button class="botao secundario" type="submit"><%= t('forum.searchButton') %></button>
+      </form>
+    </div>
+
+    <% if (topicos.length === 0) { %>
+      <p class="lista-vazia"><%= q ? t('forum.noSearchResults') : t('forum.emptyState') %></p>
+    <% } else { %>
+      <div class="lista-topicos-forum">
+        <% topicos.forEach(function (topico) { %>
+          <div class="cartao topico-forum-card" data-href="/forum/topicos/<%= topico.id %>">
+            <%- include('partials/autor-info', { autorId: topico.user_id, autorNome: topico.autor_nome, autorAvatar: topico.autor_avatar, autorArea: topico.autor_area }) %>
+            <h3><a href="/forum/topicos/<%= topico.id %>"><%= topico.title %></a></h3>
+            <p class="resumo"><%= topico.message.length > 220 ? topico.message.slice(0, 220) + '…' : topico.message %></p>
+            <div class="topico-forum-meta">
+              <span><%= new Date(topico.created_at.replace(' ', 'T') + 'Z').toLocaleDateString(locale) %></span>
+              <span><%= t('forum.replyCount', { n: topico.total_respostas }) %></span>
+              <% if (topico.total_anexos > 0) { %><span><%= t('forum.attachmentCount', { n: topico.total_anexos }) %></span><% } %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+    </main>
+  </div>
+
+  <%- include('partials/modal-perfil') %>
+
+  <script>
+    window.I18N_FORUM = <%- JSON.stringify({
+      chooseFiles: t('forum.chooseFiles'),
+      dragHintFiles: t('forum.dragHintFiles'),
+      filesSelectedCount: t('forum.filesSelectedCount', { n: '{n}' }),
+      erroAnexoTipoInvalido: t('forum.erroAnexoTipoInvalido'),
+      erroConexao: t('network.erroConexao'),
+      requestButton: t('network.profile.requestButton'),
+      requestPendingButton: t('network.profile.requestPendingButton'),
+      acceptButton: t('network.acceptButton'),
+      rejectButton: t('network.rejectButton'),
+      sendMessageButton: t('network.sendMessageButton'),
+    }) %>;
+  </script>
+  <script src="/js/forum.js"></script>
+</body>
+</html>

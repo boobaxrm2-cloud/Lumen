@@ -1,0 +1,31 @@
+<div id="modal-perfil" class="modal-pdf" style="display: none;">
+  <div class="modal-pdf-fundo" id="modal-perfil-fundo"></div>
+  <div class="modal-perfil-caixa">
+    <p class="aviso-busca" id="perfil-status"></p>
+    <div id="perfil-conteudo" style="display: none;">
+      <div class="perfil-cabecalho">
+        <img id="perfil-avatar-img" class="avatar-preview avatar-preview-grande" src="" alt="" style="display: none;" />
+        <span id="perfil-avatar-vazio" class="avatar-preview avatar-preview-grande avatar-preview-vazio">
+          <svg class="icone" viewBox="0 0 24 24"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
+        </span>
+        <h3 id="perfil-nome"></h3>
+      </div>
+      <dl class="perfil-detalhes">
+        <div id="perfil-linha-area" class="perfil-detalhe-item">
+          <dt><%= t('account.studyAreaLabel') %></dt>
+          <dd id="perfil-area"></dd>
+        </div>
+        <div id="perfil-linha-universidade" class="perfil-detalhe-item">
+          <dt><%= t('account.universityLabel') %></dt>
+          <dd id="perfil-universidade"></dd>
+        </div>
+        <div id="perfil-linha-formacao" class="perfil-detalhe-item">
+          <dt><%= t('account.academicBackgroundLabel') %></dt>
+          <dd id="perfil-formacao"></dd>
+        </div>
+      </dl>
+      <div id="perfil-acoes" class="perfil-acoes"></div>
+    </div>
+    <button type="button" class="botao secundario acao-larga" id="botao-perfil-fechar" style="margin-top: 0.8rem;"><%= t('network.profile.closeButton') %></button>
+  </div>
+</div>
