@@ -80,9 +80,6 @@
         <%= t('sidebar.sair') %>
       </button>
     </form>
-    <div class="seletor-idioma-lateral">
-      <%- include('seletor-idioma') %>
-    </div>
   </nav>
 
   <div class="promo-lateral">
@@ -90,4 +87,6 @@
     <p><%= t('sidebar.promoQuote') %></p>
     <span class="assinatura">— Lumen</span>
   </div>
+
+  <%- include('seletor-idioma-compacto') %>
 </aside>

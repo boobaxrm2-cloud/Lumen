@@ -197,12 +197,43 @@ svg.icone {
   color: #2c1f06;
 }
 
-.seletor-idioma-lateral {
-  margin: 0.6rem 1rem 0;
+details.seletor-idioma-flutuante {
+  position: absolute;
+  top: 1.3rem;
+  right: 0.8rem;
+  z-index: 5;
+  width: auto;
 }
 
-.seletor-idioma-lateral .seletor-idioma {
-  width: fit-content;
+.botao-idioma-flutuante {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--cor-cartao-borda);
+  background: rgba(22, 31, 52, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-corpo);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.botao-idioma-flutuante:hover {
+  color: var(--cor-dourado);
+  border-color: rgba(240, 193, 75, 0.5);
+}
+
+.botao-idioma-flutuante .icone {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.menu-idioma-flutuante {
+  min-width: 140px;
 }
 
 .promo-lateral {
