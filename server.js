@@ -30,6 +30,10 @@ if (!process.env.SESSION_SECRET) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 const EM_PRODUCAO = process.env.NODE_ENV === 'production';
+// Muda a cada vez que o servidor reinicia - usado como "?v=" no link do CSS
+// pra forcar o navegador a buscar a versao nova depois de um deploy, em vez
+// de continuar usando uma copia antiga guardada em cache.
+const VERSAO_ASSETS = Date.now();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -64,6 +68,7 @@ app.use(
 
 // Deixa o nome do usuario logado e o idioma atual disponiveis em todas as views.
 app.use((req, res, next) => {
+  res.locals.versaoAssets = VERSAO_ASSETS;
   res.locals.userName = req.session.userName || null;
   res.locals.isAdmin = Boolean(req.session.isAdmin);
 
