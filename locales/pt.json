@@ -11,13 +11,11 @@
   "sidebar.notifications": "Notificações",
   "sidebar.network": "Network",
   "sidebar.messages": "Mensagens",
-
   "notifications.empty": "Nenhuma notificação ainda.",
   "notifications.forumReply": "{nome} respondeu seu tópico",
   "notifications.libraryShare": "{nome} compartilhou a biblioteca com você",
   "notifications.friendRequest": "{nome} te enviou uma solicitação de amizade",
   "notifications.friendAccepted": "{nome} aceitou sua solicitação de amizade",
-
   "forum.tabTitle": "Fórum — Lumen",
   "forum.eyebrow": "Comunidade acadêmica",
   "forum.heading": "Fórum",
@@ -53,7 +51,6 @@
   "forum.chooseFiles": "Escolher arquivos",
   "forum.dragHintFiles": "ou arraste os arquivos aqui",
   "forum.filesSelectedCount": "Arquivos selecionados: {n}",
-
   "network.tabTitle": "Network — Lumen",
   "network.eyebrow": "Comunidade acadêmica",
   "network.heading": "Network",
@@ -74,7 +71,6 @@
   "network.profile.requestButton": "Solicitar amizade",
   "network.profile.requestPendingButton": "Solicitação pendente",
   "network.profile.acceptFromModalButton": "Aceitar solicitação",
-
   "messages.tabTitle": "Mensagens — Lumen",
   "messages.eyebrow": "Comunidade acadêmica",
   "messages.heading": "Mensagens",
@@ -86,7 +82,6 @@
   "messages.sendButton": "Enviar",
   "messages.erroConversaNaoEncontrada": "Conversa não encontrada.",
   "sidebar.promoQuote": "O conhecimento é o primeiro passo para grandes conquistas.",
-
   "login.tabTitle": "Entrar — Lumen",
   "login.subtitle": "Catálogo pessoal de pesquisa: artigos, leituras e codificação.",
   "login.emailLabel": "Email",
@@ -97,6 +92,25 @@
   "login.erroCredenciaisInvalidas": "Email ou senha inválidos.",
   "login.contaCriadaComSucesso": "Conta criada com sucesso! Faça login para continuar.",
   "login.forgotPassword": "Esqueceu sua senha?",
+  "login.heroEyebrow": "Conhecimento é poder",
+  "login.heroHeadline": "Tudo o que você precisa para sua <span class=\"destaque-dourado\">pesquisa</span>, em um só lugar.",
+  "login.heroSubtitle": "O Lumen é uma plataforma pessoal de pesquisa pra buscar artigos, ler PDFs, codificar seus dados e se conectar com outros pesquisadores — sem inteligência artificial, só as ferramentas que você precisa.",
+  "login.heroCtaPrimary": "Criar conta gratuita",
+  "login.heroCtaSecondary": "Entrar",
+  "login.highlight1Title": "Encontre o que precisa",
+  "login.highlight1Desc": "Busque artigos, PDFs e mais em segundos.",
+  "login.highlight2Title": "Trabalhe em conjunto",
+  "login.highlight2Desc": "Conecte-se com pesquisadores dentro da plataforma.",
+  "login.highlight3Title": "Sua pesquisa, do seu jeito",
+  "login.highlight3Desc": "Ferramentas poderosas, sem distrações.",
+  "login.welcomeBack": "Bem-vindo(a) de volta!",
+  "login.subtitleContinue": "Faça login pra continuar no Lumen.",
+  "login.emailPlaceholder": "voce@exemplo.com",
+  "login.passwordPlaceholder": "Digite sua senha",
+  "login.rememberMe": "Lembrar de mim",
+  "login.createFreeAccountLink": "Criar conta gratuita",
+  "login.showPassword": "Mostrar senha",
+  "login.hidePassword": "Ocultar senha",
   "login.recovery.title": "Recuperar senha",
   "login.recovery.continueButton": "Continuar",
   "login.recovery.questionIntro": "Sua pergunta secreta:",
@@ -113,7 +127,6 @@
   "login.recovery.erroSenhasNaoConferem": "As senhas não conferem.",
   "login.recovery.erroSessaoExpirada": "Sessão expirada. Comece de novo.",
   "login.recovery.erroConexao": "Erro de conexão. Tente novamente.",
-
   "signup.tabTitle": "Criar conta — Lumen",
   "signup.heading": "Nova ficha",
   "signup.subtitle": "Crie sua conta de pesquisador para começar.",
@@ -134,13 +147,11 @@
   "signup.erroSenhasNaoConferem": "As senhas não conferem.",
   "signup.erroPerguntaSecretaObrigatoria": "Escolha uma pergunta secreta.",
   "signup.erroRespostaSecretaObrigatoria": "Informe uma resposta para a pergunta secreta.",
-
   "secretQuestion.motherMaidenName": "Qual é o nome de solteira da sua mãe?",
   "secretQuestion.firstPet": "Qual era o nome do seu primeiro animal de estimação?",
   "secretQuestion.birthCity": "Em qual cidade você nasceu?",
   "secretQuestion.firstSchool": "Qual era o nome da sua primeira escola?",
   "secretQuestion.favoriteFood": "Qual é a sua comida favorita?",
-
   "account.tabTitle": "Minha conta — Lumen",
   "account.heading": "Minha conta",
   "account.profileHeading": "Perfil",
@@ -175,19 +186,15 @@
   "account.erroFotoTipoInvalido": "Envie uma imagem JPG, PNG ou WEBP.",
   "account.erroFotoGenerico": "Não foi possível enviar a foto.",
   "account.erroFotoNaoEncontrada": "Foto não encontrada.",
-
   "common.backToModules": "Voltar aos módulos",
-
   "pdfPreview.title": "Pré-visualização",
   "pdfPreview.pageIndicator": "Página {atual} de {total}",
   "pdfPreview.closeButton": "Fechar ✕",
   "pdfPreview.loading": "Carregando...",
-
   "articles.openArticleLink": "Abrir artigo ↗",
   "articles.previewButton": "Pré-visualizar",
   "articles.downloadPdfButton": "Baixar PDF",
   "articles.removeButton": "Remover",
-
   "library.tabTitle": "Biblioteca — Lumen",
   "library.heading": "Biblioteca",
   "library.itemCount": "{n} item(ns)",
@@ -209,7 +216,6 @@
   "library.share.erroEmailNaoEncontrado": "E-mail incorreto. Tente novamente.",
   "library.share.erroSelfShare": "Você não pode compartilhar sua biblioteca com você mesmo.",
   "library.share.erroJaCompartilhado": "Você já compartilha sua biblioteca com essa pessoa.",
-
   "home.hero.eyebrow": "Conhecimento é poder",
   "home.hero.welcomePrefix": "Bem-vindo(a), ",
   "home.hero.subtitle": "Este é o seu catálogo pessoal de pesquisa. Os módulos abaixo vão sendo adicionados aos poucos.",
@@ -222,7 +228,6 @@
   "home.modules.sortMostRecent": "Mais recentes",
   "home.badge.available": "Módulo disponível",
   "home.badge.comingSoon": "Em breve",
-
   "home.moduleArticles.eyebrow": "Pesquisa",
   "home.moduleArticles.title": "Busca de artigos científicos",
   "home.moduleArticles.description": "Busque no Semantic Scholar, salve os artigos de interesse e exporte sua lista em CSV.",
@@ -231,7 +236,6 @@
   "home.moduleArticles.feature2": "Salvar artigos",
   "home.moduleArticles.feature3": "Aviso de duplicidade",
   "home.moduleArticles.feature4": "Exportar CSV",
-
   "home.moduleReading.eyebrow": "Leitura",
   "home.moduleReading.title": "Leitura de PDF",
   "home.moduleReading.description": "Envie um PDF, busque trechos no texto e marque excertos-chave para revisar depois.",
@@ -240,7 +244,6 @@
   "home.moduleReading.feature2": "Busca no texto",
   "home.moduleReading.feature3": "Marcar trechos-chave",
   "home.moduleReading.feature4": "Navegação por página",
-
   "home.moduleCoding.eyebrow": "Codificação",
   "home.moduleCoding.title": "Codificação qualitativa",
   "home.moduleCoding.description": "Selecione trechos de texto e organize-os em códigos/categorias criados por você.",
@@ -249,7 +252,6 @@
   "home.moduleCoding.feature2": "Frequência por código",
   "home.moduleCoding.feature3": "Agrupamento de trechos",
   "home.moduleCoding.feature4": "Exportar CSV",
-
   "home.moduleQuantitative.eyebrow": "Quantitativa",
   "home.moduleQuantitative.title": "Análise e codificação quantitativa",
   "home.moduleQuantitative.description": "Organize os dados numéricos da sua pesquisa e calcule estatísticas descritivas básicas.",
@@ -257,10 +259,8 @@
   "home.moduleQuantitative.feature2": "Estatísticas descritivas",
   "home.moduleQuantitative.feature3": "Distribuição de frequência",
   "home.moduleQuantitative.feature4": "Exportar resultados",
-
   "pdfPreview.blockedFallback": "Esse site não deixa o Lumen abrir o PDF por aqui (proteção contra robôs). Você pode abri-lo direto:",
   "pdfPreview.openInNewTab": "Abrir PDF em nova aba ↗",
-
   "articles.tabTitle": "Artigos — Lumen",
   "articles.heading": "Buscar artigos",
   "articles.searchPlaceholder": "Ex: alfabetização, ensino híbrido, avaliação formativa...",
@@ -308,7 +308,6 @@
   "articles.semTitulo": "(sem título)",
   "articles.erroSemTitulo": "Este resultado não tem título, não é possível salvar.",
   "articles.mensagemDuplicado": "Já existe um artigo parecido salvo: \"{titulo}\".",
-
   "csv.articles.title": "Título",
   "csv.articles.authors": "Autores",
   "csv.articles.year": "Ano",
@@ -317,7 +316,6 @@
   "csv.articles.link": "Link",
   "csv.articles.openAccessPdf": "PDF de acesso aberto",
   "csv.articles.abstract": "Resumo",
-
   "reading.tabTitle": "Leitura de PDF — Lumen",
   "reading.eyebrow": "Leitura e estudos",
   "reading.headingPrefix": "Enviar ",
@@ -366,7 +364,6 @@
   "reading.removeButton": "Remover",
   "reading.confirmModalCancel": "Cancelar",
   "reading.confirmModalRemove": "Remover",
-
   "reading.dropChangeHint": "Clique ou arraste outro arquivo para trocar",
   "reading.onlyPdfError": "Envie apenas arquivos PDF.",
   "reading.uploadingStatus": "Enviando e lendo o PDF...",
@@ -398,7 +395,6 @@
   "reading.erroImagemNaoEncontrada": "Imagem não encontrada.",
   "reading.erroArquivoNaoEncontrado": "Arquivo não encontrado no servidor.",
   "reading.erroArquivoOriginalAusente": "Esse documento foi enviado antes de guardarmos o arquivo original — envie o PDF de novo.",
-
   "pdf.pesquisaVinculada": "Pesquisa vinculada: {titulo}",
   "pdf.autores": "Autor(es): {autores}",
   "pdf.naoInformado": "não informado",
@@ -408,7 +404,6 @@
   "pdf.nenhumTrechoMarcado": "Nenhum trecho-chave marcado neste documento ainda.",
   "pdf.recorteDeImagem": "{n}. Recorte de imagem",
   "pdf.imagemNaoCarregada": "[Não foi possível carregar esta imagem]",
-
   "coding.tabTitle": "Codificação — Lumen",
   "coding.chooseResearchHeading": "Escolha uma pesquisa para codificar",
   "coding.chooseResearchSubtitle": "Os códigos que você criar valem só para os trechos do documento escolhido.",
@@ -437,7 +432,6 @@
   "coding.noCodeYet": "Sem código ainda",
   "coding.addCodeTitle": "Adicionar código",
   "coding.removeCodeFromExcerptTitle": "Remover este código do trecho",
-
   "pdf.dashboardDeCodificacao": "Dashboard de codificação",
   "pdf.totalTrechosMarcados": "Total de trechos marcados: {n}",
   "pdf.totalCodigosCriados": "Total de códigos criados: {n}",
@@ -445,7 +439,6 @@
   "pdf.trechosMarcadosECodificados": "Trechos marcados e codificados",
   "pdf.semCodigo": "Sem código",
   "pdf.codigos": "Códigos: {lista}",
-
   "csv.coding.excerpt": "Trecho",
   "csv.coding.document": "Documento",
   "csv.coding.codes": "Códigos",

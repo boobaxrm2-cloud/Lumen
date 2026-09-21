@@ -5,38 +5,114 @@
   <%- include('partials/head') %>
 </head>
 <body>
-  <div class="auth-tela">
-    <div class="auth-fundo" style="background-image: url('/images/login-background.png');"></div>
-    <div class="ficha-auth">
-      <div class="seletor-idioma-auth">
-        <%- include('partials/seletor-idioma') %>
+  <div class="login-full">
+    <div class="login-full-fundo" style="background-image: url('/images/login-background.png');"></div>
+
+    <header class="login-full-nav">
+      <a class="login-full-nav-logo" href="/login">
+        <img src="/images/logo-lumen.png" alt="Lumen" />
+      </a>
+      <div class="login-full-nav-acoes">
+        <div class="login-idioma-pill">
+          <svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18 15 15 0 010-18z"/></svg>
+          <%- include('partials/seletor-idioma') %>
+        </div>
       </div>
-      <h1 class="auth-logo-titulo"><img class="auth-logo" src="/images/logo-lumen.png" alt="Lumen" /></h1>
-      <p class="subtitulo"><%= t('login.subtitle') %></p>
+    </header>
 
-      <% if (sucesso) { %>
-        <div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucesso %></div>
-      <% } %>
-      <% if (erro) { %>
-        <div class="erro"><%= erro %></div>
-      <% } %>
-
-      <form method="POST" action="/login">
-        <div class="campo">
-          <label for="email"><%= t('login.emailLabel') %></label>
-          <input type="email" id="email" name="email" value="<%= valores.email %>" required autofocus />
+    <main class="login-full-conteudo">
+      <div class="login-full-hero">
+        <p class="eyebrow"><%= t('login.heroEyebrow') %></p>
+        <h1><%- t('login.heroHeadline') %></h1>
+        <p class="login-full-hero-subtitulo"><%= t('login.heroSubtitle') %></p>
+        <div class="login-hero-cta">
+          <a class="botao acao-larga" href="/cadastro">
+            <%= t('login.heroCtaPrimary') %>
+            <svg class="icone" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
         </div>
-        <div class="campo">
-          <label for="password"><%= t('login.passwordLabel') %></label>
-          <input type="password" id="password" name="password" required />
-        </div>
-        <button class="botao acao-larga" type="submit"><%= t('login.submitButton') %></button>
-      </form>
+      </div>
 
-      <p class="rodape-ficha">
-        <button type="button" class="link-esqueci-senha" id="botao-esqueci-senha"><%= t('login.forgotPassword') %></button>
-      </p>
-      <p class="rodape-ficha"><%= t('login.noAccount') %> <a href="/cadastro"><%= t('login.signupLink') %></a></p>
+      <div class="login-full-card" id="form-login">
+        <div class="ficha-auth login-ficha-flutuante">
+          <h2><%= t('login.welcomeBack') %></h2>
+          <p class="login-full-card-subtitulo"><%= t('login.subtitleContinue') %></p>
+
+          <% if (sucesso) { %>
+            <div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso);"><%= sucesso %></div>
+          <% } %>
+          <% if (erro) { %>
+            <div class="erro"><%= erro %></div>
+          <% } %>
+
+          <form method="POST" action="/login">
+            <div class="campo">
+              <label for="email"><%= t('login.emailLabel') %></label>
+              <div class="input-com-icone">
+                <svg class="icone icone-input" viewBox="0 0 24 24"><path d="M3 6l9 6 9-6"/><rect x="3" y="5" width="18" height="14" rx="2"/></svg>
+                <input type="email" id="email" name="email" value="<%= valores.email %>" placeholder="<%= t('login.emailPlaceholder') %>" required autofocus />
+              </div>
+            </div>
+            <div class="campo">
+              <label for="password"><%= t('login.passwordLabel') %></label>
+              <div class="input-com-icone">
+                <svg class="icone icone-input" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+                <input type="password" id="password" name="password" placeholder="<%= t('login.passwordPlaceholder') %>" required />
+                <button type="button" class="botao-mostrar-senha" id="botao-mostrar-senha" title="<%= t('login.showPassword') %>" aria-label="<%= t('login.showPassword') %>">
+                  <svg class="icone" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="login-full-linha-opcoes">
+              <label class="login-lembrar-checkbox">
+                <input type="checkbox" name="rememberMe" value="1" checked />
+                <span><%= t('login.rememberMe') %></span>
+              </label>
+              <button type="button" class="link-esqueci-senha" id="botao-esqueci-senha"><%= t('login.forgotPassword') %></button>
+            </div>
+
+            <button class="botao acao-larga" type="submit">
+              <%= t('login.submitButton') %>
+              <svg class="icone" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+
+          <p class="rodape-ficha"><%= t('login.noAccount') %> <a href="/cadastro"><%= t('login.createFreeAccountLink') %></a></p>
+        </div>
+      </div>
+    </main>
+
+    <div class="login-full-rodape">
+      <ul class="login-full-destaques">
+        <li>
+          <span class="icone-circulo">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          </span>
+          <span>
+            <strong><%= t('login.highlight1Title') %></strong>
+            <small><%= t('login.highlight1Desc') %></small>
+          </span>
+        </li>
+        <li>
+          <span class="icone-circulo">
+            <svg class="icone" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 016-6h2a6 6 0 016 6v1"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1a5.5 5.5 0 00-3.5-5.1"/></svg>
+          </span>
+          <span>
+            <strong><%= t('login.highlight2Title') %></strong>
+            <small><%= t('login.highlight2Desc') %></small>
+          </span>
+        </li>
+        <li>
+          <span class="icone-circulo">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <span>
+            <strong><%= t('login.highlight3Title') %></strong>
+            <small><%= t('login.highlight3Desc') %></small>
+          </span>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -82,6 +158,8 @@
   <script>
     window.I18N_LOGIN = <%- JSON.stringify({
       erroConexao: t('login.recovery.erroConexao'),
+      showPassword: t('login.showPassword'),
+      hidePassword: t('login.hidePassword'),
     }) %>;
   </script>
   <script src="/js/login.js"></script>

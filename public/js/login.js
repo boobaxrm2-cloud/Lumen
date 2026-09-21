@@ -110,6 +110,21 @@ document.getElementById('botao-recuperar-confirmar-resposta').addEventListener('
   }
 });
 
+// Botao de mostrar/ocultar a senha no formulario principal de login (nao
+// existe no modal de recuperacao, so no campo "password" da tela).
+const botaoMostrarSenha = document.getElementById('botao-mostrar-senha');
+if (botaoMostrarSenha) {
+  const campoSenha = document.getElementById('password');
+  botaoMostrarSenha.addEventListener('click', () => {
+    const visivel = campoSenha.type === 'text';
+    campoSenha.type = visivel ? 'password' : 'text';
+    const rotulo = visivel ? I18N_LOGIN_TXT.showPassword : I18N_LOGIN_TXT.hidePassword;
+    botaoMostrarSenha.title = rotulo;
+    botaoMostrarSenha.setAttribute('aria-label', rotulo);
+    botaoMostrarSenha.classList.toggle('ativo', !visivel);
+  });
+}
+
 document.getElementById('botao-recuperar-salvar').addEventListener('click', async () => {
   const novaSenha = campoNovaSenha.value;
   const confirmarSenha = campoConfirmarSenha.value;

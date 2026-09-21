@@ -11,13 +11,11 @@
   "sidebar.notifications": "알림",
   "sidebar.network": "네트워크",
   "sidebar.messages": "메시지",
-
   "notifications.empty": "아직 알림이 없습니다.",
   "notifications.forumReply": "{nome}님이 회원님의 게시글에 답글을 남겼습니다",
   "notifications.libraryShare": "{nome}님이 라이브러리를 공유했습니다",
   "notifications.friendRequest": "{nome}님이 친구 요청을 보냈습니다",
   "notifications.friendAccepted": "{nome}님이 친구 요청을 수락했습니다",
-
   "forum.tabTitle": "포럼 — Lumen",
   "forum.eyebrow": "학술 커뮤니티",
   "forum.heading": "포럼",
@@ -53,7 +51,6 @@
   "forum.chooseFiles": "파일 선택",
   "forum.dragHintFiles": "또는 여기에 파일을 드래그하세요",
   "forum.filesSelectedCount": "선택된 파일: {n}",
-
   "network.tabTitle": "네트워크 — Lumen",
   "network.eyebrow": "학술 커뮤니티",
   "network.heading": "네트워크",
@@ -74,7 +71,6 @@
   "network.profile.requestButton": "친구 추가",
   "network.profile.requestPendingButton": "요청 대기 중",
   "network.profile.acceptFromModalButton": "요청 수락",
-
   "messages.tabTitle": "메시지 — Lumen",
   "messages.eyebrow": "학술 커뮤니티",
   "messages.heading": "메시지",
@@ -86,7 +82,6 @@
   "messages.sendButton": "보내기",
   "messages.erroConversaNaoEncontrada": "대화를 찾을 수 없습니다.",
   "sidebar.promoQuote": "지식은 위대한 성취를 향한 첫걸음입니다.",
-
   "login.tabTitle": "로그인 — Lumen",
   "login.subtitle": "개인 연구 카탈로그: 논문, 읽기, 코딩.",
   "login.emailLabel": "이메일",
@@ -97,6 +92,25 @@
   "login.erroCredenciaisInvalidas": "이메일 또는 비밀번호가 올바르지 않습니다.",
   "login.contaCriadaComSucesso": "계정이 성공적으로 생성되었습니다! 로그인하여 계속하세요.",
   "login.forgotPassword": "비밀번호를 잊으셨나요?",
+  "login.heroEyebrow": "지식이 곧 힘입니다",
+  "login.heroHeadline": "연구에 필요한 모든 것을 <span class=\"destaque-dourado\">한곳에서</span>.",
+  "login.heroSubtitle": "Lumen은 논문을 검색하고, PDF를 읽고, 데이터를 코딩하고, 다른 연구자와 연결할 수 있는 개인 연구 플랫폼입니다 — AI 없이, 꼭 필요한 도구만 담았습니다.",
+  "login.heroCtaPrimary": "무료 계정 만들기",
+  "login.heroCtaSecondary": "로그인",
+  "login.highlight1Title": "필요한 것을 찾아보세요",
+  "login.highlight1Desc": "몇 초 만에 논문, PDF 등을 검색하세요.",
+  "login.highlight2Title": "함께 연구하세요",
+  "login.highlight2Desc": "플랫폼 안에서 연구자들과 연결하세요.",
+  "login.highlight3Title": "당신만의 연구 방식",
+  "login.highlight3Desc": "강력한 도구, 방해 요소는 전혀 없이.",
+  "login.welcomeBack": "다시 오신 것을 환영합니다!",
+  "login.subtitleContinue": "로그인하여 Lumen을 계속 이용하세요.",
+  "login.emailPlaceholder": "you@example.com",
+  "login.passwordPlaceholder": "비밀번호를 입력하세요",
+  "login.rememberMe": "로그인 상태 유지",
+  "login.createFreeAccountLink": "무료 계정 만들기",
+  "login.showPassword": "비밀번호 표시",
+  "login.hidePassword": "비밀번호 숨기기",
   "login.recovery.title": "비밀번호 재설정",
   "login.recovery.continueButton": "계속",
   "login.recovery.questionIntro": "회원님의 비밀 질문:",
@@ -113,7 +127,6 @@
   "login.recovery.erroSenhasNaoConferem": "비밀번호가 일치하지 않습니다.",
   "login.recovery.erroSessaoExpirada": "세션이 만료되었습니다. 처음부터 다시 시작해 주세요.",
   "login.recovery.erroConexao": "연결 오류가 발생했습니다. 다시 시도해 주세요.",
-
   "signup.tabTitle": "회원가입 — Lumen",
   "signup.heading": "새 프로필",
   "signup.subtitle": "연구자 계정을 만들어 시작해 보세요.",
@@ -134,13 +147,11 @@
   "signup.erroSenhasNaoConferem": "비밀번호가 일치하지 않습니다.",
   "signup.erroPerguntaSecretaObrigatoria": "비밀 질문을 선택해 주세요.",
   "signup.erroRespostaSecretaObrigatoria": "비밀 질문에 대한 답변을 입력해 주세요.",
-
   "secretQuestion.motherMaidenName": "어머니의 결혼 전 성은 무엇입니까?",
   "secretQuestion.firstPet": "첫 번째로 기른 반려동물의 이름은 무엇입니까?",
   "secretQuestion.birthCity": "태어난 도시는 어디입니까?",
   "secretQuestion.firstSchool": "첫 번째로 다닌 학교의 이름은 무엇입니까?",
   "secretQuestion.favoriteFood": "가장 좋아하는 음식은 무엇입니까?",
-
   "account.tabTitle": "내 계정 — Lumen",
   "account.heading": "내 계정",
   "account.profileHeading": "프로필",
@@ -175,19 +186,15 @@
   "account.erroFotoTipoInvalido": "JPG, PNG 또는 WEBP 이미지를 업로드해 주세요.",
   "account.erroFotoGenerico": "사진을 업로드할 수 없습니다.",
   "account.erroFotoNaoEncontrada": "사진을 찾을 수 없습니다.",
-
   "common.backToModules": "모듈 목록으로 돌아가기",
-
   "pdfPreview.title": "미리보기",
   "pdfPreview.pageIndicator": "{total}페이지 중 {atual}페이지",
   "pdfPreview.closeButton": "닫기 ✕",
   "pdfPreview.loading": "불러오는 중...",
-
   "articles.openArticleLink": "논문 열기 ↗",
   "articles.previewButton": "미리보기",
   "articles.downloadPdfButton": "PDF 다운로드",
   "articles.removeButton": "삭제",
-
   "library.tabTitle": "라이브러리 — Lumen",
   "library.heading": "라이브러리",
   "library.itemCount": "{n}개 항목",
@@ -209,7 +216,6 @@
   "library.share.erroEmailNaoEncontrado": "이메일이 올바르지 않습니다. 다시 시도해 주세요.",
   "library.share.erroSelfShare": "자기 자신과는 라이브러리를 공유할 수 없습니다.",
   "library.share.erroJaCompartilhado": "이미 이 사람과 라이브러리를 공유하고 있습니다.",
-
   "home.hero.eyebrow": "지식이 곧 힘입니다",
   "home.hero.welcomePrefix": "환영합니다, ",
   "home.hero.subtitle": "이곳은 회원님의 개인 연구 카탈로그입니다. 새로운 모듈이 계속 추가될 예정입니다.",
@@ -222,7 +228,6 @@
   "home.modules.sortMostRecent": "최신순",
   "home.badge.available": "이용 가능한 모듈",
   "home.badge.comingSoon": "출시 예정",
-
   "home.moduleArticles.eyebrow": "연구",
   "home.moduleArticles.title": "학술 논문 검색",
   "home.moduleArticles.description": "Semantic Scholar에서 검색하고, 관심 있는 논문을 저장하고, CSV로 목록을 내보내세요.",
@@ -231,7 +236,6 @@
   "home.moduleArticles.feature2": "논문 저장",
   "home.moduleArticles.feature3": "중복 알림",
   "home.moduleArticles.feature4": "CSV 내보내기",
-
   "home.moduleReading.eyebrow": "읽기",
   "home.moduleReading.title": "PDF 읽기",
   "home.moduleReading.description": "PDF를 업로드하고, 본문을 검색하고, 나중에 다시 볼 핵심 구절을 표시하세요.",
@@ -240,7 +244,6 @@
   "home.moduleReading.feature2": "본문 검색",
   "home.moduleReading.feature3": "핵심 구절 표시",
   "home.moduleReading.feature4": "페이지 탐색",
-
   "home.moduleCoding.eyebrow": "코딩",
   "home.moduleCoding.title": "질적 코딩",
   "home.moduleCoding.description": "텍스트 구절을 선택하고 직접 만든 코드/범주로 정리하세요.",
@@ -249,7 +252,6 @@
   "home.moduleCoding.feature2": "코드별 빈도",
   "home.moduleCoding.feature3": "구절 그룹화",
   "home.moduleCoding.feature4": "CSV 내보내기",
-
   "home.moduleQuantitative.eyebrow": "양적 연구",
   "home.moduleQuantitative.title": "양적 분석 및 코딩",
   "home.moduleQuantitative.description": "연구의 수치 데이터를 정리하고 기본적인 기술 통계를 계산하세요.",
@@ -257,10 +259,8 @@
   "home.moduleQuantitative.feature2": "기술 통계",
   "home.moduleQuantitative.feature3": "빈도 분포",
   "home.moduleQuantitative.feature4": "결과 내보내기",
-
   "pdfPreview.blockedFallback": "이 사이트는 Lumen이 여기서 PDF를 여는 것을 허용하지 않습니다 (봇 차단 보호). 직접 열어보실 수 있습니다:",
   "pdfPreview.openInNewTab": "새 탭에서 PDF 열기 ↗",
-
   "articles.tabTitle": "논문 — Lumen",
   "articles.heading": "논문 검색",
   "articles.searchPlaceholder": "예: 문해력, 혼합 학습, 형성 평가...",
@@ -308,7 +308,6 @@
   "articles.semTitulo": "(제목 없음)",
   "articles.erroSemTitulo": "이 결과에는 제목이 없어 저장할 수 없습니다.",
   "articles.mensagemDuplicado": "비슷한 논문이 이미 저장되어 있습니다: \"{titulo}\".",
-
   "csv.articles.title": "제목",
   "csv.articles.authors": "저자",
   "csv.articles.year": "연도",
@@ -317,7 +316,6 @@
   "csv.articles.link": "링크",
   "csv.articles.openAccessPdf": "오픈 액세스 PDF",
   "csv.articles.abstract": "초록",
-
   "reading.tabTitle": "PDF 읽기 — Lumen",
   "reading.eyebrow": "읽기 및 학습",
   "reading.headingPrefix": "",
@@ -366,7 +364,6 @@
   "reading.removeButton": "삭제",
   "reading.confirmModalCancel": "취소",
   "reading.confirmModalRemove": "삭제",
-
   "reading.dropChangeHint": "클릭하거나 다른 파일을 드래그하여 교체하세요",
   "reading.onlyPdfError": "PDF 파일만 업로드해 주세요.",
   "reading.uploadingStatus": "PDF를 업로드하고 읽는 중...",
@@ -398,7 +395,6 @@
   "reading.erroImagemNaoEncontrada": "이미지를 찾을 수 없습니다.",
   "reading.erroArquivoNaoEncontrado": "서버에서 파일을 찾을 수 없습니다.",
   "reading.erroArquivoOriginalAusente": "이 문서는 원본 파일 저장 기능이 도입되기 전에 업로드되었습니다 — PDF를 다시 업로드해 주세요.",
-
   "pdf.pesquisaVinculada": "연결된 연구: {titulo}",
   "pdf.autores": "저자: {autores}",
   "pdf.naoInformado": "제공되지 않음",
@@ -408,7 +404,6 @@
   "pdf.nenhumTrechoMarcado": "이 문서에는 아직 표시된 핵심 구절이 없습니다.",
   "pdf.recorteDeImagem": "{n}. 이미지 자르기",
   "pdf.imagemNaoCarregada": "[이 이미지를 불러올 수 없습니다]",
-
   "coding.tabTitle": "코딩 — Lumen",
   "coding.chooseResearchHeading": "코딩할 연구 선택",
   "coding.chooseResearchSubtitle": "생성한 코드는 선택한 문서의 구절에만 적용됩니다.",
@@ -437,7 +432,6 @@
   "coding.noCodeYet": "아직 코드 없음",
   "coding.addCodeTitle": "코드 추가",
   "coding.removeCodeFromExcerptTitle": "이 구절에서 코드 삭제",
-
   "pdf.dashboardDeCodificacao": "코딩 대시보드",
   "pdf.totalTrechosMarcados": "표시된 총 구절 수: {n}",
   "pdf.totalCodigosCriados": "생성된 총 코드 수: {n}",
@@ -445,7 +439,6 @@
   "pdf.trechosMarcadosECodificados": "표시 및 코딩된 구절",
   "pdf.semCodigo": "코드 없음",
   "pdf.codigos": "코드: {lista}",
-
   "csv.coding.excerpt": "구절",
   "csv.coding.document": "문서",
   "csv.coding.codes": "코드",

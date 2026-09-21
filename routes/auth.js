@@ -126,6 +126,14 @@ router.post('/login', redirectIfLoggedIn, (req, res) => {
   req.session.userId = user.id;
   req.session.userName = user.name;
   req.session.isAdmin = ehAdmin(user.email);
+
+  // "Lembrar de mim" desmarcado vira cookie de sessao (some quando o
+  // navegador fecha); marcado mantem a validade padrao de 7 dias definida
+  // no server.js.
+  if (!req.body.rememberMe) {
+    req.session.cookie.expires = false;
+  }
+
   res.redirect('/');
 });
 

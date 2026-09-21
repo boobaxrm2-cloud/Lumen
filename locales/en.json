@@ -11,13 +11,11 @@
   "sidebar.notifications": "Notifications",
   "sidebar.network": "Network",
   "sidebar.messages": "Messages",
-
   "notifications.empty": "No notifications yet.",
   "notifications.forumReply": "{nome} replied to your topic",
   "notifications.libraryShare": "{nome} shared their library with you",
   "notifications.friendRequest": "{nome} sent you a friend request",
   "notifications.friendAccepted": "{nome} accepted your friend request",
-
   "forum.tabTitle": "Forum — Lumen",
   "forum.eyebrow": "Academic community",
   "forum.heading": "Forum",
@@ -53,7 +51,6 @@
   "forum.chooseFiles": "Choose files",
   "forum.dragHintFiles": "or drag files here",
   "forum.filesSelectedCount": "Selected files: {n}",
-
   "network.tabTitle": "Network — Lumen",
   "network.eyebrow": "Academic community",
   "network.heading": "Network",
@@ -74,7 +71,6 @@
   "network.profile.requestButton": "Add friend",
   "network.profile.requestPendingButton": "Request pending",
   "network.profile.acceptFromModalButton": "Accept request",
-
   "messages.tabTitle": "Messages — Lumen",
   "messages.eyebrow": "Academic community",
   "messages.heading": "Messages",
@@ -86,7 +82,6 @@
   "messages.sendButton": "Send",
   "messages.erroConversaNaoEncontrada": "Conversation not found.",
   "sidebar.promoQuote": "Knowledge is the first step toward great achievements.",
-
   "login.tabTitle": "Sign in — Lumen",
   "login.subtitle": "Personal research catalog: articles, reading and coding.",
   "login.emailLabel": "Email",
@@ -97,6 +92,25 @@
   "login.erroCredenciaisInvalidas": "Invalid email or password.",
   "login.contaCriadaComSucesso": "Account created successfully! Sign in to continue.",
   "login.forgotPassword": "Forgot your password?",
+  "login.heroEyebrow": "Knowledge is power",
+  "login.heroHeadline": "Everything you need for your <span class=\"destaque-dourado\">research</span>, in one place.",
+  "login.heroSubtitle": "Lumen is a personal research platform to search articles, read PDFs, code your data and connect with other researchers — no AI, just the tools you need.",
+  "login.heroCtaPrimary": "Create free account",
+  "login.heroCtaSecondary": "Sign in",
+  "login.highlight1Title": "Find what you need",
+  "login.highlight1Desc": "Search articles, PDFs and more in seconds.",
+  "login.highlight2Title": "Work together",
+  "login.highlight2Desc": "Connect with researchers within the platform.",
+  "login.highlight3Title": "Your research, your way",
+  "login.highlight3Desc": "Powerful tools, zero distractions.",
+  "login.welcomeBack": "Welcome back!",
+  "login.subtitleContinue": "Sign in to continue to Lumen.",
+  "login.emailPlaceholder": "you@example.com",
+  "login.passwordPlaceholder": "Enter your password",
+  "login.rememberMe": "Remember me",
+  "login.createFreeAccountLink": "Create free account",
+  "login.showPassword": "Show password",
+  "login.hidePassword": "Hide password",
   "login.recovery.title": "Recover password",
   "login.recovery.continueButton": "Continue",
   "login.recovery.questionIntro": "Your secret question:",
@@ -113,7 +127,6 @@
   "login.recovery.erroSenhasNaoConferem": "Passwords do not match.",
   "login.recovery.erroSessaoExpirada": "Session expired. Please start over.",
   "login.recovery.erroConexao": "Connection error. Please try again.",
-
   "signup.tabTitle": "Sign up — Lumen",
   "signup.heading": "New profile",
   "signup.subtitle": "Create your researcher account to get started.",
@@ -134,13 +147,11 @@
   "signup.erroSenhasNaoConferem": "Passwords do not match.",
   "signup.erroPerguntaSecretaObrigatoria": "Choose a secret question.",
   "signup.erroRespostaSecretaObrigatoria": "Enter an answer for the secret question.",
-
   "secretQuestion.motherMaidenName": "What is your mother's maiden name?",
   "secretQuestion.firstPet": "What was the name of your first pet?",
   "secretQuestion.birthCity": "What city were you born in?",
   "secretQuestion.firstSchool": "What was the name of your first school?",
   "secretQuestion.favoriteFood": "What is your favorite food?",
-
   "account.tabTitle": "My account — Lumen",
   "account.heading": "My account",
   "account.profileHeading": "Profile",
@@ -175,19 +186,15 @@
   "account.erroFotoTipoInvalido": "Please upload a JPG, PNG or WEBP image.",
   "account.erroFotoGenerico": "Could not upload the photo.",
   "account.erroFotoNaoEncontrada": "Photo not found.",
-
   "common.backToModules": "Back to modules",
-
   "pdfPreview.title": "Preview",
   "pdfPreview.pageIndicator": "Page {atual} of {total}",
   "pdfPreview.closeButton": "Close ✕",
   "pdfPreview.loading": "Loading...",
-
   "articles.openArticleLink": "Open article ↗",
   "articles.previewButton": "Preview",
   "articles.downloadPdfButton": "Download PDF",
   "articles.removeButton": "Remove",
-
   "library.tabTitle": "Library — Lumen",
   "library.heading": "Library",
   "library.itemCount": "{n} item(s)",
@@ -209,7 +216,6 @@
   "library.share.erroEmailNaoEncontrado": "Incorrect email. Please try again.",
   "library.share.erroSelfShare": "You can't share your library with yourself.",
   "library.share.erroJaCompartilhado": "You already share your library with this person.",
-
   "home.hero.eyebrow": "Knowledge is power",
   "home.hero.welcomePrefix": "Welcome, ",
   "home.hero.subtitle": "This is your personal research catalog. New modules will be added over time.",
@@ -222,7 +228,6 @@
   "home.modules.sortMostRecent": "Most recent",
   "home.badge.available": "Available module",
   "home.badge.comingSoon": "Coming soon",
-
   "home.moduleArticles.eyebrow": "Research",
   "home.moduleArticles.title": "Scientific article search",
   "home.moduleArticles.description": "Search Semantic Scholar, save articles of interest and export your list as CSV.",
@@ -231,7 +236,6 @@
   "home.moduleArticles.feature2": "Save articles",
   "home.moduleArticles.feature3": "Duplicate warning",
   "home.moduleArticles.feature4": "Export CSV",
-
   "home.moduleReading.eyebrow": "Reading",
   "home.moduleReading.title": "PDF reading",
   "home.moduleReading.description": "Upload a PDF, search the text and mark key excerpts to review later.",
@@ -240,7 +244,6 @@
   "home.moduleReading.feature2": "Text search",
   "home.moduleReading.feature3": "Mark key excerpts",
   "home.moduleReading.feature4": "Page navigation",
-
   "home.moduleCoding.eyebrow": "Coding",
   "home.moduleCoding.title": "Qualitative coding",
   "home.moduleCoding.description": "Select text excerpts and organize them into codes/categories you create.",
@@ -249,7 +252,6 @@
   "home.moduleCoding.feature2": "Frequency per code",
   "home.moduleCoding.feature3": "Excerpt grouping",
   "home.moduleCoding.feature4": "Export CSV",
-
   "home.moduleQuantitative.eyebrow": "Quantitative",
   "home.moduleQuantitative.title": "Quantitative analysis and coding",
   "home.moduleQuantitative.description": "Organize your research's numeric data and calculate basic descriptive statistics.",
@@ -257,10 +259,8 @@
   "home.moduleQuantitative.feature2": "Descriptive statistics",
   "home.moduleQuantitative.feature3": "Frequency distribution",
   "home.moduleQuantitative.feature4": "Export results",
-
   "pdfPreview.blockedFallback": "This site doesn't let Lumen open the PDF here (anti-bot protection). You can open it directly:",
   "pdfPreview.openInNewTab": "Open PDF in new tab ↗",
-
   "articles.tabTitle": "Articles — Lumen",
   "articles.heading": "Search articles",
   "articles.searchPlaceholder": "E.g.: literacy, blended learning, formative assessment...",
@@ -308,7 +308,6 @@
   "articles.semTitulo": "(no title)",
   "articles.erroSemTitulo": "This result has no title, it cannot be saved.",
   "articles.mensagemDuplicado": "A similar article is already saved: \"{titulo}\".",
-
   "csv.articles.title": "Title",
   "csv.articles.authors": "Authors",
   "csv.articles.year": "Year",
@@ -317,7 +316,6 @@
   "csv.articles.link": "Link",
   "csv.articles.openAccessPdf": "Open access PDF",
   "csv.articles.abstract": "Abstract",
-
   "reading.tabTitle": "PDF reading — Lumen",
   "reading.eyebrow": "Reading and studies",
   "reading.headingPrefix": "Upload ",
@@ -366,7 +364,6 @@
   "reading.removeButton": "Remove",
   "reading.confirmModalCancel": "Cancel",
   "reading.confirmModalRemove": "Remove",
-
   "reading.dropChangeHint": "Click or drag another file to replace",
   "reading.onlyPdfError": "Please upload PDF files only.",
   "reading.uploadingStatus": "Uploading and reading the PDF...",
@@ -398,7 +395,6 @@
   "reading.erroImagemNaoEncontrada": "Image not found.",
   "reading.erroArquivoNaoEncontrado": "File not found on the server.",
   "reading.erroArquivoOriginalAusente": "This document was uploaded before we started storing the original file — please upload the PDF again.",
-
   "pdf.pesquisaVinculada": "Linked research: {titulo}",
   "pdf.autores": "Author(s): {autores}",
   "pdf.naoInformado": "not provided",
@@ -408,7 +404,6 @@
   "pdf.nenhumTrechoMarcado": "No key excerpt marked in this document yet.",
   "pdf.recorteDeImagem": "{n}. Image crop",
   "pdf.imagemNaoCarregada": "[Could not load this image]",
-
   "coding.tabTitle": "Coding — Lumen",
   "coding.chooseResearchHeading": "Choose a research to code",
   "coding.chooseResearchSubtitle": "The codes you create only apply to the excerpts of the chosen document.",
@@ -437,7 +432,6 @@
   "coding.noCodeYet": "No code yet",
   "coding.addCodeTitle": "Add code",
   "coding.removeCodeFromExcerptTitle": "Remove this code from the excerpt",
-
   "pdf.dashboardDeCodificacao": "Coding dashboard",
   "pdf.totalTrechosMarcados": "Total marked excerpts: {n}",
   "pdf.totalCodigosCriados": "Total codes created: {n}",
@@ -445,7 +439,6 @@
   "pdf.trechosMarcadosECodificados": "Marked and coded excerpts",
   "pdf.semCodigo": "No code",
   "pdf.codigos": "Codes: {lista}",
-
   "csv.coding.excerpt": "Excerpt",
   "csv.coding.document": "Document",
   "csv.coding.codes": "Codes",

@@ -11,13 +11,11 @@
   "sidebar.notifications": "通知",
   "sidebar.network": "人脉网络",
   "sidebar.messages": "消息",
-
   "notifications.empty": "暂无通知。",
   "notifications.forumReply": "{nome} 回复了您的帖子",
   "notifications.libraryShare": "{nome} 与您共享了文献库",
   "notifications.friendRequest": "{nome} 向您发送了好友请求",
   "notifications.friendAccepted": "{nome} 接受了您的好友请求",
-
   "forum.tabTitle": "论坛 — Lumen",
   "forum.eyebrow": "学术社区",
   "forum.heading": "论坛",
@@ -53,7 +51,6 @@
   "forum.chooseFiles": "选择文件",
   "forum.dragHintFiles": "或将文件拖到此处",
   "forum.filesSelectedCount": "已选择文件：{n}",
-
   "network.tabTitle": "人脉网络 — Lumen",
   "network.eyebrow": "学术社区",
   "network.heading": "人脉网络",
@@ -74,7 +71,6 @@
   "network.profile.requestButton": "添加好友",
   "network.profile.requestPendingButton": "请求待处理",
   "network.profile.acceptFromModalButton": "接受请求",
-
   "messages.tabTitle": "消息 — Lumen",
   "messages.eyebrow": "学术社区",
   "messages.heading": "消息",
@@ -86,7 +82,6 @@
   "messages.sendButton": "发送",
   "messages.erroConversaNaoEncontrada": "未找到该对话。",
   "sidebar.promoQuote": "知识是通往伟大成就的第一步。",
-
   "login.tabTitle": "登录 — Lumen",
   "login.subtitle": "个人研究目录：文献、阅读与编码。",
   "login.emailLabel": "邮箱",
@@ -97,6 +92,25 @@
   "login.erroCredenciaisInvalidas": "邮箱或密码不正确。",
   "login.contaCriadaComSucesso": "账户创建成功！请登录以继续。",
   "login.forgotPassword": "忘记密码？",
+  "login.heroEyebrow": "知识就是力量",
+  "login.heroHeadline": "科研所需的一切，<span class=\"destaque-dourado\">尽在一处</span>。",
+  "login.heroSubtitle": "Lumen 是一个个人研究平台，可以搜索文献、阅读 PDF、编码数据并与其他研究者建立联系——没有人工智能，只有您需要的工具。",
+  "login.heroCtaPrimary": "创建免费账户",
+  "login.heroCtaSecondary": "登录",
+  "login.highlight1Title": "找到您需要的",
+  "login.highlight1Desc": "几秒钟内搜索文献、PDF 等内容。",
+  "login.highlight2Title": "共同协作",
+  "login.highlight2Desc": "与平台内的研究者建立联系。",
+  "login.highlight3Title": "按您的方式做研究",
+  "login.highlight3Desc": "强大的工具，零干扰。",
+  "login.welcomeBack": "欢迎回来！",
+  "login.subtitleContinue": "登录以继续使用 Lumen。",
+  "login.emailPlaceholder": "you@example.com",
+  "login.passwordPlaceholder": "请输入您的密码",
+  "login.rememberMe": "记住我",
+  "login.createFreeAccountLink": "创建免费账户",
+  "login.showPassword": "显示密码",
+  "login.hidePassword": "隐藏密码",
   "login.recovery.title": "找回密码",
   "login.recovery.continueButton": "继续",
   "login.recovery.questionIntro": "您的密保问题：",
@@ -113,7 +127,6 @@
   "login.recovery.erroSenhasNaoConferem": "两次输入的密码不一致。",
   "login.recovery.erroSessaoExpirada": "会话已过期，请重新开始。",
   "login.recovery.erroConexao": "连接出错，请重试。",
-
   "signup.tabTitle": "注册 — Lumen",
   "signup.heading": "新建账户",
   "signup.subtitle": "创建您的研究者账户，开始使用吧。",
@@ -134,13 +147,11 @@
   "signup.erroSenhasNaoConferem": "两次输入的密码不一致。",
   "signup.erroPerguntaSecretaObrigatoria": "请选择一个密保问题。",
   "signup.erroRespostaSecretaObrigatoria": "请输入密保问题的答案。",
-
   "secretQuestion.motherMaidenName": "您母亲的娘家姓是什么？",
   "secretQuestion.firstPet": "您第一只宠物的名字是什么？",
   "secretQuestion.birthCity": "您出生在哪个城市？",
   "secretQuestion.firstSchool": "您就读的第一所学校叫什么名字？",
   "secretQuestion.favoriteFood": "您最喜欢的食物是什么？",
-
   "account.tabTitle": "我的账户 — Lumen",
   "account.heading": "我的账户",
   "account.profileHeading": "个人资料",
@@ -175,19 +186,15 @@
   "account.erroFotoTipoInvalido": "请上传 JPG、PNG 或 WEBP 格式的图片。",
   "account.erroFotoGenerico": "无法上传照片。",
   "account.erroFotoNaoEncontrada": "未找到该照片。",
-
   "common.backToModules": "返回模块列表",
-
   "pdfPreview.title": "预览",
   "pdfPreview.pageIndicator": "第 {atual} 页，共 {total} 页",
   "pdfPreview.closeButton": "关闭 ✕",
   "pdfPreview.loading": "加载中...",
-
   "articles.openArticleLink": "打开文献 ↗",
   "articles.previewButton": "预览",
   "articles.downloadPdfButton": "下载 PDF",
   "articles.removeButton": "删除",
-
   "library.tabTitle": "文献库 — Lumen",
   "library.heading": "文献库",
   "library.itemCount": "{n} 篇",
@@ -209,7 +216,6 @@
   "library.share.erroEmailNaoEncontrado": "邮箱不正确，请重试。",
   "library.share.erroSelfShare": "不能与自己共享文献库。",
   "library.share.erroJaCompartilhado": "您已经与该用户共享了文献库。",
-
   "home.hero.eyebrow": "知识就是力量",
   "home.hero.welcomePrefix": "欢迎您，",
   "home.hero.subtitle": "这里是您的个人研究目录，未来会陆续加入新的模块。",
@@ -222,7 +228,6 @@
   "home.modules.sortMostRecent": "最新",
   "home.badge.available": "可用模块",
   "home.badge.comingSoon": "即将上线",
-
   "home.moduleArticles.eyebrow": "研究",
   "home.moduleArticles.title": "学术文献检索",
   "home.moduleArticles.description": "搜索 Semantic Scholar，保存感兴趣的文献，并将列表导出为 CSV。",
@@ -231,7 +236,6 @@
   "home.moduleArticles.feature2": "保存文献",
   "home.moduleArticles.feature3": "重复提醒",
   "home.moduleArticles.feature4": "导出 CSV",
-
   "home.moduleReading.eyebrow": "阅读",
   "home.moduleReading.title": "PDF 阅读",
   "home.moduleReading.description": "上传 PDF，搜索正文内容，标记关键段落以便日后查阅。",
@@ -240,7 +244,6 @@
   "home.moduleReading.feature2": "正文搜索",
   "home.moduleReading.feature3": "标记关键段落",
   "home.moduleReading.feature4": "分页浏览",
-
   "home.moduleCoding.eyebrow": "编码",
   "home.moduleCoding.title": "质性编码",
   "home.moduleCoding.description": "选取文本片段，并按您创建的编码/类别进行整理。",
@@ -249,7 +252,6 @@
   "home.moduleCoding.feature2": "各编码频次",
   "home.moduleCoding.feature3": "片段分组",
   "home.moduleCoding.feature4": "导出 CSV",
-
   "home.moduleQuantitative.eyebrow": "量化研究",
   "home.moduleQuantitative.title": "量化分析与编码",
   "home.moduleQuantitative.description": "整理研究的数值数据，并计算基础描述性统计。",
@@ -257,10 +259,8 @@
   "home.moduleQuantitative.feature2": "描述性统计",
   "home.moduleQuantitative.feature3": "频数分布",
   "home.moduleQuantitative.feature4": "导出结果",
-
   "pdfPreview.blockedFallback": "该网站不允许 Lumen 在此打开 PDF（存在反爬虫保护）。您可以直接打开：",
   "pdfPreview.openInNewTab": "在新标签页打开 PDF ↗",
-
   "articles.tabTitle": "文献 — Lumen",
   "articles.heading": "搜索文献",
   "articles.searchPlaceholder": "例如：读写能力、混合式学习、形成性评价...",
@@ -308,7 +308,6 @@
   "articles.semTitulo": "（无标题）",
   "articles.erroSemTitulo": "该结果没有标题，无法保存。",
   "articles.mensagemDuplicado": "已保存过类似的文献：“{titulo}”。",
-
   "csv.articles.title": "标题",
   "csv.articles.authors": "作者",
   "csv.articles.year": "年份",
@@ -317,7 +316,6 @@
   "csv.articles.link": "链接",
   "csv.articles.openAccessPdf": "开放获取 PDF",
   "csv.articles.abstract": "摘要",
-
   "reading.tabTitle": "PDF 阅读 — Lumen",
   "reading.eyebrow": "阅读与学习",
   "reading.headingPrefix": "上传 ",
@@ -366,7 +364,6 @@
   "reading.removeButton": "删除",
   "reading.confirmModalCancel": "取消",
   "reading.confirmModalRemove": "删除",
-
   "reading.dropChangeHint": "点击或拖入其他文件以替换",
   "reading.onlyPdfError": "请只上传 PDF 文件。",
   "reading.uploadingStatus": "正在上传并读取 PDF...",
@@ -398,7 +395,6 @@
   "reading.erroImagemNaoEncontrada": "未找到该图片。",
   "reading.erroArquivoNaoEncontrado": "服务器上未找到该文件。",
   "reading.erroArquivoOriginalAusente": "该文档是在原始文件保存功能上线前上传的，请重新上传该 PDF。",
-
   "pdf.pesquisaVinculada": "关联研究：{titulo}",
   "pdf.autores": "作者：{autores}",
   "pdf.naoInformado": "未提供",
@@ -408,7 +404,6 @@
   "pdf.nenhumTrechoMarcado": "该文档中还没有标记任何关键段落。",
   "pdf.recorteDeImagem": "{n}. 图片截取",
   "pdf.imagemNaoCarregada": "[无法加载该图片]",
-
   "coding.tabTitle": "编码 — Lumen",
   "coding.chooseResearchHeading": "选择要编码的研究",
   "coding.chooseResearchSubtitle": "您创建的编码只适用于所选文档的段落。",
@@ -437,7 +432,6 @@
   "coding.noCodeYet": "暂无编码",
   "coding.addCodeTitle": "添加编码",
   "coding.removeCodeFromExcerptTitle": "从该段落中移除此编码",
-
   "pdf.dashboardDeCodificacao": "编码仪表盘",
   "pdf.totalTrechosMarcados": "已标记段落总数：{n}",
   "pdf.totalCodigosCriados": "已创建编码总数：{n}",
@@ -445,7 +439,6 @@
   "pdf.trechosMarcadosECodificados": "已标记并编码的段落",
   "pdf.semCodigo": "无编码",
   "pdf.codigos": "编码：{lista}",
-
   "csv.coding.excerpt": "段落",
   "csv.coding.document": "文档",
   "csv.coding.codes": "编码",
