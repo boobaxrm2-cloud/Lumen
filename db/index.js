@@ -16,6 +16,29 @@ if (!fs.existsSync(dataDir)) {
 
 const db = new DatabaseSync(dbPath);
 
+// O modulo de Formularios ainda estava em desenvolvimento (sem commit) quando
+// os codigos de resposta passaram de "por pergunta" pra "por formulario
+// inteiro" - a tabela form_answer_codes tinha uma FK pra form_question_codes,
+// que virou form_codes. Bancos locais que ja tinham essa tabela no formato
+// antigo ficam com a FK apontando pra uma tabela abandonada (o que da erro de
+// "FOREIGN KEY constraint failed" ao marcar um codigo numa resposta), ja que
+// "CREATE TABLE IF NOT EXISTS" nao corrige uma tabela que ja existe. Apaga
+// as duas tabelas antigas aqui, antes do schema rodar, pra ele recriar certo.
+function tabelaExiste(nome) {
+  return Boolean(db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?").get(nome));
+}
+function tabelaReferenciaTabelaAntiga(tabela, tabelaReferenciada) {
+  if (!tabelaExiste(tabela)) return false;
+  const fks = db.prepare(`PRAGMA foreign_key_list(${tabela})`).all();
+  return fks.some((fk) => fk.table === tabelaReferenciada);
+}
+if (tabelaReferenciaTabelaAntiga('form_answer_codes', 'form_question_codes')) {
+  db.exec('DROP TABLE form_answer_codes');
+}
+if (tabelaExiste('form_question_codes')) {
+  db.exec('DROP TABLE form_question_codes');
+}
+
 // Aplica o schema (cria as tabelas que ainda nao existirem) toda vez que o servidor sobe.
 const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
 db.exec(schema);
@@ -45,6 +68,8 @@ adicionarColunaSeNaoExistir('users', 'study_area', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'university', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'academic_background', 'TEXT');
 adicionarColunaSeNaoExistir('visits', 'user_agent', 'TEXT');
+adicionarColunaSeNaoExistir('form_responses', 'respondent_name', "TEXT NOT NULL DEFAULT ''");
+adicionarColunaSeNaoExistir('form_responses', 'respondent_study_area', 'TEXT');
 
 // Codigos criados antes de existir a coluna document_id ficam sem documento -
 // associa cada um ao documento do primeiro trecho em que ele foi usado (ou

@@ -193,3 +193,90 @@ CREATE TABLE IF NOT EXISTS messages (
 
 CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient_id, read_at);
 CREATE INDEX IF NOT EXISTS idx_messages_par ON messages(sender_id, recipient_id);
+
+-- Formularios de pesquisa interna, estilo Google Forms. Cada formulario tem
+-- um token publico (usado no link/QR code) que qualquer pessoa pode acessar
+-- pra responder, mesmo sem conta na plataforma.
+CREATE TABLE IF NOT EXISTS forms (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  title TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'aberto',
+  public_token TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_forms_user ON forms(user_id);
+
+-- Perguntas de um formulario, na ordem em que devem aparecer (position).
+-- type e 'curta' | 'paragrafo' | 'unica' | 'multipla'.
+CREATE TABLE IF NOT EXISTS form_questions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  form_id INTEGER NOT NULL REFERENCES forms(id),
+  position INTEGER NOT NULL DEFAULT 0,
+  type TEXT NOT NULL,
+  text TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_form_questions_form ON form_questions(form_id);
+
+-- Opcoes de resposta, so usadas por perguntas do tipo 'unica'/'multipla'.
+CREATE TABLE IF NOT EXISTS form_question_options (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  question_id INTEGER NOT NULL REFERENCES form_questions(id),
+  position INTEGER NOT NULL DEFAULT 0,
+  text TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_form_question_options_question ON form_question_options(question_id);
+
+-- Cada envio de resposta e uma linha aqui - sem user_id, ja que qualquer
+-- pessoa pode responder, mesmo sem conta. respondent_name e obrigatorio no
+-- formulario publico; respondent_study_area e opcional.
+CREATE TABLE IF NOT EXISTS form_responses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  form_id INTEGER NOT NULL REFERENCES forms(id),
+  respondent_name TEXT NOT NULL DEFAULT '',
+  respondent_study_area TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_form_responses_form ON form_responses(form_id);
+
+-- Uma resposta a uma pergunta. Perguntas de texto preenchem answer_text;
+-- perguntas de escolha geram uma linha por opcao marcada (option_id), o que
+-- deixa a contagem pro grafico trivial (COUNT(*) GROUP BY option_id).
+CREATE TABLE IF NOT EXISTS form_response_answers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  response_id INTEGER NOT NULL REFERENCES form_responses(id),
+  question_id INTEGER NOT NULL REFERENCES form_questions(id),
+  option_id INTEGER REFERENCES form_question_options(id),
+  answer_text TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_form_response_answers_response ON form_response_answers(response_id);
+CREATE INDEX IF NOT EXISTS idx_form_response_answers_question ON form_response_answers(question_id);
+
+-- Codigos (categorias) pra classificar respostas de texto livre, igual ao
+-- conceito de "codes" da codificacao qualitativa. Escopado pelo formulario
+-- inteiro (nao por pergunta), pra criar o codigo uma vez so e reaproveitar
+-- em todas as perguntas de texto daquele formulario.
+CREATE TABLE IF NOT EXISTS form_codes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  form_id INTEGER NOT NULL REFERENCES forms(id),
+  name TEXT NOT NULL,
+  color TEXT NOT NULL DEFAULT '#f0c14b',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_form_codes_form ON form_codes(form_id);
+
+-- Liga uma resposta de texto (form_response_answers) a um ou mais codigos.
+CREATE TABLE IF NOT EXISTS form_answer_codes (
+  answer_id INTEGER NOT NULL REFERENCES form_response_answers(id),
+  code_id INTEGER NOT NULL REFERENCES form_codes(id),
+  PRIMARY KEY (answer_id, code_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_form_answer_codes_code ON form_answer_codes(code_id);

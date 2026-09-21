@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= formulario.title %> — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'formularios' }) %>
+
+    <main>
+      <a href="/formularios" class="link-voltar">
+        <svg class="icone" viewBox="0 0 24 24"><path d="M19 12H5m0 0l6-6m-6 6l6 6"/></svg>
+        <%= t('forms.backToList') %>
+      </a>
+
+      <section class="secao">
+        <div class="documentos-cabecalho">
+          <div class="titulo-com-icone">
+            <span class="icone-caixa">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+            </span>
+            <div>
+              <h2>
+                <%= formulario.title %>
+                <span class="selo-status-formulario <%= formulario.status === 'encerrado' ? 'encerrado' : 'aberto' %>">
+                  <%= formulario.status === 'encerrado' ? t('forms.statusClosed') : t('forms.statusOpen') %>
+                </span>
+              </h2>
+              <p class="subtitulo-documentos"><%= t('forms.totalResponsesLabel', { n: totalRespostas }) %></p>
+            </div>
+          </div>
+          <div class="linha-botoes-construtor">
+            <a class="botao secundario" href="/formularios/<%= formulario.id %>/exportar.csv"><%= t('forms.exportCsvButton') %></a>
+            <a class="botao secundario" href="/formularios/<%= formulario.id %>/dashboard.pdf"><%= t('forms.downloadPdfButton') %></a>
+            <% if (formulario.status === 'encerrado') { %>
+              <form method="POST" action="/formularios/<%= formulario.id %>/reabrir">
+                <button type="submit" class="botao"><%= t('forms.reopenButton') %></button>
+              </form>
+            <% } else { %>
+              <form method="POST" action="/formularios/<%= formulario.id %>/encerrar" onsubmit="return confirm('<%= t('forms.confirmClose') %>');">
+                <button type="submit" class="botao secundario"><%= t('forms.closeButton') %></button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="painel-compartilhar-formulario">
+          <div class="painel-compartilhar-info">
+            <h3><%= t('forms.shareHeading') %></h3>
+            <label class="rotulo-campo-mini"><%= t('forms.shareLinkLabel') %></label>
+            <div class="linha-link-copiar">
+              <input type="text" id="campo-link-publico" readonly value="<%= linkPublico %>" />
+              <button type="button" class="botao secundario" id="botao-copiar-link"><%= t('forms.copyLinkButton') %></button>
+            </div>
+            <% if (totalRespostas === 0) { %>
+              <a href="/formularios/<%= formulario.id %>/editar" class="link-editar-perguntas"><%= t('forms.editQuestionsLink') %></a>
+            <% } else { %>
+              <p class="aviso-perguntas-bloqueadas"><%= t('forms.editLockedNotice') %></p>
+            <% } %>
+          </div>
+          <div class="painel-compartilhar-qr">
+            <span class="rotulo-campo-mini"><%= t('forms.qrCodeLabel') %></span>
+            <img src="/formularios/<%= formulario.id %>/qrcode.png" alt="QR code" width="160" height="160" />
+            <a class="botao secundario botao-baixar-qr" href="/formularios/<%= formulario.id %>/qrcode.png" download="qrcode-<%= formulario.id %>.png"><%= t('forms.downloadQrButton') %></a>
+          </div>
+        </div>
+      </section>
+
+      <% if (temPerguntaDeTexto) { %>
+        <section class="secao" style="margin-top: 2rem;" id="secao-codigos">
+          <h3 class="subtitulo-secao-construtor"><%= t('forms.coding.sectionHeading') %></h3>
+          <p class="subtitulo-documentos"><%= t('forms.coding.sectionSubtitle') %></p>
+
+          <form method="POST" action="/formularios/<%= formulario.id %>/codigos" class="form-novo-codigo">
+            <input type="text" name="name" placeholder="<%= t('forms.coding.newCodePlaceholder') %>" required maxlength="60" />
+            <div class="paleta-cores">
+              <% coresCodigo.forEach(function (cor, i) { %>
+                <label class="swatch-cor-label" style="--cor-swatch: <%= cor %>;">
+                  <input type="radio" name="color" value="<%= cor %>" <%= i === 0 ? 'checked' : '' %> />
+                </label>
+              <% }); %>
+            </div>
+            <button class="botao" type="submit">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              <%= t('forms.coding.createCodeButton') %>
+            </button>
+          </form>
+
+          <% if (codigosDoFormulario.length > 0) { %>
+            <div class="lista-codigos">
+              <% codigosDoFormulario.forEach(function (codigo) { %>
+                <div class="chip-codigo">
+                  <span class="chip-codigo-link">
+                    <span class="chip-codigo-ponto" style="background: <%= codigo.color %>;"></span>
+                    <%= codigo.name %>
+                  </span>
+                  <form method="POST" action="/formularios/<%= formulario.id %>/codigos/<%= codigo.id %>/remover" onsubmit="return confirm('<%= t('forms.coding.confirmRemoveCode', { nome: codigo.name }) %>');">
+                    <button class="chip-codigo-remover" type="submit" title="<%= t('forms.coding.removeCodeTitle') %>">
+                      <svg class="icone" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                  </form>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+
+          <% if (resumoGeralCodigos.length > 0) { %>
+            <h4 class="subtitulo-secao-construtor" style="margin-top: 1.6rem; font-size: 1rem;"><%= t('forms.coding.overallHeading') %></h4>
+            <p class="subtitulo-documentos"><%= t('forms.coding.overallSubtitle') %></p>
+            <div class="grafico-barras-formulario">
+              <% resumoGeralCodigos.forEach(function (codigo) { %>
+                <div class="linha-grafico-barra">
+                  <span class="rotulo-grafico-barra"><span class="chip-codigo-ponto" style="background: <%= codigo.color %>;"></span> <%= codigo.name %></span>
+                  <div class="trilha-grafico-barra">
+                    <div class="barra-grafico-barra" style="width: <%= codigo.percentual %>%; background: <%= codigo.color %>;"></div>
+                  </div>
+                  <span class="contagem-grafico-barra"><%= codigo.total %> (<%= codigo.percentual %>%)</span>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </section>
+      <% } %>
+
+      <section class="secao" style="margin-top: 2rem;">
+        <h3 class="subtitulo-secao-construtor"><%= t('forms.questionsHeading') %></h3>
+
+        <% perguntas.forEach(function (pergunta) { %>
+          <% if (pergunta.optionsComContagem) { %>
+            <div class="pergunta-dashboard" id="pergunta-<%= pergunta.id %>">
+              <p class="pergunta-dashboard-texto"><%= pergunta.text %></p>
+
+              <% if (pergunta.totalRespostasPergunta === 0) { %>
+                <p class="lista-vazia"><%= t('forms.chartNoAnswersYet') %></p>
+              <% } else { %>
+                <div class="grafico-barras-formulario">
+                  <% pergunta.optionsComContagem.forEach(function (opcao) { %>
+                    <div class="linha-grafico-barra">
+                      <span class="rotulo-grafico-barra"><%= opcao.text %></span>
+                      <div class="trilha-grafico-barra">
+                        <div class="barra-grafico-barra" style="width: <%= opcao.percentual %>%;"></div>
+                      </div>
+                      <span class="contagem-grafico-barra"><%= opcao.total %> (<%= opcao.percentual %>%)</span>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+          <% } else { %>
+            <details class="pergunta-dashboard pergunta-dashboard-expansivel" id="pergunta-<%= pergunta.id %>">
+              <summary class="pergunta-dashboard-cabecalho">
+                <div class="pergunta-dashboard-cabecalho-topo">
+                  <p class="pergunta-dashboard-texto"><%= pergunta.text %></p>
+                  <span class="pergunta-dashboard-toggle-rotulo">
+                    <%= t('forms.coding.viewAnswersToggle', { n: pergunta.textAnswers.length }) %>
+                    <svg class="icone icone-chevron-dashboard" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+                  </span>
+                </div>
+
+                <% if (pergunta.totalCodificado > 0) { %>
+                  <div class="grafico-barras-formulario">
+                    <% pergunta.codigos.filter(function (c) { return c.total > 0; }).forEach(function (codigo) { %>
+                      <div class="linha-grafico-barra">
+                        <span class="rotulo-grafico-barra"><span class="chip-codigo-ponto" style="background: <%= codigo.color %>;"></span> <%= codigo.name %></span>
+                        <div class="trilha-grafico-barra">
+                          <div class="barra-grafico-barra" style="width: <%= codigo.percentual %>%; background: <%= codigo.color %>;"></div>
+                        </div>
+                        <span class="contagem-grafico-barra"><%= codigo.total %> (<%= codigo.percentual %>%)</span>
+                      </div>
+                    <% }); %>
+                  </div>
+                <% } %>
+              </summary>
+
+              <% if (pergunta.textAnswers.length === 0) { %>
+                <p class="lista-vazia"><%= t('forms.chartNoAnswersYet') %></p>
+              <% } else { %>
+                <div class="lista-trechos-codificar">
+                  <% pergunta.textAnswers.forEach(function (resposta) { %>
+                    <div class="trecho-codificar">
+                      <p class="trecho-codificar-origem">
+                        <strong><%= resposta.respondentName %></strong><% if (resposta.respondentStudyArea) { %> · <%= resposta.respondentStudyArea %><% } %>
+                      </p>
+                      <p class="trecho-codificar-texto"><%= resposta.text %></p>
+                      <div class="trecho-codificar-rodape">
+                        <div class="trecho-codificar-codigos">
+                          <% resposta.codigos.forEach(function (codigo) { %>
+                            <form method="POST" action="/formularios/<%= formulario.id %>/respostas/<%= resposta.id %>/alternar-codigo" class="chip-codigo-mini-form">
+                              <input type="hidden" name="codeId" value="<%= codigo.id %>" />
+                              <input type="hidden" name="voltarParaPergunta" value="<%= pergunta.id %>" />
+                              <span class="chip-codigo-mini" style="background: <%= codigo.color %>1a; color: <%= codigo.color %>; border-color: <%= codigo.color %>66;">
+                                <%= codigo.name %>
+                                <button type="submit" class="chip-codigo-mini-remover" title="<%= t('forms.coding.removeCodeFromAnswerTitle') %>">×</button>
+                              </span>
+                            </form>
+                          <% }); %>
+                          <% if (resposta.codigos.length === 0) { %>
+                            <span class="trecho-sem-codigo"><%= t('forms.coding.noCodeYet') %></span>
+                          <% } %>
+                        </div>
+
+                        <% if (pergunta.codigos.length > 0) { %>
+                          <details class="seletor-codigos">
+                            <summary class="botao-icone" title="<%= t('forms.coding.addCodeTitle') %>">
+                              <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                            </summary>
+                            <div class="menu-codigos">
+                              <% pergunta.codigos.forEach(function (codigo) { %>
+                                <% var marcado = resposta.codigos.some(function (c) { return c.id === codigo.id; }); %>
+                                <form method="POST" action="/formularios/<%= formulario.id %>/respostas/<%= resposta.id %>/alternar-codigo">
+                                  <input type="hidden" name="codeId" value="<%= codigo.id %>" />
+                                  <input type="hidden" name="voltarParaPergunta" value="<%= pergunta.id %>" />
+                                  <button type="submit" class="item-menu-codigo <%= marcado ? 'marcado' : '' %>">
+                                    <span class="chip-codigo-ponto" style="background: <%= codigo.color %>;"></span>
+                                    <%= codigo.name %>
+                                    <% if (marcado) { %><svg class="icone icone-check-menu" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><% } %>
+                                  </button>
+                                </form>
+                              <% }); %>
+                            </div>
+                          </details>
+                        <% } %>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } %>
+            </details>
+          <% } %>
+        <% }); %>
+      </section>
+
+      <section class="secao" style="margin-top: 2rem;">
+        <h3 class="subtitulo-secao-construtor"><%= t('forms.responsesHeading') %></h3>
+
+        <% if (respostas.length === 0) { %>
+          <p class="lista-vazia"><%= t('forms.noResponsesYet') %></p>
+        <% } else { %>
+          <div class="tabela-respostas-wrapper">
+            <table class="tabela-respostas-formulario">
+              <thead>
+                <tr>
+                  <th><%= t('forms.responsesTableSentAt') %></th>
+                  <th><%= t('forms.responsesTableRespondent') %></th>
+                  <th><%= t('forms.responsesTableStudyArea') %></th>
+                  <% perguntas.forEach(function (pergunta) { %>
+                    <th><%= pergunta.text %></th>
+                  <% }); %>
+                </tr>
+              </thead>
+              <tbody>
+                <% respostas.forEach(function (resposta) { %>
+                  <tr>
+                    <td><%= resposta.created_at %></td>
+                    <td><%= resposta.respondent_name %></td>
+                    <td><%= resposta.respondent_study_area || '' %></td>
+                    <% perguntas.forEach(function (pergunta) { %>
+                      <td><%= (resposta.respostasPorPergunta.get(pergunta.id) || []).join(', ') %></td>
+                    <% }); %>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    window.I18N_FORMS_DASHBOARD = {
+      copiedNotice: <%- JSON.stringify(t('forms.copiedNotice')) %>,
+      copyLinkButton: <%- JSON.stringify(t('forms.copyLinkButton')) %>
+    };
+  </script>
+  <script src="/js/formulario-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= formulario ? t('forms.editHeading') : t('forms.createHeading') %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'formularios' }) %>
+
+    <main>
+      <a href="/formularios" class="link-voltar">
+        <svg class="icone" viewBox="0 0 24 24"><path d="M19 12H5m0 0l6-6m-6 6l6 6"/></svg>
+        <%= t('forms.backToList') %>
+      </a>
+
+      <section class="secao">
+        <div class="documentos-cabecalho">
+          <div class="titulo-com-icone">
+            <span class="icone-caixa">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+            </span>
+            <div>
+              <h2><%= formulario ? t('forms.editHeading') : t('forms.createHeading') %></h2>
+            </div>
+          </div>
+        </div>
+
+        <form method="POST" action="<%= formulario ? ('/formularios/' + formulario.id) : '/formularios' %>" id="form-construtor-formulario">
+          <div class="campo">
+            <label for="title"><%= t('forms.titleLabel') %></label>
+            <input type="text" id="title" name="title" required maxlength="150" value="<%= formulario ? formulario.title : '' %>" placeholder="<%= t('forms.titlePlaceholder') %>" />
+          </div>
+          <div class="campo">
+            <label for="description"><%= t('forms.descriptionLabel') %></label>
+            <textarea id="description" name="description" rows="2" placeholder="<%= t('forms.descriptionPlaceholder') %>"><%= formulario ? formulario.description : '' %></textarea>
+          </div>
+
+          <h3 class="subtitulo-secao-construtor"><%= t('forms.questionsHeading') %></h3>
+
+          <div id="perguntas-construtor">
+            <% perguntas.forEach(function (pergunta) { %>
+              <div class="pergunta-construtor">
+                <div class="pergunta-construtor-topo">
+                  <input type="text" class="pergunta-texto" placeholder="<%= t('forms.questionPlaceholder') %>" value="<%= pergunta.text %>" />
+                  <select class="pergunta-tipo">
+                    <option value="curta" <%= pergunta.type === 'curta' ? 'selected' : '' %>><%= t('forms.typeShort') %></option>
+                    <option value="paragrafo" <%= pergunta.type === 'paragrafo' ? 'selected' : '' %>><%= t('forms.typeParagraph') %></option>
+                    <option value="unica" <%= pergunta.type === 'unica' ? 'selected' : '' %>><%= t('forms.typeSingle') %></option>
+                    <option value="multipla" <%= pergunta.type === 'multipla' ? 'selected' : '' %>><%= t('forms.typeMultiple') %></option>
+                  </select>
+                  <button type="button" class="botao-icone remover-pergunta" title="<%= t('forms.removeQuestionTitle') %>">
+                    <svg class="icone" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
+                <div class="pergunta-construtor-opcoes" style="<%= (pergunta.type === 'unica' || pergunta.type === 'multipla') ? '' : 'display: none;' %>">
+                  <div class="lista-opcoes-construtor">
+                    <% pergunta.options.forEach(function (opcao) { %>
+                      <div class="opcao-construtor">
+                        <input type="text" class="opcao-texto" placeholder="<%= t('forms.optionPlaceholder') %>" value="<%= opcao.text %>" />
+                        <button type="button" class="remover-opcao" title="<%= t('forms.removeOptionTitle') %>">
+                          <svg class="icone" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </button>
+                      </div>
+                    <% }); %>
+                  </div>
+                  <button type="button" class="botao secundario adicionar-opcao">
+                    <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    <%= t('forms.addOptionButton') %>
+                  </button>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+
+          <button type="button" class="botao secundario" id="botao-adicionar-pergunta">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            <%= t('forms.addQuestionButton') %>
+          </button>
+
+          <input type="hidden" name="perguntasJson" id="campo-perguntas-json" />
+
+          <div class="linha-botoes-construtor">
+            <a href="/formularios" class="botao secundario"><%= t('forms.cancelLink') %></a>
+            <button type="submit" class="botao"><%= t('forms.saveButton') %></button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    window.I18N_FORMS = {
+      questionPlaceholder: <%- JSON.stringify(t('forms.questionPlaceholder')) %>,
+      optionPlaceholder: <%- JSON.stringify(t('forms.optionPlaceholder')) %>,
+      typeShort: <%- JSON.stringify(t('forms.typeShort')) %>,
+      typeParagraph: <%- JSON.stringify(t('forms.typeParagraph')) %>,
+      typeSingle: <%- JSON.stringify(t('forms.typeSingle')) %>,
+      typeMultiple: <%- JSON.stringify(t('forms.typeMultiple')) %>,
+      removeQuestionTitle: <%- JSON.stringify(t('forms.removeQuestionTitle')) %>,
+      removeOptionTitle: <%- JSON.stringify(t('forms.removeOptionTitle')) %>,
+      addOptionButton: <%- JSON.stringify(t('forms.addOptionButton')) %>
+    };
+  </script>
+  <script src="/js/formularios.js"></script>
+</body>
+</html>

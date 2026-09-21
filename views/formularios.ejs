@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= t('forms.tabTitle') %></title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="corpo-app">
+    <%- include('partials/barra-lateral', { paginaAtiva: 'formularios' }) %>
+
+    <main>
+      <%- include('partials/voltar-modulos') %>
+
+      <section class="secao">
+        <div class="documentos-cabecalho">
+          <div class="titulo-com-icone">
+            <span class="icone-caixa">
+              <svg class="icone" viewBox="0 0 24 24"><path d="M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+            </span>
+            <div>
+              <h2><%= t('forms.heading') %></h2>
+              <p class="subtitulo-documentos"><%= t('forms.subtitle') %></p>
+            </div>
+          </div>
+          <a class="botao" href="/formularios/novo">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            <%= t('forms.createButton') %>
+          </a>
+        </div>
+
+        <% if (meusFormularios.length === 0) { %>
+          <p class="lista-vazia"><%= t('forms.noneYet') %></p>
+        <% } else { %>
+          <div class="lista-documentos-codificar">
+            <% meusFormularios.forEach(function (formulario) { %>
+              <a class="documento-codificar-card" href="/formularios/<%= formulario.id %>">
+                <span class="documento-codificar-icone">
+                  <svg class="icone" viewBox="0 0 24 24"><path d="M9 3h6a2 2 0 012 2v14a2 2 0 01-2 2H9a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+                </span>
+                <span class="documento-codificar-info">
+                  <strong><%= formulario.title %></strong>
+                  <span><%= t('forms.responseCountBadge', { n: formulario.totalRespostas }) %></span>
+                </span>
+                <span class="selo-status-formulario <%= formulario.status === 'encerrado' ? 'encerrado' : 'aberto' %>">
+                  <%= formulario.status === 'encerrado' ? t('forms.statusClosed') : t('forms.statusOpen') %>
+                </span>
+                <svg class="icone seta-linha" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+              </a>
+            <% }); %>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

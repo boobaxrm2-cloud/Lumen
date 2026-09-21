@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= formulario ? formulario.title : t('forms.publicNotFoundHeading') %> — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="pagina-publica-formulario">
+    <div class="seletor-idioma-auth">
+      <%- include('partials/seletor-idioma') %>
+    </div>
+
+    <a class="logo-pagina-publica" href="/">
+      <img src="/images/logo-lumen.png" alt="Lumen" />
+    </a>
+
+    <% if (!formulario) { %>
+      <div class="ficha-auth ficha-formulario-publico">
+        <h2><%= t('forms.publicNotFoundHeading') %></h2>
+        <p class="subtitulo"><%= t('forms.publicNotFoundMessage') %></p>
+      </div>
+    <% } else if (formulario.status === 'encerrado') { %>
+      <div class="ficha-auth ficha-formulario-publico">
+        <h2><%= t('forms.publicClosedHeading') %></h2>
+        <p class="subtitulo"><%= t('forms.publicClosedMessage') %></p>
+      </div>
+    <% } else { %>
+      <div class="ficha-auth ficha-formulario-publico">
+        <h2><%= formulario.title %></h2>
+        <% if (formulario.description) { %><p class="subtitulo"><%= formulario.description %></p><% } %>
+
+        <% if (erro) { %><div class="erro"><%= erro %></div><% } %>
+
+        <form method="POST" action="/f/<%= formulario.public_token %>">
+          <div class="campo pergunta-resposta-publica">
+            <label><%= t('forms.public.respondentNameLabel') %></label>
+            <input type="text" name="respondentName" required value="<%= valores.respondentName %>" placeholder="<%= t('forms.public.respondentNamePlaceholder') %>" />
+          </div>
+          <div class="campo pergunta-resposta-publica">
+            <label><%= t('forms.public.respondentStudyAreaLabel') %></label>
+            <input type="text" name="respondentStudyArea" value="<%= valores.respondentStudyArea %>" placeholder="<%= t('forms.public.respondentStudyAreaPlaceholder') %>" />
+          </div>
+
+          <% perguntas.forEach(function (pergunta) { %>
+            <div class="campo pergunta-resposta-publica">
+              <label><%= pergunta.text %></label>
+
+              <% if (pergunta.type === 'curta') { %>
+                <input type="text" name="pergunta_<%= pergunta.id %>" placeholder="<%= t('forms.answerPlaceholderShort') %>" />
+              <% } else if (pergunta.type === 'paragrafo') { %>
+                <textarea name="pergunta_<%= pergunta.id %>" rows="3" placeholder="<%= t('forms.answerPlaceholderParagraph') %>"></textarea>
+              <% } else if (pergunta.type === 'unica') { %>
+                <div class="lista-opcoes-resposta">
+                  <% pergunta.options.forEach(function (opcao) { %>
+                    <label class="opcao-resposta-publica">
+                      <input type="radio" name="pergunta_<%= pergunta.id %>" value="<%= opcao.id %>" />
+                      <%= opcao.text %>
+                    </label>
+                  <% }); %>
+                </div>
+              <% } else if (pergunta.type === 'multipla') { %>
+                <div class="lista-opcoes-resposta">
+                  <% pergunta.options.forEach(function (opcao) { %>
+                    <label class="opcao-resposta-publica">
+                      <input type="checkbox" name="pergunta_<%= pergunta.id %>" value="<%= opcao.id %>" />
+                      <%= opcao.text %>
+                    </label>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+          <% }); %>
+
+          <button type="submit" class="botao acao-larga"><%= t('forms.submitButton') %></button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

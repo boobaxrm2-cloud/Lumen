@@ -8,16 +8,13 @@ const highlightCodes = require('../db/highlight-codes');
 const documents = require('../db/documents');
 const articles = require('../db/articles');
 const { t, LOCALE_POR_IDIOMA, CSV_DELIMITADOR_POR_IDIOMA } = require('../utils/i18n');
+const { CORES_CODIGO } = require('../utils/cores-codigo');
 
 const router = express.Router();
 
 const PASTA_UPLOADS = require('../db/uploads-dir');
 const LOGO_LUMEN = path.join(__dirname, '..', 'public', 'images', 'logo-lumen.png');
 const ALTURA_FAIXA_CABECALHO = 110;
-
-// Paleta fixa pra escolher a cor do codigo sem precisar de um seletor de
-// cor completo (mais simples de usar e mantem a identidade visual do site).
-const CORES_CODIGO = ['#f0c14b', '#4caf82', '#5aa9e0', '#e0655a', '#b892e8', '#e0a15a', '#6bc7c2', '#e08ac2'];
 
 // Lista os documentos do usuario que tem pelo menos um trecho-chave, com a
 // contagem de trechos de cada um - usado tanto pra escolher qual codificar

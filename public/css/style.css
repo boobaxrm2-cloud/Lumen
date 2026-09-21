@@ -80,7 +80,7 @@ svg.icone {
   -ms-overflow-style: none;
   background: var(--cor-fundo-alt);
   border-right: 1px solid var(--cor-cartao-borda);
-  padding: 1.5rem 0;
+  padding: 1.1rem 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -116,26 +116,26 @@ svg.icone {
 .logo-lateral {
   display: flex;
   justify-content: center;
-  padding: 0 0.5rem 1rem;
+  padding: 0 0.5rem 0.6rem;
 }
 
 .logo-lateral img {
   display: block;
-  width: 215px;
+  width: 190px;
   height: auto;
 }
 
 .barra-lateral nav {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.15rem;
 }
 
 .divisor-lateral {
   position: relative;
   z-index: 1;
   height: 1px;
-  margin: 0.6rem 1rem;
+  margin: 0.45rem 1rem;
   background: var(--cor-cartao-borda);
   border: none;
 }
@@ -145,7 +145,7 @@ svg.icone {
   align-items: center;
   gap: 0.8rem;
   margin: 0 1rem;
-  padding: 0.5rem 0.9rem;
+  padding: 0.4rem 0.9rem;
   border-radius: 8px;
   color: var(--cor-texto-suave);
   text-decoration: none;
@@ -2646,6 +2646,7 @@ canvas.pagina-pdf {
 }
 
 .trecho-codificar {
+  position: relative;
   background: rgba(22, 31, 52, 0.55);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -2746,6 +2747,13 @@ canvas.pagina-pdf {
 
 .seletor-codigos {
   position: relative;
+}
+
+/* Sem isso, o menu de codigos de um card fica visualmente atras do card
+   seguinte (cada .trecho-codificar cria seu proprio contexto de empilhamento
+   por causa do backdrop-filter, entao z-index sozinho no menu nao basta). */
+.trecho-codificar:has(.seletor-codigos[open]) {
+  z-index: 5;
 }
 
 .seletor-codigos summary {
@@ -3243,4 +3251,413 @@ canvas.pagina-pdf {
   .login-ficha-flutuante {
     width: 100%;
   }
+}
+
+/* ---------- Modulo de Formularios ---------- */
+
+.selo-status-formulario {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+
+.selo-status-formulario.aberto {
+  background: rgba(76, 175, 130, 0.15);
+  color: var(--cor-sucesso);
+}
+
+.selo-status-formulario.encerrado {
+  background: rgba(152, 162, 184, 0.15);
+  color: var(--cor-texto-suave);
+}
+
+.subtitulo-secao-construtor {
+  margin: 1.6rem 0 0.8rem;
+}
+
+.pergunta-construtor {
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pergunta-construtor-topo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pergunta-construtor-topo .pergunta-texto {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-fundo);
+  font-family: var(--fonte-corpo);
+  font-size: 1rem;
+  color: var(--cor-texto);
+}
+
+.pergunta-construtor-topo .pergunta-tipo {
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-fundo);
+  font-family: var(--fonte-corpo);
+  font-size: 0.9rem;
+  color: var(--cor-texto);
+  flex-shrink: 0;
+}
+
+.pergunta-construtor-opcoes {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--cor-cartao-borda);
+}
+
+.lista-opcoes-construtor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.opcao-construtor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.opcao-construtor .opcao-texto {
+  flex: 1;
+  min-width: 0;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-fundo);
+  font-family: var(--fonte-corpo);
+  font-size: 0.92rem;
+  color: var(--cor-texto);
+}
+
+.remover-pergunta,
+.remover-opcao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.remover-pergunta:hover,
+.remover-opcao:hover {
+  border-color: var(--cor-vermelho);
+  color: var(--cor-vermelho);
+}
+
+.linha-botoes-construtor {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.painel-compartilhar-formulario {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1.4rem;
+  padding: 1.2rem;
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.painel-compartilhar-info {
+  flex: 1;
+  min-width: 260px;
+}
+
+.painel-compartilhar-info h3 {
+  margin-bottom: 0.8rem;
+}
+
+.rotulo-campo-mini {
+  display: block;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cor-texto-suave);
+  margin-bottom: 0.3rem;
+}
+
+.linha-link-copiar {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.linha-link-copiar input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 6px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.9rem;
+}
+
+.link-editar-perguntas {
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-size: 0.88rem;
+}
+
+.aviso-perguntas-bloqueadas {
+  margin-top: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--cor-texto-suave);
+  font-style: italic;
+}
+
+.painel-compartilhar-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.painel-compartilhar-qr img {
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px;
+}
+
+.botao-baixar-qr {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.7rem;
+}
+
+.pergunta-dashboard {
+  scroll-margin-top: 20px;
+  background: var(--cor-cartao);
+  border: 1px solid var(--cor-cartao-borda);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.pergunta-dashboard-texto {
+  font-weight: 600;
+  margin: 0 0 0.8rem;
+}
+
+.pergunta-dashboard-expansivel > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.pergunta-dashboard-expansivel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.pergunta-dashboard-cabecalho-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pergunta-dashboard-cabecalho-topo .pergunta-dashboard-texto {
+  margin: 0;
+}
+
+.pergunta-dashboard-toggle-rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--cor-dourado);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-bottom: 0.8rem;
+}
+
+.icone-chevron-dashboard {
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: transform 0.15s ease;
+}
+
+.pergunta-dashboard-expansivel[open] .icone-chevron-dashboard {
+  transform: rotate(90deg);
+}
+
+.pergunta-dashboard-expansivel .lista-trechos-codificar,
+.pergunta-dashboard-expansivel > .lista-vazia {
+  margin-top: 1rem;
+}
+
+.grafico-barras-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.linha-grafico-barra {
+  display: grid;
+  grid-template-columns: 160px 1fr 90px;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.rotulo-grafico-barra {
+  font-size: 0.85rem;
+  color: var(--cor-texto);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trilha-grafico-barra {
+  height: 0.9rem;
+  background: var(--cor-fundo);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barra-grafico-barra {
+  height: 100%;
+  background: var(--cor-dourado);
+  border-radius: 999px;
+}
+
+.contagem-grafico-barra {
+  font-size: 0.82rem;
+  color: var(--cor-texto-suave);
+  text-align: right;
+}
+
+.lista-respostas-texto {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--cor-texto);
+  font-size: 0.9rem;
+}
+
+.lista-respostas-texto li {
+  margin-bottom: 0.4rem;
+}
+
+.tabela-respostas-wrapper {
+  overflow-x: auto;
+}
+
+.tabela-respostas-formulario {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabela-respostas-formulario th,
+.tabela-respostas-formulario td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--cor-cartao-borda);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabela-respostas-formulario th {
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+/* Pagina publica de resposta (sem sidebar, sem login) */
+
+.pagina-publica-formulario {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 2.4rem 1.2rem;
+}
+
+.logo-pagina-publica img {
+  height: 3rem;
+  width: auto;
+}
+
+.ficha-formulario-publico {
+  width: 100%;
+  max-width: 520px;
+}
+
+.pergunta-resposta-publica {
+  margin-bottom: 1.4rem;
+}
+
+.pergunta-resposta-publica > label {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--cor-texto);
+  margin-bottom: 0.5rem;
+}
+
+.lista-opcoes-resposta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+label.opcao-resposta-publica {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--cor-texto);
+}
+
+label.opcao-resposta-publica input {
+  width: auto;
+  flex-shrink: 0;
+}
+
+.ficha-obrigado-formulario {
+  text-align: center;
+}
+
+.icone-obrigado {
+  width: 3rem;
+  height: 3rem;
+  color: var(--cor-sucesso);
+  margin-bottom: 0.8rem;
 }

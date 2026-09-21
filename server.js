@@ -14,6 +14,7 @@ const forumRoutes = require('./routes/forum');
 const notificationRoutes = require('./routes/notifications');
 const networkRoutes = require('./routes/network');
 const mensagensRoutes = require('./routes/mensagens');
+const formulariosRoutes = require('./routes/formularios');
 const { requireAuth } = require('./middleware/auth');
 const { t, idiomaValido, LOCALE_POR_IDIOMA } = require('./utils/i18n');
 const visits = require('./db/visits');
@@ -114,6 +115,7 @@ app.use('/', forumRoutes);
 app.use('/', notificationRoutes);
 app.use('/', networkRoutes);
 app.use('/', mensagensRoutes);
+app.use('/', formulariosRoutes);
 
 app.get('/', requireAuth, (req, res) => {
   res.render('home', { userName: req.session.userName });

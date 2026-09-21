@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+  <title><%= t('forms.thankYouHeading') %> — Lumen</title>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <div class="pagina-publica-formulario">
+    <div class="seletor-idioma-auth">
+      <%- include('partials/seletor-idioma') %>
+    </div>
+
+    <a class="logo-pagina-publica" href="/">
+      <img src="/images/logo-lumen.png" alt="Lumen" />
+    </a>
+    <div class="ficha-auth ficha-formulario-publico ficha-obrigado-formulario">
+      <svg class="icone icone-obrigado" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+      <h2><%= t('forms.thankYouHeading') %></h2>
+      <p class="subtitulo"><%= t('forms.thankYouMessage') %></p>
+    </div>
+  </div>
+</body>
+</html>
