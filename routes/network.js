@@ -9,7 +9,8 @@ const router = express.Router();
 router.get('/network', requireAuth, (req, res) => {
   const amigos = friendships.listFriends(req.session.userId);
   const pendentes = friendships.listPendingReceived(req.session.userId);
-  res.render('network', { amigos, pendentes });
+  const sucessoSolicitar = req.query.solicitado ? res.locals.t('network.add.sucesso') : null;
+  res.render('network', { amigos, pendentes, sucessoSolicitar });
 });
 
 // Dados do popup de perfil (clicado a partir do avatar/nome no forum, ou de
@@ -32,6 +33,48 @@ router.get('/usuarios/:id/perfil', requireAuth, (req, res) => {
     status,
     requestId: request ? request.id : null,
   });
+});
+
+// Modal "adicionar nova conexao" (2 etapas: email -> confirmar), mesmo
+// esqueleto do compartilhamento de biblioteca por email.
+function validarConvitePorEmail(req, res) {
+  const email = (req.body.email || '').trim();
+  const alvo = email ? users.findByEmail(email) : null;
+
+  if (!alvo) {
+    return { erro: { status: 404, mensagem: res.locals.t('network.erroUsuarioNaoEncontrado') } };
+  }
+  if (alvo.id === req.session.userId) {
+    return { erro: { status: 400, mensagem: res.locals.t('network.erroSolicitarSiMesmo') } };
+  }
+  const existente = friendships.findBetween(req.session.userId, alvo.id);
+  if (existente && existente.status !== 'rejected') {
+    return { erro: { status: 400, mensagem: res.locals.t('network.erroSolicitacaoJaExiste') } };
+  }
+  return { alvo };
+}
+
+router.post('/api/network/adicionar/verificar', requireAuth, (req, res) => {
+  const { alvo, erro } = validarConvitePorEmail(req, res);
+  if (erro) return res.status(erro.status).json({ erro: erro.mensagem });
+  res.json({ nome: alvo.name, email: alvo.email });
+});
+
+// Etapa 2: revalida tudo de novo a partir do email (nunca confia no que o
+// cliente diz ter validado na etapa 1) antes de criar a solicitacao.
+router.post('/api/network/adicionar', requireAuth, (req, res) => {
+  const { alvo, erro } = validarConvitePorEmail(req, res);
+  if (erro) return res.status(erro.status).json({ erro: erro.mensagem });
+
+  const pedido = friendships.create(req.session.userId, alvo.id);
+  notifications.create({
+    userId: alvo.id,
+    actorUserId: req.session.userId,
+    type: 'friend_request',
+    link: '/network',
+  });
+
+  res.status(201).json({ ok: true, requestId: pedido.id });
 });
 
 // Chamado via fetch() a partir do popup de perfil - so faz sentido com JS,

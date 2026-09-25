@@ -551,5 +551,11 @@
   "home.moduleForms.feature1": "多种问题类型",
   "home.moduleForms.feature2": "通过链接或二维码分享",
   "home.moduleForms.feature3": "图表与回答编码",
-  "home.moduleForms.feature4": "导出 PDF 和 CSV"
+  "home.moduleForms.feature4": "导出 PDF 和 CSV",
+  "network.addConnectionButton": "添加新联系人",
+  "network.add.title": "添加新联系人",
+  "network.add.confirmText": "要向 {nome}（{email}）发送好友请求吗？",
+  "network.add.sucesso": "好友请求已发送！",
+  "forms.optionsSummary.heading": "回答摘要",
+  "forms.optionsSummary.subtitle": "该表单所有选择题中每个选项被选择的总次数。"
 }

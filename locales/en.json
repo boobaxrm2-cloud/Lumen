@@ -551,5 +551,11 @@
   "home.moduleForms.feature1": "Multiple question types",
   "home.moduleForms.feature2": "Share by link or QR code",
   "home.moduleForms.feature3": "Charts and answer coding",
-  "home.moduleForms.feature4": "Export PDF and CSV"
+  "home.moduleForms.feature4": "Export PDF and CSV",
+  "network.addConnectionButton": "Add new connection",
+  "network.add.title": "Add new connection",
+  "network.add.confirmText": "Send a friend request to {nome} ({email})?",
+  "network.add.sucesso": "Friend request sent!",
+  "forms.optionsSummary.heading": "Answer summary",
+  "forms.optionsSummary.subtitle": "Total selections for each option across every choice question in this form."
 }

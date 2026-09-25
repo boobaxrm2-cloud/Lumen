@@ -10,9 +10,21 @@
 
     <main>
     <%- include('partials/voltar-modulos') %>
-    <p class="eyebrow-secao"><%= t('network.eyebrow') %></p>
-    <h2><%= t('network.heading') %></h2>
-    <p class="subtitulo-documentos" style="margin-bottom: 1.3rem;"><%= t('network.subtitle') %></p>
+    <div class="documentos-cabecalho">
+      <div>
+        <p class="eyebrow-secao"><%= t('network.eyebrow') %></p>
+        <h2><%= t('network.heading') %></h2>
+        <p class="subtitulo-documentos"><%= t('network.subtitle') %></p>
+      </div>
+      <button class="botao" type="button" id="botao-adicionar-conexao">
+        <svg class="icone" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 016-6h2a6 6 0 016 6v1"/><path d="M19 8v6M16 11h6"/></svg>
+        <%= t('network.addConnectionButton') %>
+      </button>
+    </div>
+
+    <% if (sucessoSolicitar) { %>
+      <div class="erro" style="background: rgba(76,175,130,0.12); border-color: var(--cor-sucesso); color: var(--cor-sucesso); margin-bottom: 1.3rem;"><%= sucessoSolicitar %></div>
+    <% } %>
 
     <% if (pendentes.length > 0) { %>
       <section class="secao" style="margin-bottom: 2.5rem;">
@@ -81,5 +93,40 @@
     </section>
     </main>
   </div>
+
+  <div id="modal-adicionar-conexao" class="modal-pdf" style="display: none;">
+    <div class="modal-pdf-fundo" id="modal-adicionar-conexao-fundo"></div>
+    <div class="modal-compartilhar-caixa">
+      <h3><%= t('network.add.title') %></h3>
+      <p class="aviso-busca" id="adicionar-conexao-status"></p>
+
+      <div id="adicionar-conexao-etapa-email" class="recuperar-etapa">
+        <div class="campo">
+          <label for="adicionar-conexao-email"><%= t('login.emailLabel') %></label>
+          <input type="email" id="adicionar-conexao-email" required autofocus />
+        </div>
+        <button class="botao acao-larga" type="button" id="botao-adicionar-conexao-continuar"><%= t('login.recovery.continueButton') %></button>
+      </div>
+
+      <div id="adicionar-conexao-etapa-confirmar" class="recuperar-etapa" style="display: none;">
+        <p class="recuperar-pergunta-texto" id="adicionar-conexao-confirmar-texto"></p>
+        <div class="modal-confirmar-acoes">
+          <button class="botao secundario" type="button" id="botao-adicionar-conexao-nao"><%= t('library.share.no') %></button>
+          <button class="botao" type="button" id="botao-adicionar-conexao-sim"><%= t('library.share.yes') %></button>
+        </div>
+      </div>
+
+      <button type="button" class="botao secundario acao-larga" id="botao-adicionar-conexao-cancelar" style="margin-top: 0.8rem;"><%= t('login.recovery.cancelButton') %></button>
+    </div>
+  </div>
+
+  <script>
+    window.I18N_NETWORK = {
+      erroConexao: <%- JSON.stringify(t('network.erroConexao')) %>,
+      confirmarTexto: <%- JSON.stringify(t('network.add.confirmText')) %>,
+      sucesso: <%- JSON.stringify(t('network.add.sucesso')) %>
+    };
+  </script>
+  <script src="/js/network.js"></script>
 </body>
 </html>

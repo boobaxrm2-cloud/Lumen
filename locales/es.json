@@ -551,5 +551,11 @@
   "home.moduleForms.feature1": "Varios tipos de pregunta",
   "home.moduleForms.feature2": "Comparte por enlace o código QR",
   "home.moduleForms.feature3": "Gráficos y codificación de respuestas",
-  "home.moduleForms.feature4": "Exportar PDF y CSV"
+  "home.moduleForms.feature4": "Exportar PDF y CSV",
+  "network.addConnectionButton": "Agregar nueva conexión",
+  "network.add.title": "Agregar nueva conexión",
+  "network.add.confirmText": "¿Enviar solicitud de amistad a {nome} ({email})?",
+  "network.add.sucesso": "¡Solicitud de amistad enviada!",
+  "forms.optionsSummary.heading": "Resumen de las respuestas",
+  "forms.optionsSummary.subtitle": "Total de selecciones de cada opción sumando todas las preguntas de selección de este formulario."
 }

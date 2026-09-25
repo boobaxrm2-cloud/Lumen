@@ -123,6 +123,24 @@
         </section>
       <% } %>
 
+      <% if (temPerguntaDeEscolha && resumoGeralOpcoes.length > 0) { %>
+        <section class="secao" style="margin-top: 2rem;">
+          <h3 class="subtitulo-secao-construtor"><%= t('forms.optionsSummary.heading') %></h3>
+          <p class="subtitulo-documentos"><%= t('forms.optionsSummary.subtitle') %></p>
+          <div class="grafico-barras-formulario">
+            <% resumoGeralOpcoes.forEach(function (opcao) { %>
+              <div class="linha-grafico-barra">
+                <span class="rotulo-grafico-barra"><%= opcao.text %></span>
+                <div class="trilha-grafico-barra">
+                  <div class="barra-grafico-barra" style="width: <%= opcao.percentual %>%;"></div>
+                </div>
+                <span class="contagem-grafico-barra"><%= opcao.total %> (<%= opcao.percentual %>%)</span>
+              </div>
+            <% }); %>
+          </div>
+        </section>
+      <% } %>
+
       <section class="secao" style="margin-top: 2rem;">
         <h3 class="subtitulo-secao-construtor"><%= t('forms.questionsHeading') %></h3>
 

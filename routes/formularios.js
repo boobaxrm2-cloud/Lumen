@@ -14,6 +14,30 @@ function linkPublico(req, token) {
   return `${req.protocol}://${req.get('host')}/f/${token}`;
 }
 
+// Resumo geral das perguntas de escolha unica/multipla: soma quantas vezes
+// cada TEXTO de opcao foi escolhido em todas as perguntas de escolha do
+// formulario (opcoes com o mesmo texto em perguntas diferentes, tipo uma
+// escala repetida, se juntam numa barra so), com a porcentagem calculada
+// sobre esse total geral - em vez de fragmentar pergunta por pergunta.
+function calcularResumoGeralOpcoes(perguntas, contagensPorPergunta) {
+  const contagensPorTexto = new Map();
+  perguntas.forEach((pergunta) => {
+    if (!forms.TIPOS_COM_OPCOES.includes(pergunta.type)) return;
+    const contagens = contagensPorPergunta.get(pergunta.id) || new Map();
+    pergunta.options.forEach((opcao) => {
+      const n = contagens.get(opcao.id) || 0;
+      contagensPorTexto.set(opcao.text, (contagensPorTexto.get(opcao.text) || 0) + n);
+    });
+  });
+
+  const totalGeral = Array.from(contagensPorTexto.values()).reduce((soma, n) => soma + n, 0);
+  const resumo = Array.from(contagensPorTexto.entries())
+    .map(([text, total]) => ({ text, total, percentual: totalGeral > 0 ? Math.round((total / totalGeral) * 100) : 0 }))
+    .filter((opcao) => opcao.total > 0);
+
+  return { resumo, totalGeral };
+}
+
 // Le o campo oculto "perguntasJson" (preenchido pelo JS do construtor) e
 // devolve uma lista de perguntas valida - qualquer coisa mal formada ou
 // vazia e ignorada, em vez de derrubar a rota com uma excecao.
@@ -117,6 +141,12 @@ router.get('/formularios/:id', requireAuth, (req, res) => {
   // vez e reaproveitados em qualquer pergunta de texto livre desse formulario.
   const codigosDoFormulario = formCodes.listByForm(formulario.id, req.session.userId);
   const temPerguntaDeTexto = perguntas.some((p) => !forms.TIPOS_COM_OPCOES.includes(p.type));
+  const temPerguntaDeEscolha = perguntas.some((p) => forms.TIPOS_COM_OPCOES.includes(p.type));
+
+  const { resumo: resumoGeralOpcoes, totalGeral: totalGeralOpcoes } = calcularResumoGeralOpcoes(
+    perguntas,
+    contagensPorPergunta
+  );
 
   // Dashboard geral: soma o uso de cada codigo em TODAS as perguntas do
   // formulario, com a porcentagem calculada sobre esse total geral - da uma
@@ -163,6 +193,9 @@ router.get('/formularios/:id', requireAuth, (req, res) => {
     resumoGeralCodigos,
     totalGeralCodificado,
     temPerguntaDeTexto,
+    resumoGeralOpcoes,
+    totalGeralOpcoes,
+    temPerguntaDeEscolha,
     perguntas: perguntasComGrafico,
     respostas,
     totalRespostas: respostas.length,
@@ -361,6 +394,17 @@ router.get('/formularios/:id/dashboard.pdf', requireAuth, (req, res) => {
     doc.font('Helvetica-Bold').fontSize(14).fillColor('#1a1f2e').text(t(lang, 'forms.coding.overallHeading'));
     doc.moveDown(0.5);
     desenharGraficoBarrasPdf(doc, resumoGeralCodigos);
+    doc.moveDown(1);
+  }
+
+  const { resumo: resumoGeralOpcoes, totalGeral: totalGeralOpcoes } = calcularResumoGeralOpcoes(
+    perguntas,
+    contagensPorPergunta
+  );
+  if (totalGeralOpcoes > 0) {
+    doc.font('Helvetica-Bold').fontSize(14).fillColor('#1a1f2e').text(t(lang, 'forms.optionsSummary.heading'));
+    doc.moveDown(0.5);
+    desenharGraficoBarrasPdf(doc, resumoGeralOpcoes);
     doc.moveDown(1);
   }
 

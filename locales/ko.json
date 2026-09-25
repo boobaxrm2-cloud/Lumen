@@ -551,5 +551,11 @@
   "home.moduleForms.feature1": "다양한 질문 유형",
   "home.moduleForms.feature2": "링크 또는 QR 코드로 공유",
   "home.moduleForms.feature3": "차트 및 응답 코딩",
-  "home.moduleForms.feature4": "PDF 및 CSV 내보내기"
+  "home.moduleForms.feature4": "PDF 및 CSV 내보내기",
+  "network.addConnectionButton": "새 연결 추가",
+  "network.add.title": "새 연결 추가",
+  "network.add.confirmText": "{nome}({email})님에게 친구 요청을 보낼까요?",
+  "network.add.sucesso": "친구 요청을 보냈습니다!",
+  "forms.optionsSummary.heading": "응답 요약",
+  "forms.optionsSummary.subtitle": "이 설문지의 모든 선택형 질문에서 각 옵션이 선택된 총 횟수입니다."
 }
