@@ -28,6 +28,32 @@ const TIPOS_PUBLICACAO_VALIDOS = new Set([
 // A partir desse grau de sobreposicao de palavras no titulo, avisamos que pode ser duplicata.
 const LIMIAR_SIMILARIDADE = 0.6;
 
+// Quantas vezes tenta de novo quando a Semantic Scholar responde 429 (limite
+// de requisicoes por segundo da chave), e quanto espera entre cada tentativa
+// (cresce a cada vez, ate um teto). A ideia e que a maioria dos 429 e so um
+// pico passageiro - esperando um pouco, a proxima tentativa ja passa - entao
+// a pessoa so ve a barra de carregamento demorar um pouco mais, em vez de ver
+// o erro. So devolve o 429 de verdade se nem depois de todas as tentativas
+// a busca for pra frente.
+const TENTATIVAS_BUSCA = 5;
+const ESPERA_ENTRE_TENTATIVAS_MS = [500, 1000, 2000, 3000];
+
+function esperar(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function buscarComNovaTentativa(url, cabecalhos) {
+  let ultimaResposta;
+  for (let tentativa = 0; tentativa < TENTATIVAS_BUSCA; tentativa++) {
+    if (tentativa > 0) {
+      await esperar(ESPERA_ENTRE_TENTATIVAS_MS[tentativa - 1] || ESPERA_ENTRE_TENTATIVAS_MS.at(-1));
+    }
+    ultimaResposta = await fetch(url, { headers: cabecalhos });
+    if (ultimaResposta.status !== 429) return ultimaResposta;
+  }
+  return ultimaResposta;
+}
+
 // Acha, entre os artigos ja salvos do usuario, um que pareca ser o mesmo
 // artigo (mesmo DOI, ou titulo muito parecido). Usado tanto pra avisar antes
 // mesmo de tentar salvar (na busca) quanto pra bloquear o salvamento mesmo.
@@ -217,7 +243,7 @@ router.get('/api/artigos/buscar', requireAuth, async (req, res) => {
 
   let resposta;
   try {
-    resposta = await fetch(url, { headers: cabecalhos });
+    resposta = await buscarComNovaTentativa(url, cabecalhos);
   } catch (err) {
     return res.status(502).json({ erro: res.locals.t('articles.erroConexaoSemanticScholar') });
   }

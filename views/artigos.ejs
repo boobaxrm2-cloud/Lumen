@@ -15,6 +15,9 @@
       <input type="text" id="campo-busca" value="<%= queryInicial %>" placeholder="<%= t('articles.searchPlaceholder') %>" autofocus />
       <button class="botao" type="submit"><%= t('articles.searchButton') %></button>
     </form>
+    <div class="barra-carregamento-busca" id="barra-carregamento-busca" style="display: none;">
+      <div class="barra-carregamento-busca-preenchimento" id="barra-carregamento-busca-preenchimento"></div>
+    </div>
     <p class="aviso-busca" id="aviso-busca"></p>
 
     <div class="busca-layout">

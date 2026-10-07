@@ -1186,6 +1186,31 @@ main {
   outline-offset: 1px;
 }
 
+.barra-carregamento-busca {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--cor-cartao-borda);
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+}
+
+.barra-carregamento-busca-preenchimento {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cor-dourado-escuro), var(--cor-dourado));
+  transition: width 0.2s ease-out;
+}
+
+/* Enquanto espera a resposta, a barra anda devagar ate quase o fim sozinha -
+   nao sabemos quanto vai demorar de verdade (pode levar varias tentativas
+   por causa do limite de requisicoes da API), entao ela so "sugere"
+   progresso em vez de refletir um valor exato. Quando a resposta chega de
+   verdade (sucesso ou erro final), o JS pula pra 100% rapido e some. */
+.barra-carregamento-busca-preenchimento.carregando {
+  transition: width 7s cubic-bezier(0.15, 0.85, 0.3, 1);
+}
+
 .aviso-busca {
   font-size: 0.9rem;
   color: var(--cor-texto-suave);

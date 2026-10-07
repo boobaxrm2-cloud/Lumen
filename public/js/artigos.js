@@ -7,6 +7,8 @@ const formBusca = document.getElementById('form-busca');
 const campoBusca = document.getElementById('campo-busca');
 const containerResultados = document.getElementById('resultados');
 const avisoBusca = document.getElementById('aviso-busca');
+const barraCarregamento = document.getElementById('barra-carregamento-busca');
+const barraCarregamentoPreenchimento = document.getElementById('barra-carregamento-busca-preenchimento');
 const contagemResultados = document.getElementById('contagem-resultados');
 const areaCarregarMais = document.getElementById('area-carregar-mais');
 const botaoCarregarMais = document.getElementById('botao-carregar-mais');
@@ -115,6 +117,32 @@ function obterFiltrosAtuais() {
   };
 }
 
+// A barra "anda sozinha" devagar ate quase o fim assim que a busca comeca -
+// nao sabemos quanto vai demorar de verdade (o servidor pode estar tentando
+// de novo por causa do limite de requisicoes da API), entao ela so sugere
+// que algo esta acontecendo. Quando a resposta chega (sucesso ou erro final),
+// completarBarraCarregamento() pula pra 100% na hora e some em seguida.
+function iniciarBarraCarregamento() {
+  barraCarregamento.style.display = '';
+  barraCarregamentoPreenchimento.classList.remove('carregando');
+  barraCarregamentoPreenchimento.style.width = '0%';
+  // Forca o navegador a aplicar o "width: 0%" antes de trocar a transicao e
+  // o valor de novo - sem isso, as duas mudancas se juntam num unico frame e
+  // a barra so aparece ja cheia, sem animar.
+  void barraCarregamentoPreenchimento.offsetWidth;
+  barraCarregamentoPreenchimento.classList.add('carregando');
+  barraCarregamentoPreenchimento.style.width = '92%';
+}
+
+function concluirBarraCarregamento() {
+  barraCarregamentoPreenchimento.classList.remove('carregando');
+  barraCarregamentoPreenchimento.style.width = '100%';
+  setTimeout(() => {
+    barraCarregamento.style.display = 'none';
+    barraCarregamentoPreenchimento.style.width = '0%';
+  }, 300);
+}
+
 async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
   if (comecarDoZero) {
     termoAtual = termo;
@@ -126,6 +154,7 @@ async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
 
   avisoBusca.textContent = I18N_ARTIGOS_TXT.searching;
   avisoBusca.classList.remove('erro-texto');
+  iniciarBarraCarregamento();
 
   try {
     const filtros = obterFiltrosAtuais();
@@ -169,6 +198,8 @@ async function buscarArtigos(termo, { comecarDoZero = true } = {}) {
   } catch (erro) {
     avisoBusca.textContent = I18N_ARTIGOS_TXT.connectionError;
     avisoBusca.classList.add('erro-texto');
+  } finally {
+    concluirBarraCarregamento();
   }
 }
 
