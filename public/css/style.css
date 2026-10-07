@@ -3228,8 +3228,20 @@ canvas.pagina-pdf {
 @media (max-width: 980px) {
   .login-full-nav {
     flex-wrap: wrap;
-    gap: 1rem;
+    justify-content: center;
+    gap: 0.8rem;
     padding: 1.2rem 1.5rem;
+  }
+  .login-full-nav-logo {
+    position: static;
+    transform: none;
+    order: -1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .login-full-nav-logo img {
+    height: 4.5rem;
   }
   .login-full-conteudo {
     flex-direction: column;
@@ -3250,6 +3262,23 @@ canvas.pagina-pdf {
   }
   .login-ficha-flutuante {
     width: 100%;
+  }
+  .login-full-rodape {
+    padding: 0 1.5rem 2rem;
+  }
+  .login-full-destaques {
+    flex-wrap: wrap;
+  }
+  .login-full-destaques li {
+    flex: 1 1 100%;
+    padding-left: 0;
+    padding-top: 1rem;
+    border-left: none;
+    border-top: 1px solid var(--cor-cartao-borda);
+  }
+  .login-full-destaques li:first-child {
+    padding-top: 0;
+    border-top: none;
   }
 }
 
@@ -3317,6 +3346,15 @@ canvas.pagina-pdf {
   font-size: 0.9rem;
   color: var(--cor-texto);
   flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .pergunta-construtor-topo {
+    flex-wrap: wrap;
+  }
+  .pergunta-construtor-topo .pergunta-texto {
+    flex: 1 1 100%;
+  }
 }
 
 .pergunta-construtor-opcoes {
