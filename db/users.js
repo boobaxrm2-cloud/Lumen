@@ -44,6 +44,57 @@ function updateLastLogin(id) {
   db.prepare("UPDATE users SET last_login_at = datetime('now') WHERE id = ?").run(id);
 }
 
+// Protecao contra tentativa de adivinhar senha: depois de LIMITE_TENTATIVAS_LOGIN
+// erros seguidos, a conta fica bloqueada por DURACAO_BLOQUEIO_MINUTOS. Qualquer
+// login certo zera o contador (resetarTentativasLogin).
+const LIMITE_TENTATIVAS_LOGIN = 5;
+const DURACAO_BLOQUEIO_MINUTOS = 15;
+
+// Um UPDATE so (sem ler o valor antes) pra nao ter corrida entre ler e
+// escrever se duas tentativas chegarem quase juntas - o CASE decide se
+// esse erro e o que estoura o limite e, se for, ja grava o bloqueio.
+function registrarTentativaLoginFalha(id) {
+  db.prepare(
+    `UPDATE users
+     SET failed_login_attempts = failed_login_attempts + 1,
+         locked_until = CASE
+           WHEN failed_login_attempts + 1 >= ? THEN datetime('now', '+' || ? || ' minutes')
+           ELSE locked_until
+         END
+     WHERE id = ?`
+  ).run(LIMITE_TENTATIVAS_LOGIN, DURACAO_BLOQUEIO_MINUTOS, id);
+}
+
+function resetarTentativasLogin(id) {
+  db.prepare('UPDATE users SET failed_login_attempts = 0, locked_until = NULL WHERE id = ?').run(id);
+}
+
+// Compara direto no SQLite (em vez de fazer o parse do texto em JS) pra nao
+// correr risco de bagunçar fuso horario - datetime('now') do SQLite e sempre
+// em UTC, e datetime(locked_until) trata o valor salvo do mesmo jeito.
+function loginBloqueado(id) {
+  const linha = db
+    .prepare(
+      `SELECT 1 AS bloqueado FROM users
+       WHERE id = ? AND locked_until IS NOT NULL AND datetime(locked_until) > datetime('now')`
+    )
+    .get(id);
+  return Boolean(linha);
+}
+
+// Quantos minutos faltam pro bloqueio acabar (arredondado pra cima, pra
+// nunca mostrar "0 minutos" enquanto ainda esta bloqueado).
+function minutosRestantesBloqueio(id) {
+  const linha = db
+    .prepare(
+      `SELECT CAST((julianday(locked_until) - julianday('now')) * 24 * 60 AS INTEGER) + 1 AS minutos
+       FROM users
+       WHERE id = ? AND locked_until IS NOT NULL`
+    )
+    .get(id);
+  return linha && linha.minutos > 0 ? linha.minutos : 1;
+}
+
 function updateProfile(id, { studyArea, university, academicBackground }) {
   db.prepare(
     'UPDATE users SET study_area = ?, university = ?, academic_background = ? WHERE id = ?'
@@ -87,4 +138,8 @@ module.exports = {
   updateProfile,
   updateAvatarPath,
   remove,
+  registrarTentativaLoginFalha,
+  resetarTentativasLogin,
+  loginBloqueado,
+  minutosRestantesBloqueio,
 };

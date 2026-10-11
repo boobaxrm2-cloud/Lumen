@@ -67,6 +67,8 @@ adicionarColunaSeNaoExistir('users', 'avatar_path', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'study_area', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'university', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'academic_background', 'TEXT');
+adicionarColunaSeNaoExistir('users', 'failed_login_attempts', 'INTEGER NOT NULL DEFAULT 0');
+adicionarColunaSeNaoExistir('users', 'locked_until', 'TEXT');
 adicionarColunaSeNaoExistir('visits', 'user_agent', 'TEXT');
 adicionarColunaSeNaoExistir('form_responses', 'respondent_name', "TEXT NOT NULL DEFAULT ''");
 adicionarColunaSeNaoExistir('form_responses', 'respondent_study_area', 'TEXT');

@@ -557,5 +557,6 @@
   "network.add.confirmText": "Enviar pedido de amizade para {nome} ({email})?",
   "network.add.sucesso": "Pedido de amizade enviado!",
   "forms.optionsSummary.heading": "Resumo das respostas",
-  "forms.optionsSummary.subtitle": "Total de escolhas de cada opção somando todas as perguntas de múltipla escolha/escolha única deste formulário."
+  "forms.optionsSummary.subtitle": "Total de escolhas de cada opção somando todas as perguntas de múltipla escolha/escolha única deste formulário.",
+  "login.erroBloqueadoTentativas": "Muitas tentativas erradas. Tente de novo em {minutos} minutos."
 }

@@ -116,12 +116,30 @@ router.post('/login', redirectIfLoggedIn, (req, res) => {
   const password = req.body.password || '';
 
   const user = users.findByEmail(email);
+
+  // Confere o bloqueio ANTES de validar a senha - mesmo que a senha esteja
+  // certa, uma conta bloqueada nao deve logar, senao o bloqueio nao impede
+  // nada (so avisaria "errado" nas tentativas erradas e deixaria passar na
+  // certa, o que nao protege contra quem ja acertou por forca bruta).
+  if (user && users.loginBloqueado(user.id)) {
+    const minutos = users.minutosRestantesBloqueio(user.id);
+    return res
+      .status(429)
+      .render('login', {
+        erro: t(res.locals.lang, 'login.erroBloqueadoTentativas', { minutos }),
+        sucesso: null,
+        valores: { email },
+      });
+  }
+
   const senhaValida = user && bcrypt.compareSync(password, user.password_hash);
 
   if (!senhaValida) {
+    if (user) users.registrarTentativaLoginFalha(user.id);
     return res.status(401).render('login', { erro: t(res.locals.lang, 'login.erroCredenciaisInvalidas'), sucesso: null, valores: { email } });
   }
 
+  users.resetarTentativasLogin(user.id);
   users.updateLastLogin(user.id);
   req.session.userId = user.id;
   req.session.userName = user.name;

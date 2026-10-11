@@ -557,5 +557,6 @@
   "network.add.confirmText": "Send a friend request to {nome} ({email})?",
   "network.add.sucesso": "Friend request sent!",
   "forms.optionsSummary.heading": "Answer summary",
-  "forms.optionsSummary.subtitle": "Total selections for each option across every choice question in this form."
+  "forms.optionsSummary.subtitle": "Total selections for each option across every choice question in this form.",
+  "login.erroBloqueadoTentativas": "Too many failed attempts. Try again in {minutos} minutes."
 }

@@ -557,5 +557,6 @@
   "network.add.confirmText": "要向 {nome}（{email}）发送好友请求吗？",
   "network.add.sucesso": "好友请求已发送！",
   "forms.optionsSummary.heading": "回答摘要",
-  "forms.optionsSummary.subtitle": "该表单所有选择题中每个选项被选择的总次数。"
+  "forms.optionsSummary.subtitle": "该表单所有选择题中每个选项被选择的总次数。",
+  "login.erroBloqueadoTentativas": "登录失败次数过多，请在 {minutos} 分钟后重试。"
 }
