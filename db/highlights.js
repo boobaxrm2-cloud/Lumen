@@ -37,14 +37,25 @@ function findById(id) {
 }
 
 // type: 'texto' (padrao) ou 'imagem'. Para 'imagem', imagePath e obrigatorio
-// e excerpt vira so uma legenda opcional.
-function create({ documentId, userId, excerpt, type, imagePath, pageNumber }) {
+// e excerpt vira so uma legenda opcional. positionData (so para 'texto') e um
+// objeto { rects: [{x,y,width,height}, ...] } com coordenadas fracionarias
+// (0 a 1) relativas ao tamanho da pagina do PDF, pra funcionar em qualquer
+// escala de renderizacao - guardado como JSON.
+function create({ documentId, userId, excerpt, type, imagePath, pageNumber, positionData }) {
   const result = db
     .prepare(
-      `INSERT INTO highlights (document_id, user_id, excerpt, type, image_path, page_number)
-       VALUES (?, ?, ?, ?, ?, ?)`
+      `INSERT INTO highlights (document_id, user_id, excerpt, type, image_path, page_number, position_data)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
     )
-    .run(documentId, userId, excerpt || '', type || 'texto', imagePath || null, pageNumber || null);
+    .run(
+      documentId,
+      userId,
+      excerpt || '',
+      type || 'texto',
+      imagePath || null,
+      pageNumber || null,
+      positionData ? JSON.stringify(positionData) : null
+    );
   return db.prepare('SELECT * FROM highlights WHERE id = ?').get(result.lastInsertRowid);
 }
 

@@ -60,6 +60,7 @@ adicionarColunaSeNaoExistir('codes', 'document_id', 'INTEGER REFERENCES document
 adicionarColunaSeNaoExistir('highlights', 'type', "TEXT NOT NULL DEFAULT 'texto'");
 adicionarColunaSeNaoExistir('highlights', 'image_path', 'TEXT');
 adicionarColunaSeNaoExistir('highlights', 'page_number', 'INTEGER');
+adicionarColunaSeNaoExistir('highlights', 'position_data', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'last_login_at', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'secret_question', 'TEXT');
 adicionarColunaSeNaoExistir('users', 'secret_answer_hash', 'TEXT');

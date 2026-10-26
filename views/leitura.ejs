@@ -171,7 +171,17 @@
           <template id="trechos-doc-<%= doc.id %>">
             <div class="lista-destaques">
               <% doc.destaques.forEach(function (destaque) { %>
-                <div class="destaque-item<%= destaque.type === 'imagem' ? ' destaque-item-imagem' : '' %>">
+                <%
+                  var temPosicao = destaque.type === 'texto' && destaque.page_number && destaque.position_data;
+                %>
+                <div
+                  class="destaque-item<%= destaque.type === 'imagem' ? ' destaque-item-imagem' : '' %><%= temPosicao ? ' destaque-item-clicavel' : '' %>"
+                  <% if (temPosicao) { %>
+                    data-destaque-id="<%= destaque.id %>"
+                    data-pagina="<%= destaque.page_number %>"
+                    data-posicao="<%= destaque.position_data %>"
+                  <% } %>
+                >
                   <% if (destaque.type === 'imagem') { %>
                     <img src="/destaques/<%= destaque.id %>/imagem" alt="<%= t('reading.markedCropAlt') %>" />
                     <% if (destaque.excerpt) { %><p class="legenda-recorte-item"><%= destaque.excerpt %></p><% } %>

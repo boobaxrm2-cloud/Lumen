@@ -1801,6 +1801,26 @@ section.secao > h2 .contagem {
   border-radius: 2px;
 }
 
+.marcacao-pdf-vermelha {
+  position: absolute;
+  background: rgba(220, 38, 38, 0.35);
+  border-radius: 2px;
+  pointer-events: none;
+  transition: background-color 0.3s ease;
+}
+
+.marcacao-pdf-vermelha.marcacao-pdf-pulsando {
+  background: rgba(220, 38, 38, 0.7);
+}
+
+.destaque-item-clicavel {
+  cursor: pointer;
+}
+
+.destaque-item-clicavel:hover {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.45);
+}
+
 .lista-destaques {
   display: flex;
   flex-direction: column;

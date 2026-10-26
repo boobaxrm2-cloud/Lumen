@@ -106,10 +106,28 @@ router.post('/api/documentos', requireAuth, (req, res) => {
   });
 });
 
+// Valida/limpa a posicao mandada pelo navegador antes de guardar: so numeros
+// finitos entre 0 e 1 (fracao da pagina), senao descarta o retangulo (ou o
+// highlight inteiro fica sem posicao, se nenhum retangulo for valido).
+function sanitizarPosicao(position) {
+  if (!position || !Array.isArray(position.rects)) return null;
+  const numeroFracaoValido = (n) => Number.isFinite(n) && n >= 0 && n <= 1;
+  const rects = position.rects
+    .map((r) => ({ x: Number(r.x), y: Number(r.y), width: Number(r.width), height: Number(r.height) }))
+    .filter((r) => numeroFracaoValido(r.x) && numeroFracaoValido(r.y) && numeroFracaoValido(r.width) && numeroFracaoValido(r.height));
+  return rects.length > 0 ? { rects } : null;
+}
+
+// position: { rects: [{x,y,width,height}, ...] } - coordenadas fracionarias
+// (0 a 1) da selecao dentro da pagina, calculadas no navegador. Opcional:
+// selecoes vindas de versoes antigas do front-end (ou sem JS atualizado)
+// simplesmente nao mandam isso, e o trecho fica sem marcacao visual no PDF.
 router.post('/api/documentos/:id/destaques', requireAuth, (req, res) => {
   const userId = req.session.userId;
   const documentId = Number.parseInt(req.params.id, 10);
   const texto = (req.body.excerpt || '').trim();
+  const pageNumber = Number.isInteger(req.body.pageNumber) ? req.body.pageNumber : null;
+  const positionData = sanitizarPosicao(req.body.position);
 
   if (!texto) {
     return res.status(400).json({ erro: res.locals.t('reading.erroSelecioneTrecho') });
@@ -120,7 +138,7 @@ router.post('/api/documentos/:id/destaques', requireAuth, (req, res) => {
     return res.status(404).json({ erro: res.locals.t('reading.erroDocumentoNaoEncontrado') });
   }
 
-  const destaque = highlights.create({ documentId, userId, excerpt: texto });
+  const destaque = highlights.create({ documentId, userId, excerpt: texto, pageNumber, positionData });
   res.status(201).json({ destaque });
 });
 

@@ -56,6 +56,7 @@ let paginasComOcorrencia = []; // numeros de pagina (em ordem) que tem o termo b
 let indiceBuscaAtual = -1;
 let ultimoTermoBuscado = '';
 let excertoSelecionadoAtual = '';
+let posicaoSelecionadaAtual = null; // { pageNumber, rects: [{x,y,width,height}, ...] } (fracoes 0-1 da pagina)
 
 let modoRecorteAtivo = false;
 let recorteWrapperAtual = null;
@@ -126,6 +127,12 @@ function criarFichaDestaque(destaque) {
   const item = document.createElement('div');
   item.className = 'destaque-item';
   item.innerHTML = `<p>"${escaparHtml(destaque.excerpt)}"</p>`;
+  if (destaque.page_number && destaque.position_data) {
+    item.classList.add('destaque-item-clicavel');
+    item.dataset.destaqueId = destaque.id;
+    item.dataset.pagina = destaque.page_number;
+    item.dataset.posicao = destaque.position_data;
+  }
   return item;
 }
 
@@ -187,7 +194,39 @@ async function renderizarPagina(numero) {
     destacarTermoNaPaginaAtual(ultimoTermoBuscado);
   }
 
+  desenharMarcacoesDaPagina(numero, wrapper);
+
   return conteudoTexto.items.length;
+}
+
+// Desenha, por cima da pagina, um retangulo vermelho semi-transparente pra
+// cada trecho marcado (com posicao salva) que pertence a essa pagina - os
+// trechos marcados antes dessa funcionalidade existir nao tem posicao salva
+// e simplesmente nao aparecem marcados aqui (sem erro).
+function desenharMarcacoesDaPagina(numero, wrapper) {
+  const itens = listaDestaquesAtual.querySelectorAll(`.destaque-item[data-pagina="${numero}"]`);
+  itens.forEach((item) => desenharMarcacoesDoItem(item, wrapper));
+}
+
+function desenharMarcacoesDoItem(item, wrapper) {
+  let posicao;
+  try {
+    posicao = JSON.parse(item.dataset.posicao || '');
+  } catch (erro) {
+    return;
+  }
+  if (!posicao || !Array.isArray(posicao.rects)) return;
+
+  posicao.rects.forEach((rect) => {
+    const marcacao = document.createElement('div');
+    marcacao.className = 'marcacao-pdf-vermelha';
+    marcacao.dataset.destaqueId = item.dataset.destaqueId;
+    marcacao.style.left = `${rect.x * 100}%`;
+    marcacao.style.top = `${rect.y * 100}%`;
+    marcacao.style.width = `${rect.width * 100}%`;
+    marcacao.style.height = `${rect.height * 100}%`;
+    wrapper.appendChild(marcacao);
+  });
 }
 
 function destacarTermoNaPaginaAtual(termo) {
@@ -371,10 +410,38 @@ async function encontrarPaginasComTermo(termo) {
 function esconderPopupMarcar() {
   popupMarcar.style.display = 'none';
   excertoSelecionadoAtual = '';
+  posicaoSelecionadaAtual = null;
+}
+
+// Converte os retangulos da selecao (em pixels da tela) pra fracoes (0 a 1)
+// do tamanho da propria pagina renderizada - assim a posicao guardada
+// continua valida mesmo se a pagina for desenhada depois numa escala
+// diferente (ESCALA_RENDER mudar, zoom, etc.).
+function calcularPosicaoSelecao() {
+  const wrapper = visorPdf.querySelector('.pagina-pdf');
+  const selecaoObj = window.getSelection();
+  if (!wrapper || selecaoObj.rangeCount === 0) return null;
+
+  const retanguloPagina = wrapper.getBoundingClientRect();
+  if (retanguloPagina.width === 0 || retanguloPagina.height === 0) return null;
+
+  const range = selecaoObj.getRangeAt(0);
+  const rects = Array.from(range.getClientRects())
+    .filter((r) => r.width > 0 && r.height > 0)
+    .map((r) => ({
+      x: (r.left - retanguloPagina.left) / retanguloPagina.width,
+      y: (r.top - retanguloPagina.top) / retanguloPagina.height,
+      width: r.width / retanguloPagina.width,
+      height: r.height / retanguloPagina.height,
+    }));
+
+  if (rects.length === 0) return null;
+  return { pageNumber: paginaAtualNumero, rects };
 }
 
 function mostrarPopupMarcar(x, y, textoSelecionado) {
   excertoSelecionadoAtual = textoSelecionado;
+  posicaoSelecionadaAtual = calcularPosicaoSelecao();
   popupMarcar.style.display = 'block';
 
   const alturaPopup = popupMarcar.offsetHeight || 44;
@@ -419,7 +486,11 @@ botaoMarcar.addEventListener('click', async () => {
     const resposta = await fetch(`/api/documentos/${documentoAtualId}/destaques`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ excerpt: excertoSelecionadoAtual }),
+      body: JSON.stringify({
+        excerpt: excertoSelecionadoAtual,
+        pageNumber: posicaoSelecionadaAtual ? posicaoSelecionadaAtual.pageNumber : null,
+        position: posicaoSelecionadaAtual ? { rects: posicaoSelecionadaAtual.rects } : null,
+      }),
     });
     const dados = await resposta.json();
 
@@ -428,12 +499,45 @@ botaoMarcar.addEventListener('click', async () => {
       return;
     }
 
-    listaDestaquesAtual.prepend(criarFichaDestaque(dados.destaque));
+    const ficha = criarFichaDestaque(dados.destaque);
+    listaDestaquesAtual.prepend(ficha);
+
+    const wrapperAtual = visorPdf.querySelector('.pagina-pdf');
+    if (wrapperAtual && Number(ficha.dataset.pagina) === paginaAtualNumero) {
+      desenharMarcacoesDoItem(ficha, wrapperAtual);
+    }
+
     window.getSelection().removeAllRanges();
     esconderPopupMarcar();
   } catch (erro) {
     window.alert(I18N_LEITURA_TXT.markExcerptConnectionError);
   }
+});
+
+// Clicar num trecho marcado (que tem posicao salva) pula direto pra pagina e
+// pra marcacao vermelha correspondente dentro do PDF. Clique no botao
+// "Remover" (dentro de um <form>) nao conta como clique no trecho.
+listaDestaquesAtual.addEventListener('click', async (evento) => {
+  if (evento.target.closest('form')) return;
+  const item = evento.target.closest('.destaque-item-clicavel');
+  if (!item || !pdfAtual) return;
+
+  const pagina = Number.parseInt(item.dataset.pagina, 10);
+  const destaqueId = item.dataset.destaqueId;
+  if (!pagina || !destaqueId) return;
+
+  if (pagina !== paginaAtualNumero) {
+    await renderizarPagina(pagina);
+  }
+
+  const marcacoes = visorPdf.querySelectorAll(`.marcacao-pdf-vermelha[data-destaque-id="${destaqueId}"]`);
+  if (marcacoes.length === 0) return;
+
+  marcacoes[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  marcacoes.forEach((marcacao) => marcacao.classList.add('marcacao-pdf-pulsando'));
+  setTimeout(() => {
+    marcacoes.forEach((marcacao) => marcacao.classList.remove('marcacao-pdf-pulsando'));
+  }, 1600);
 });
 
 // Modo "recorte de imagem": o professor arrasta um retangulo sobre a pagina
